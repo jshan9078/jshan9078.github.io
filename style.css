@@ -93,6 +93,27 @@ p {
 	color: var(--blue);
 	background-color: var(--orange);
 }
+
+.cta2 {
+	display: block;
+  margin-right: auto;
+	padding: 10px 30px;
+	color: var(--orange);
+	background-color: transparent;
+	border: 2px solid var(--orange);
+	font-size: 1.5rem;
+	text-transform: uppercase;
+	letter-spacing: 0.1rem;
+	margin-top: 15px;
+  margin-bottom: 15px;
+	transition: 0.3s ease;
+	transition-property: background-color, color;
+}
+.cta2:hover {
+	color: var(--blue);
+	background-color: var(--orange);
+}
+
 .brand h1 {
   font-family: 'Caveat Brush', cursive;
   text-transform: uppercase;
