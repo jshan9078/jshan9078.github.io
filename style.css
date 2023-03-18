@@ -4,7 +4,7 @@
   --orange: #ffc194;
   --lightorange: #ffc599;
   --lightestorange: #ffdcc2;
-  --bluelight: #75aaff;
+  --bluelight:#ff8957;
 }
 
 * {
@@ -14,12 +14,12 @@
 }
 html {
 	font-size: 10px;
-  background-image: url(./img/bg.jpg);
-	font-family: 'Delius', cursive;
+  background-image: url(./bg.jpg);
+	font-family: 'M PLUS 1', sans-serif;
 	scroll-behavior: smooth;
 }
 a {
-  
+  color: var(--bluelight);
   font-size:29px;
 	text-decoration: none;
 }
@@ -44,7 +44,7 @@ p {
 	letter-spacing: 0.05rem;
 }
 .section-title {
-  font-family: 'Caveat Brush', cursive;
+  font-family: 'Oswald', sans-serif;
 	font-size: 4rem;
 	font-weight: 300;
 	color: var(--bluelight);
@@ -98,10 +98,10 @@ p {
 	display: block;
   margin-right: auto;
 	padding: 10px 30px;
-	color: var(--orange);
+	color: var(--blue);
 	background-color: transparent;
 	border: 2px solid var(--orange);
-	font-size: 1.5rem;
+	font-size: 2rem;
 	text-transform: uppercase;
 	letter-spacing: 0.1rem;
 	margin-top: 15px;
@@ -115,7 +115,7 @@ p {
 }
 
 .brand h1 {
-  font-family: 'Caveat Brush', cursive;
+  font-family: 'Oswald', sans-serif;
   text-transform: uppercase;
 	font-size: 3rem;
 	color: var(--blue);
@@ -182,13 +182,14 @@ p {
 	left: 0%;
 }
 #header .nav-list ul a {
-  font-family: 'Itim', cursive;
+  font-family: 'M PLUS 1', sans-serif;
+  
 	font-weight: 1000;
   font-size:20px;
 	letter-spacing: 0.2rem;
 	text-decoration: none;
 	color: white;
-	font-family: 'Delius', cursive;
+	
 	padding: 20px;
 	display: block;
 }
@@ -269,7 +270,7 @@ p {
 
 /* home Section */
 #home {
-	background-image: url(./img/home-bg.jpg);
+	background-image: url(./home-bg.jpg);
 	background-size: cover;
 	background-position: top center;
 	position: relative;
@@ -385,13 +386,13 @@ p {
 	margin-bottom: 20px;
 }
 #forms .form-item h2 {
-	font-size: 2rem;
+	font-size: 1.5rem;
 	color: var(--blue);
 	margin-bottom: 10px;
 	text-transform: uppercase;
 }
 #forms .form-item p {
-	color: white;
+	color: black;
 	text-align: left;
 }
 /* End forms Section */
@@ -449,7 +450,7 @@ p {
 	font-weight: 500;
 	margin-top: 10px;
   margin-bottom: 10px;
-  color:var(--blue);
+  color:var(--orange);
 }
 
 
@@ -485,7 +486,7 @@ p {
 	flex-direction: column;
 	max-width: 1200px;
 	margin: 0 auto;
-	width: 90%;
+	width: 80%;
 }
 #contact .contact-items {
 	/* max-width: 400px; */
@@ -696,7 +697,7 @@ p {
 	#contact .contact-item .contact-info {
 		width: 100%;
 		text-align: left;
-		padding-left: 20px;
+		padding-left: 0px;
 	}
 	/* End contact  */
 }
@@ -737,7 +738,7 @@ p {
 /* End  Media Query For Desktop */
 
 .brandd h1 {
-  font-family: 'Caveat Brush', cursive;
+  font-family: 'Oswald', sans-serif;
   text-transform: uppercase;
   color: var(--bluelight);
   font-size: 40px;
@@ -753,4 +754,8 @@ p {
   to {
     text-shadow: 0 0 10px #fff, 0 0 15px var(--lightestorange), 0 0 20px var(--lightestorange), 0 0 25px var(--lightestorange), 0 0 30px var(--lightestorange), 0 0 35px var(--lightestorange), 0 0 40px var(--lightestorange);
   }
+}
+
+.descOne {
+  color:lightblue;
 }
