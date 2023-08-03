@@ -14,7 +14,7 @@
 }
 html {
 	font-size: 10px;
-  background-image: url(./bg.jpg);
+  background-image: url(./assets/bg.jpg);
 	font-family: 'M PLUS 1', sans-serif;
 	scroll-behavior: smooth;
 }
@@ -270,7 +270,7 @@ p {
 
 /* home Section */
 #home {
-	background-image: url(./home-bg.jpg);
+	background-image: url(./assets/home-bg.jpg);
 	background-size: cover;
 	background-position: top center;
 	position: relative;
