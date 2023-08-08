@@ -64,7 +64,9 @@ p {
   font-size:20px;
 }
 
-
+#serenity{
+  font-size:1.5vw;
+}
 
 @-webkit-keyframes section-title {
   from {
