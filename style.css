@@ -30,6 +30,10 @@ a {
 	align-items: center;
 	justify-content: center;
 }
+
+#connect{
+  display:flex;
+}
 img {
 	height: 100%;
 	width: 100%;
@@ -112,6 +116,25 @@ p {
 	transition-property: background-color, color;
 }
 .cta2:hover {
+	color: var(--blue);
+	background-color: var(--orange);
+}
+
+.cta3 {
+  width:70%;
+	display: inline-block;
+	padding: 10px 30px;
+	color: var(--bluelight);
+	background-color: transparent;
+	border: 2px solid var(--orange);
+	font-size: 1.5rem;
+	text-transform: uppercase;
+	letter-spacing: 0.1rem;
+	margin-top: 30px;
+	transition: 0.3s ease;
+	transition-property: background-color, color;
+}
+.cta3:hover {
 	color: var(--blue);
 	background-color: var(--orange);
 }
@@ -298,13 +321,14 @@ p {
 #home h1 {
 	display: block;
 	width: fit-content;
-  letter-spacing:10px;
+  letter-spacing:7px;
 	font-size: 3rem;
 	position: relative;
 	color: transparent;
 	animation: text_reveal 0.5s ease forwards;
 	animation-delay: 1s;
 }
+
 #home h1:nth-child(1) {
 	animation-delay: 1s;
 }
@@ -332,6 +356,47 @@ p {
 	animation-delay: 1.5s;
 }
 #home h1:nth-child(3) span {
+	animation-delay: 2.5s;
+}
+
+#home h2 {
+	display: block;
+	width: fit-content;
+  letter-spacing:7px;
+	font-size: 2rem;
+	position: relative;
+	color: transparent;
+	animation: text_reveal_current 0.5s ease forwards;
+	animation-delay: 1s;
+}
+
+#home h2:nth-child(1) {
+	animation-delay: 1s;
+}
+#home h2:nth-child(2) {
+  animation: text_reveal_name 0.5s ease forwards;
+	animation-delay: 2s;
+}
+#home h2:nth-child(3) {
+	animation-delay: 3s;
+}
+#home h2 span {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 0;
+	background-color: var(--blue);
+	animation: text_reveal_box 1s ease;
+	animation-delay: 0.5s;
+}
+#home h2:nth-child(1) span {
+	animation-delay: 0.5s;
+}
+#home h2:nth-child(2) span {
+	animation-delay: 1.5s;
+}
+#home h2:nth-child(3) span {
 	animation-delay: 2.5s;
 }
 
@@ -602,22 +667,34 @@ p {
 		font-weight: 500;
 	}
 }
+
+@keyframes text_reveal_current {
+	100% {
+		color: lightblue;
+		font-weight: 700;
+	}
+}
 /* End Keyframes */
 
-/* Media Query For Tablet */
+/* Media Query For Mobile */
 @media only screen and (min-width: 768px) {
 	.cta {
 		font-size: 2.5rem;
 		padding: 20px 60px;
 	}
+  .cta3{
+    width:33%;
+  }
 	h1.section-title {
 		font-size: 6rem;
 	}
 
 	/* home */
+  
 	#home h1 {
 		font-size: 7rem;
 	}
+
 	/* End home */
 
 	/* forms Section */
@@ -703,7 +780,7 @@ p {
 	}
 	/* End contact  */
 }
-/* End Media Query For Tablet */
+/* End Media Query For Mobile */
 
 /* Media Query For Desktop */
 @media only screen and (min-width: 1200px) {
@@ -758,6 +835,3 @@ p {
   }
 }
 
-.descOne {
-  color:lightblue;
-}
