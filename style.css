@@ -1,4 +1,7 @@
 @import 'https://fonts.googleapis.com/css?family=Montserrat:300, 400, 700&display=swap';
+@import url('https://fonts.googleapis.com/css2?family=Yeseva+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
+
 :root {
   --blue: #5e8dde;
   --orange: #f0e1f9;
@@ -15,7 +18,7 @@
 html {
 	font-size: 10px;
   background-color:#170b2f;
-	font-family: 'M PLUS 1', sans-serif;
+	font-family: 'Open Sans', sans-serif;
 	scroll-behavior: auto;
 }
 a {
@@ -46,7 +49,7 @@ p {
 	letter-spacing: 0.05rem;
 }
 .section-title {
-  font-family: 'M PLUS 1', sans-serif;
+  font-family: 'Open Sans', sans-serif;
 	font-size: 4rem;
 	font-weight: 300;
 	color: var(--bluelight);
@@ -120,7 +123,8 @@ p {
 
 .cta3 {
   width:70%;
-	padding: 10px 30px;
+  text-align: center;
+	padding: 10px 10px;
   display:inline-block;
 	color: var(--bluelight);
 	background-color: transparent;
@@ -152,14 +156,13 @@ p {
 }
 
 .brand h1 {
-  font-family: 'M PLUS 1', sans-serif;
-  text-transform: uppercase;
+  font-family: 'Open Sans', sans-serif;
 	font-size: 3rem;
 	color: lightblue;
+  margin-left:2vw;
 }
 
 .glow {
-  font-size: 40px;
   color: #fff;
   text-align: center;
   animation: glow 1s ease-in-out infinite alternate;
@@ -219,7 +222,7 @@ p {
 	left: 0%;
 }
 #header .nav-list ul a {
-  font-family: 'M PLUS 1', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   
 	font-weight: 1000;
   font-size:20px;
@@ -333,12 +336,17 @@ p {
 #home h1 {
 	display: block;
 	width: fit-content;
-  letter-spacing:7px;
+  letter-spacing:3px;
 	font-size: 3rem;
+  font-weight: 300;
 	position: relative;
 	color: transparent;
 	animation: text_reveal 0.5s ease forwards;
 	animation-delay: 1s;
+}
+
+#name{
+  /* font-family: Yeseva One; */
 }
 
 #home h1:nth-child(1) {
@@ -373,8 +381,9 @@ p {
 
 #home h2 {
 	display: block;
+  font-weight:700;
 	width: fit-content;
-  letter-spacing:7px;
+  letter-spacing:3px;
 	font-size: 2rem;
 	position: relative;
 	color: transparent;
@@ -913,7 +922,7 @@ p {
 @media only screen and (min-width: 1200px) {
 	/* header */
   .brand h1 {
-    font-size:5rem;
+    font-size:3rem;
   }
 	#header .hamburger {
 		display: none;
@@ -944,7 +953,7 @@ p {
 /* End  Media Query For Desktop */
 
 .brandd h1 {
-  font-family: 'M PLUS 1', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   text-transform: uppercase;
   color: lightblue;
   font-size: 30px;
