@@ -16,6 +16,8 @@
   <title>Jonathan S.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script src="jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -34,10 +36,9 @@
           </div>
           <ul class>
             <li><a href="#home" data-after="Home">Home</a></li>
-            <li><a href="#members" data-after="members">My Projects</a></li>
-            <li><a href="#forms" data-after="Forms">Experience</a></li>
             <li><a href="#contact" data-after="Forms">Resume</a></li>
-            <li><a href="#contact" data-after="Contact">Socials</a></li>
+            <li><a href="#forms" data-after="Forms">Experience</a></li>
+            <li><a href="#members" data-after="members">My Projects</a></li>
           </ul>
         </div>
       </div>
@@ -54,36 +55,73 @@
         <h1>I'm Jonathan! <span></span></h1>
         <!-- <a href="https://github.com/JonnyACCI" target="_blank" type="button" class="cta">My GitHub</a>  -->
         <h2>Currently, I'm studying CS at UWaterloo. <span></span></h1>
-          <a href="https://www.linkedin.com/in/jonathan-shanmuganantham-505664235/" target="_blank" type="button" class="cta3" id="connect">Let's Connect!</a>
+          
+          <a href="https://www.linkedin.com/in/jonathan-shanmuganantham-505664235/" target="_blank" type="button" class="hide" id="connect"
+            >Let's Connect!</a>
+            
       </div>
     </div>
+    <section id="scrollButton" class="demo">
+      <a href="#forms"><span></span></a>
+    </section>
   </section>
   <!-- End home Section  -->
 
+  <!-- form Section -->
+  <section id="forms">
+    <div class="forms container">
+      <div class="form-top">
+        <h1 class="section-title">Experience</h1>
+        <p class="desc1">What I've been doing lately</p>
+      </div>
+      <div class="form-bottom">
+        <div class="form-item">
+
+          <h2>Interning at Codin</h2>
+          <p class="desc2">Backed by <strong>UC Berkeley</strong> and the <strong>League of Innovators</strong>, I'm working with mentors to build a platform for students to share their projects, develop portfolios, and find job oppurtunities. Early access is available right now.
+            </p>
+          <a href="https://www.codin.app/" target="_blank" type="button" class="cta2">Codin Beta</a>
+        </div>
+        <div class="form-item">
+
+          <h2>Event Coordinator @ CSC</h2>
+          <p class="desc2">At UW's Computer Science Club, I'm working alongside a team of fellow Math/CS students to plan and execute both social and academic events for the community. We've had panels with Google SWEs and socials like Codey-lympics. </p>
+          <a href="https://www.instagram.com/uwcsclub/" target="_blank" type="button" class="cta2">Keep up with Events</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <!-- End form Section -->
+  
+
+  
   <!-- members Section -->
   <section id="members">
     <div class="members container">
       <div class="members-header">
+        <h1 id="dummy">My <span>Projects</span></h1>
         <h1 class="section-title">My <span>Projects</span></h1>
       </div>
       <div class="all-members">
         <div class="member-item">
           <div class="member-info">
-            <h1>Chrono</h1>
-            <a href="https://github.com/JonnyACCI/Chrono" target="_blank" type="button">Repo for Chrono ☜ </a>
-            <p> Python, Taipy, Google Cloud Vision AI </p>
-            <h3>An AI powered scheduler to help students manage their evaluations by turning course outline screenshots into Google Calendars</h3>
-            <a id="serenity" href="https://devpost.com/software/chrono-xzam7k" target="_blank"
-              type="button">Chrono in Action ☜ </a>
+            <h1>Grocery Run 
+              <a href="https://github.com/patrick-gu/htv8" target="_blank" type="button" class=""><i class="fa fa-github" style="font-size:36px"></i></a>
+              <a href="https://devpost.com/software/grocery-run-jzobac" target="_blank" type="button" class=""><i class="fa fa-link" style="font-size:36px"></i></a></h1></h1>
+            <p> FARM Stack, Google Maps API, Paybilt </p>
+            <h3>A website for users to find discounts at their local grocery stores and to determines their most cost-effective and time-effecient shopping trip.</h3>
+            <h3>Also configured with Interac E-transfer for online grocery payment and GenAI to suggest recipes from your shopping list</h3>
+            <a>Winner at Hack the Valley</a>
           </div>
-          <div class="member-img">
-            <img src="./assets/landingpage.jpg" alt="img">
+            <div class="member-img">
+              <img src="./assets/groceryrunmainpage.jpg" alt="img">
+            </div>
           </div>
-        </div>
+          
         <div class="member-item">
           <div class="member-info">
-            <h1>Clip-kun</h1>
-            <a href="https://github.com/JonnyACCI/Clipkun" target="_blank" type="button">Repo for Clip-kun ☜ </a>
+            <h1>Clip-kun <a href="https://github.com/JonnyACCI/Clipkun" target="_blank" type="button" class=""><i class="fa fa-github" style="font-size:36px"></i></a></h1>
             <p> MERN Stack, Cloudinary SDK </p>
             <h3>A website for creating, storing, and sharing clips from anime episodes</h3>
           </div>
@@ -93,12 +131,13 @@
         </div>
         <div class="member-item">
           <div class="member-info">
-            <h1>Serenity</h1>
-            <a href="https://github.com/JonnyACCI/Serenity" target="_blank" type="button">Repo for Serenity ☜ </a>
+            <h1>Serenity 
+              <a href="https://github.com/JonnyACCI/Serenity" target="_blank" type="button" class=""><i class="fa fa-github" style="font-size:36px"></i></a>
+              <a href="https://devpost.com/software/serenity-i3aont" target="_blank" type="button" class=""><i class="fa fa-link" style="font-size:36px"></i></a></h1></h1>
             <p> Manifest V3, Deepgram, Webpack </p>
             <h3>A chrome extension to monitor and control your speech speed during presentations</h3>
-            <a id="serenity" href="https://www.youtube.com/watch?v=CXMhdcRRdu8&ab_channel=JonathanS." target="_blank"
-              type="button">Demo Video ☜ </a>
+            <h3>Also provides live transcription</h3>
+            <a>Winner at DualHacks</a>
           </div>
           <div class="member-img">
             <img src="./assets/pic2.jpg" alt="img">
@@ -106,10 +145,23 @@
         </div>
         <div class="member-item">
           <div class="member-info">
-            <h1>weebDachi</h1>
-            <a href="https://github.com/JonnyACCI/weebDachi" target="_blank" type="button">Repo for weebDachi ☜ </a>
+            <h1>Chrono 
+              <a href="https://github.com/JonnyACCI/Chrono" target="_blank" type="button" class=""><i class="fa fa-github" style="font-size:36px"></i></a>
+            <a href="https://devpost.com/software/chrono-xzam7k" target="_blank" type="button" class=""><i class="fa fa-link" style="font-size:36px"></i></a></h1>
+
+            <p> Python, Taipy, Google Cloud Vision AI </p>
+            <h3>An AI powered scheduler to help students manage their evaluations by turning course outlines into Google Calendars</h3>
+            <h3>Uses Taipy's built-in data visualization components to help users manage assignments by course, deadlines, and weight.</h3>
+          </div>
+          <div class="member-img">
+            <img src="./assets/landingpage.jpg" alt="img">
+          </div>
+        </div>
+        <div class="member-item">
+          <div class="member-info">
+            <h1>weebDachi <a href="https://github.com/JonnyACCI/weebDachi" target="_blank" type="button" class=""><i class="fa fa-github" style="font-size:36px"></i></a></h1>
             <p> React, Vite, Node, Bootstrap, Figma</p>
-            <h3>A website for viewing and downloading anime which incorporates my RESTful API, weebAPI</h3>
+            <h3>A website for finding and downloading anime which incorporates my RESTful API, weebAPI</h3>
           </div>
           <div class="member-img">
             <img src="./assets/weebdachidemoimg.jpg" alt="img">
@@ -117,18 +169,17 @@
         </div>
         <div class="member-item">
           <div class="member-info">
-            <h1>weebAPI</h1>
-            <a href="https://github.com/JonnyACCI/weebAPI" target="_blank" type="button">Repo for weebAPI ☜ </a>
+            <h1>weebAPI <a href="https://github.com/JonnyACCI/weebAPI" target="_blank" type="button" class=""><i class="fa fa-github" style="font-size:36px"></i></a></h1>
             <p> Python, FastAPI, Docker, GCP</p>
             <h3>A RESTful API made with FastAPI to obtain anime data from Animepahe</h3>
           </div>
           <div class="member-img">
-            <img src="./assets/fastapiimg.png" alt="img">
+            <img src="./assets/weebapiswaggerui.jpg" alt="img">
           </div>
         </div>
         <div class="member-item">
           <div class="member-info">
-            <h1>Albert Campbell CI Website</h1>
+            <h1>ACCI Website </h1>
             <a target="_blank" type="button">In Production </a>
 
             <h3>A website for Albert Campbell C.I.</h3>
@@ -139,9 +190,21 @@
         </div>
         <div class="member-item">
           <div class="member-info">
-            <h1>Meloetta</h1>
+            <h1>Pokemon Gauntlet</h1>
+            <h2>Fan-made Pokemon Game</h2>
+            <a href="https://replit.com/@Jshan/gauntlet" target="_blank" type="button">Fork to Play ☜</a>
+            <p>OOP in Java, Swing</p>
+            <h3>A single-player, never-ending game with a global leaderboard and graphics. Beat as many enemies in
+              succession as you can with your team of three.</h3>
+          </div>
+          <div class="member-img">
+            <img src="./assets/pokemongauntlet.jpg" alt="img">
+          </div>
+        </div>
+        <div class="member-item">
+          <div class="member-info">
+            <h1>Meloetta <a href="https://github.com/JonnyACCI/Meloetta" target="_blank" type="button" class=""><i class="fa fa-github" style="font-size:36px"></i></a></h1>
 
-            <a href="https://github.com/JonnyACCI/Meloetta" target="_blank" type="button">Repo for Meloetta ☜ </a>
             <p>discord.py, youtube-dl</p>
             <h3>A discord music bot designed to allow Discord users to listen to music together as well as create
               playlists.</h3>
@@ -150,121 +213,55 @@
             <img src="./assets/meloetta.jpg" alt="img">
           </div>
         </div>
-
-        <div class="member-item">
-          <div class="member-info">
-            <h1>Watchdog</h1>
-            <a href="https://github.com/JonnyACCI/Watchdog" target="_blank" type="button">Watchdog's Repo ☜</a>
-            <p>discord.py, Database Management </p>
-            <h3>A moderation bot for Discord with a diverse array of commands directed towards server management</h3>
-          </div>
-          <div class="member-img">
-            <img src="./assets/snake.png" alt="img">
-          </div>
-        </div>
-
-        <div class="member-item">
-          <div class="member-info">
-            <h1>Pokemon Gauntlet</h1>
-            <h2>Fan-made Pokemon Game</h2>
-            <a href="https://replit.com/@Jshan/gauntlet" target="_blank" type="button">Fork to Play ☜</a>
-            <p>OOP in Java, Swing</p>
-            <h3>A single-player, never-ending game with a global leaderboard and graphics</h3>
-          </div>
-          <div class="member-img">
-            <img src="./assets/pokemongauntlet.jpg" alt="img">
-          </div>
-        </div>
-        <div class="member-item">
-          <div class="member-info">
-            <h1>Computer Club @ ACCI</h1>
-            <h2>Sponsored by Hack Club</h2>
-            <p>60+ Members</p>
-            <h3>Growing a club of students interested in computer club with a focus on web development, game
-              development, and competitive programming</h3>
-          </div>
-          <div class="member-img">
-            <img src="./assets/flag-orpheus-left.png" alt="img">
-          </div>
-        </div>
-
-
-
       </div>
+
+
+
+    </div>
     </div>
   </section>
   <!-- End members Section -->
 
-  <!-- form Section -->
-  <section id="forms">
-    <div class="forms container">
-      <div class="form-top">
-        <h1 class="section-title">My Experience</h1>
-        <p class="desc1">Here are some of my volunteer and extra-curricular experiences that showcase my skill set.</p>
-      </div>
-      <div class="form-bottom">
-        <div class="form-item">
-
-          <h2>Pres of CS Club </h2>
-          <p class="desc2">I teach students about Python, C#, and HTML CSS JS alongside a group of fellow programmers.
-            Our club has 60+ members.</p>
-          <a href="https://forms.gle/Ky8oyvR426F7NQeq9" target="_blank" type="button" class="cta2">Application</a>
-        </div>
-        <div class="form-item">
-
-          <h2>Pres of Robotics Club</h2>
-          <p class="desc2">I mentor and assist students with robotics concepts. We won 1st at UofT's RSX Challenge and
-            4th at UOIT's SumoBot Competition.</p>
-          <a href="https://rsx.squarespace.com/" target="_blank" type="button" class="cta2">RSX Contest</a>
-        </div>
-
-        <div class="form-item">
-
-          <h2>YAG Member @ TPL</h2>
-          <p class="desc2"> I hosted robotics workshops and planned community events as a member of the Youth Advisory
-            Group at the Malvern Public Library.</p>
-          <a href="https://www.torontopubliclibrary.ca/support-us/volunteering/yags/" target="_blank" type="button"
-            class="cta2">More Info</a>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- End form Section -->
-
   <!-- Contact Section -->
-  <section id="contact">
-    <div class="contact container">
-      <div>
-        <h1 class="section-title">My <span>Info </span></h1>
-      </div>
-      <div class="contact-items">
-        <div class="contact-item">
-          <div class="contact-info">
-            <h1>My Resume</h1>
-            <h2>As of Aug 2023</h2>
-            <a href="./assets/modern resume.pdf" target="_blank" type="button" class="cta2">My Resume</a>
+    <section id="contact">
+      <div class="contact container">
+        <div>
+          <h1 class="section-title">My <span>Info </span></h1>
+        </div>
+        <div class="contact-items">
+          <div class="contact-item">
+            <div class="contact-info">
+              <h1>Resume <i class="fa fa-file-text" aria-hidden="true"></i>
 
+   </h1>
+              <h2>As of Aug 2023</h2>
+              <a href="./assets/modern resume.pdf" target="_blank" type="button" class="cta2">My Resume</a>
+
+            </div>
           </div>
-        </div>
-        <div class="contact-item">
-          <div class="contact-info">
-            <h1>Github</h1>
-            <h2>Highlights some of my work</h2>
-            <a href="https://github.com/JonnyACCI" target="_blank" type="button" class="cta2">My Github</a>
+          <div class="contact-item">
+            <div class="contact-info">
+              <h1>Github <i class="fa fa-github-square" aria-hidden="true"></i>
+  </h1>
+              <h2>Highlights some of my work</h2>
+              <a href="https://github.com/JonnyACCI" target="_blank" type="button" class="cta2">My Github</a>
+            </div>
           </div>
-        </div>
-        <div class="contact-item">
-          <div class="contact-info">
-            <h1>LinkedIn</h1>
-            <h2>Let's connect</h2>
-            <a href="https://www.linkedin.com/in/jonathan-shanmuganantham-505664235/" target="_blank" type="button"
-              class="cta2">My Linkedin</a>
+          <div class="contact-item">
+            <div class="contact-info">
+              <h1>LinkedIn
+                <i class="fa fa-linkedin-square" aria-hidden="true"></i>
+  </h1>
+              <h2>Let's connect</h2>
+              <a href="https://www.linkedin.com/in/jonathan-shanmuganantham-505664235/" target="_blank" type="button"
+                class="cta2">My Linkedin</a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
-  <!-- End Contact Section -->
+    </section>
+    <!-- End Contact Section -->
+
 
   <!-- Footer -->
   <section id="footer">
@@ -272,9 +269,8 @@
       <div class="brandd">
         <h1>Jonathan Shanmuganantham</h1>
       </div>
-      <h2>Computer Science Student</h2>
       <h2>jshan9078@gmail.com</h2>
-      <p>2023-2024</p>
+      <p>Lightweight website made with Bootstrap and jQuery</p>
     </div>
   </section>
   <!-- End Footer -->
