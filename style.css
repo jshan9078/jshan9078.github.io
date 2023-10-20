@@ -419,9 +419,9 @@ p {
   align-items: center;
 	flex-direction: column;
 	text-align: center;
-	/* max-width: 2000px;
+	max-width: 2000px;
 	margin: 0 auto;
-	padding: 10px 0; */
+	padding: 10px 0;
 }
 #forms .form-top {
 	/* max-width: 500px;
@@ -429,20 +429,17 @@ p {
 }
 #forms .form-bottom {
   align-items: center;
-  display: flex;
-  
-  
-	/* display: flex;
-	
+  /* display: flex;
+	 */
 	justify-content: center;
 	
-	margin-top: 50px; */
+	margin-top: 50px;
 }
 #forms .form-item {
 
 	flex-basis: 80%;
-	display: flex;
-	align-items: flex-start;
+	/* display: flex;
+	align-items: flex-start; */
 	justify-content: center;
 	flex-direction: column;
   flex:1;
@@ -565,7 +562,10 @@ p {
   margin-bottom: 10px;
   color:var(--orange);
 }
-
+#members .member-info a {
+  font-size:20px;
+  color: var(--bluelight);
+}
 
 #members .member-info p {
   font-size:15px;
@@ -760,6 +760,74 @@ p {
     right:0%;
     width: 40vw;
   }
+  #forms .forms {
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    /* max-width: 2000px;
+    margin: 0 auto;
+    padding: 10px 0; */
+  }
+  #forms .form-top {
+    /* max-width: 500px;
+    margin: 0 auto; */
+  }
+  #forms .form-bottom {
+    align-items: center;
+    display: flex;
+
+
+    /* display: flex;
+
+    justify-content: center;
+
+    margin-top: 50px; */
+  }
+  #forms .form-item {
+
+    flex-basis: 80%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    flex:1;
+    padding: 30px;
+    border-radius: 10px;
+    background-size: cover;
+    margin: 10px 5%;
+    
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    width:40vw;
+  }
+
+  #forms .form-item {
+    align-items: center;
+    text-align: center;
+    color:white;
+    background-image: url(./assets/purplewallpaper.jpg);
+    box-shadow: 0px 0px 18px 0 #fff;
+    transition: 0.3s ease box-shadow;
+  }
+
+  #forms .form-item:hover {
+    box-shadow: 0px 0px 1px 0 #fff;
+  }
+
+  #forms .form-item::after {
+    flex:1;
+    /* content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: var(--bluelight);
+    opacity: 0.9;
+    z-index: -1; */
+  }
+  
   .desc1 {
     font-size:25px;
   }
@@ -879,7 +947,7 @@ p {
   font-family: 'M PLUS 1', sans-serif;
   text-transform: uppercase;
   color: lightblue;
-  font-size: 40px;
+  font-size: 30px;
   text-align: center;
   animation: glow 1s ease-in-out infinite alternate;
 }
