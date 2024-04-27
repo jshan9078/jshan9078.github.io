@@ -406,7 +406,20 @@ p {
 	animation-delay: 2.5s;
 } */
 
+#statusText{
+  display: block;
+  font-weight:700;
+  width: fit-content;
+  letter-spacing:3px;
+  font-size: 2rem;
+  position: relative;
+  color: white;
+}
 
+#statusName{
+  color: var(--bluelight);
+  background-color: transparent;
+}
 
 #home h2 {
 	display: block;
