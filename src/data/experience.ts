@@ -1,0 +1,183 @@
+import Assets from "./assets";
+import { getSkills } from "./skills";
+import type { Experience } from "./types";
+
+const experiences: Experience[] = [
+  {
+    slug: "shopify",
+    company: "Shopify",
+    description: "Monetization Team",
+    highlights: [
+      "Built domain-aware agentic harness from scratch used by 75 engineers daily for data analytics, QA, and support requests.",
+      "Shipped Apple/Google Pay for merchant subscription checkout.",
+      "Identified, root-caused, and removed 6 year old security vulnerability in payments infrastructure.",
+    ],
+    contract: "Internship",
+    type: "Software Development",
+    location: "Toronto, ON",
+    period: { from: new Date(2026, 0, 1), to: new Date(2026, 3, 1) },
+    skills: getSkills(
+      "stripe",
+      "multi-agent",
+      "graphql",
+      "rails",
+      "kafka",
+      "ts",
+      "reactjs",
+    ),
+    name: "Software Engineering Intern",
+    color: "green",
+    links: [],
+    logo: Assets.Shopify,
+    shortDescription:
+      "Monetization Team — Built custom agentic harness used by 75 engineers daily.",
+  },
+  {
+    slug: "hamming",
+    company: "Hamming AI (YC S24)",
+    description: "YC S24 — Infra, Product, DevEx.",
+    highlights: [
+      "Worked on at-scale automated testing and production monitoring for voice agents.",
+      "Built eval systems for measuring impact of prompt and pipeline changes.",
+      "Designed automated security auditor that identifies and squashes CVEs in Docker containers enabling SOC2 compliance.",
+    ],
+    contract: "Internship",
+    type: "Software Development",
+    location: "Austin, TX",
+    period: { from: new Date(2025, 4, 1), to: new Date(2025, 7, 26) },
+    skills: getSkills(
+      "ts",
+      "llm",
+      "next",
+      "python",
+      "temporal",
+      "docker",
+      "aws",
+    ),
+    name: "Software Engineering Intern",
+    color: "black",
+    links: [],
+    logo: Assets.Hamming,
+    shortDescription:
+      "YC S24 — Infra, Product, DevEx. Worked on at-scale automated testing and production monitoring for voice agents.",
+  },
+  {
+    slug: "research",
+    company: "University of Waterloo",
+    description:
+      "Prototyped CLI tool that creates graph representations of codebases through static analysis to improve LLM context gathering and understanding (supervised by Dr. Jian Zhao).",
+    contract: "Part-time",
+    type: "Software Development",
+    location: "Waterloo, ON",
+    period: { from: new Date(2025, 0, 1), to: new Date(2025, 3, 20) },
+    skills: getSkills("ts", "llm", "next", "compilers", "python"),
+    name: "Undergraduate Researcher",
+    color: "yellow",
+    links: [],
+    logo: Assets.Waterloo,
+    shortDescription:
+      "Applying graph theory to codebases to improve LLM context gathering (supervised by Dr. Jian Zhao).",
+  },
+  {
+    slug: "stealth",
+    company: "Stealth Startup",
+    description: "Working on agents for HR and recruitment.",
+    contract: "Part-time",
+    type: "Software Development",
+    location: "NYC",
+    period: { from: new Date(2024, 7, 1), to: new Date(2024, 11, 1) },
+    skills: getSkills(
+      "ts",
+      "llm",
+      "next",
+      "aws",
+      "docker",
+      "PostgreSQL",
+      "tensorflow",
+    ),
+    name: "Founding Engineer",
+    color: "red",
+    links: [],
+    logo: Assets.Stealth,
+    shortDescription: "Working on voice agents for HR and recruitment.",
+  },
+  {
+    slug: "adanomad",
+    company: "Adanomad",
+    description:
+      "Architected and implemented NLP pipelines for companies to make custom document processing workflows and agents for their business needs.",
+    contract: "Internship",
+    type: "Software Development",
+    location: "Waterloo, ON",
+    period: { from: new Date(2024, 4, 1), to: new Date(2024, 7, 1) },
+    skills: getSkills(
+      "ts",
+      "llm",
+      "next",
+      "reactjs",
+      "supabase",
+      "PostgreSQL",
+      "langchain",
+    ),
+    name: "Software Engineering Intern",
+    color: "red",
+    links: [],
+    logo: Assets.Adanomad,
+    shortDescription:
+      "Architected and implemented NLP pipelines for companies to make custom document processing workflows and agents.",
+  },
+  {
+    slug: "firmware",
+    company: "Electrium Mobility",
+    description:
+      "Writing C++ firmware for electric vehicles leveraging various communication protocols and computer vision.",
+    contract: "Part-time",
+    type: "Software Development",
+    location: "Waterloo, ON",
+    period: { from: new Date(2024, 5, 1) },
+    skills: getSkills("cpp", "arduino", "tensorflow"),
+    name: "Firmware Developer",
+    color: "green",
+    links: [],
+    logo: Assets.ElectriumMobility,
+    shortDescription:
+      "Writing C++ firmware for electric vehicles leveraging various communication protocols and computer vision.",
+  },
+  {
+    slug: "csc",
+    company: "Computer Science Club",
+    description:
+      "Organized academic and networking events for students interested in computer science.",
+    contract: "Part-time",
+    type: "Project Management",
+    location: "Waterloo, ON",
+    period: { from: new Date(2024, 8, 1), to: new Date(2024, 11, 1) },
+    skills: [],
+    name: "Lead Event Coordinator",
+    color: "blue",
+    links: [],
+    logo: Assets.CSC,
+    shortDescription:
+      "Organized and hosted academic and networking events for students interested in computer science.",
+  },
+  {
+    slug: "codin",
+    company: "Codin",
+    description:
+      "Worked on a platform that combines GitHub and LinkedIn to help students showcase their projects and skills.",
+    contract: "Internship",
+    type: "Software Development",
+    location: "SF",
+    period: { from: new Date(2023, 4, 1), to: new Date(2023, 11, 1) },
+    skills: getSkills("ts", "express", "reactjs", "mocha", "docker", "mongodb"),
+    name: "Full-Stack Engineer",
+    color: "red",
+    links: [],
+    logo: Assets.Codin,
+    shortDescription:
+      "Worked on a platform that combines GitHub and LinkedIn to help students showcase their projects and skills.",
+  },
+];
+
+const ExperienceData = { items: experiences };
+export default ExperienceData;
