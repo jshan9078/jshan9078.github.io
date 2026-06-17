@@ -4,6 +4,7 @@ import SinglePage from "./pages/SinglePage";
 import ProjectDetail from "./pages/ProjectDetail";
 import AgentsPage from "./pages/AgentsPage";
 import AgentBlogPost from "./pages/AgentBlogPost";
+import BlogDetail from "./pages/BlogDetail";
 import {
   BrowserRouter,
   Routes,
@@ -33,6 +34,7 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<SinglePage />} />
         <Route path="/projects/:slug" element={<ProjectDetail />} />
+        <Route path="/blog/:slug" element={<BlogDetail />} />
         <Route path="/agents" element={<AgentsPage />} />
         <Route path="/agents/:slug" element={<AgentBlogPost />} />
       </Routes>

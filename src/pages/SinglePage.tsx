@@ -4,6 +4,7 @@ import BaseData from "@/data/base";
 import Assets from "@/data/assets";
 import ExperienceData from "@/data/experience";
 import ProjectsData from "@/data/projects";
+import { blogs } from "@/data/blogs";
 
 function ProjectCard({
   project,
@@ -237,6 +238,42 @@ export default function SinglePage() {
         <div className="projects-list">
           {ProjectsData.items.map((project) => (
             <ProjectCard key={project.slug} project={project} />
+          ))}
+        </div>
+      </section>
+
+      <section id="blog" className="blog-page">
+        <h1 className="section-title">Blog</h1>
+
+        <div className="blog-rows">
+          {blogs.map((post) => (
+            <Link key={post.slug} to={`/blog/${post.slug}`} className="blog-row">
+              <div className="blog-row__meta">
+                <span className="blog-row__date">
+                  {new Date(post.date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
+              </div>
+              <div className="blog-row__content">
+                <h2 className="blog-row__title">{post.title}</h2>
+                <p className="blog-row__excerpt">{post.excerpt}</p>
+              </div>
+              <div className="blog-row__arrow">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
           ))}
         </div>
       </section>

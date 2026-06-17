@@ -63,6 +63,15 @@ export default function Nav() {
                   Projects
                 </a>
               </li>
+              <li>
+                <a
+                  href="/#blog"
+                  className="nav__link"
+                  onClick={(e) => handleNavClick(e, "blog")}
+                >
+                  Blog
+                </a>
+              </li>
               {/*<li>
                 <a
                   href="/agents"
@@ -115,6 +124,13 @@ export default function Nav() {
           onClick={(e) => handleMobileNavClick(e, "projects")}
         >
           Projects
+        </a>
+        <a
+          href="/#blog"
+          className="nav__link"
+          onClick={(e) => handleMobileNavClick(e, "blog")}
+        >
+          Blog
         </a>
         {/*<a href="/agents" className="nav__link nav__link--shimmer">
           Agents
