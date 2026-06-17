@@ -1,6 +1,6 @@
 # Small Language Models (SLMs) and the Future
 
-Small Language Models (SLMs) are lightweight models designed to operate efficiently in resource-constrained environments—such as low-power/low-memory computers, smartphones, and embedded systems. While frontier Large Language Models (LLMs) typically range from hundreds of billions to even a trillion parameters, SLMs usually sit somewhere between 1B and 10B parameters. Note that there is no rigid boundary here, and a 10B parameter model is still quite substantial.
+Small Language Models (SLMs) are lightweight models designed to operate efficiently in resource-constrained environments, such as low-power/low-memory computers, smartphones, and embedded systems. While frontier Large Language Models (LLMs) typically range from hundreds of billions to even a trillion parameters, SLMs usually sit somewhere between 1B and 10B parameters. Note that there is no rigid boundary here, and a 10B parameter model is still quite substantial.
 
 ---
 
@@ -48,7 +48,7 @@ For instance, if a layer's weight matrix is dimensions $4096 \times 4096$, updat
 *   **Matrix A**: $4096 \times r$
 *   **Matrix B**: $r \times 4096$
 
-For $r = 8$, this reduces the trainable parameter count to $(4096 \times 8) + (8 \times 4096) = 65,536$ parameters—a **99.6% reduction** in trainable weights.
+For $r = 8$, this reduces the trainable parameter count to $(4096 \times 8) + (8 \times 4096) = 65,536$ parameters, representing a **99.6% reduction** in trainable weights.
 
 During inference, the output is calculated by combining the frozen weights and the low-rank adapters, where $x$ represents the input activation vector:
 $$\text{Output} = (W + \Delta W)x = Wx + B(Ax)$$
@@ -67,4 +67,4 @@ As shown by companies like Uber, Microsoft, and Meta slowly rolling back frontie
 
 The future points toward specialized networks of smaller, focused models rather than a single massive general intelligence model. In most professional settings, workers complete specific, repeatable tasks. 
 
-This opens the door for **hybrid routing architectures**: a lightweight classifier router model analyzes incoming queries and routes them to specialized, local SLMs (or Expert Language Models) depending on the task domain. This makes agentic systems highly scalable and cost-effective—scaling is as simple as dropping in a new specialized SLM and updating the router's classification prompt.
+This opens the door for **hybrid routing architectures**: a lightweight classifier router model analyzes incoming queries and routes them to specialized, local SLMs (or Expert Language Models) depending on the task domain. This makes agentic systems highly scalable and cost-effective; scaling is as simple as dropping in a new specialized SLM and updating the router's classification prompt.
