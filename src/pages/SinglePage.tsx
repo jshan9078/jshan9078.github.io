@@ -140,7 +140,7 @@ export default function SinglePage() {
                 <strong>SWE @ Shopify</strong>
               </span>
             </span>
-            <span>Obsessed with building the best agentic harnesses</span>
+            <span>Focused on agentic harnesses and post-training</span>
             <span className="hero__bio-setup">
               Coding agent:{" "}
               <a
