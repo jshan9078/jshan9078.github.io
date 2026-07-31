@@ -4,6 +4,25 @@ import type { Experience } from "./types";
 
 const experiences: Experience[] = [
   {
+    slug: "tesla",
+    company: "Tesla",
+    description: "Firebolt",
+    highlights: [
+      "Internal agents to speed up both internal and customer-facing processes",
+    ],
+    contract: "Internship",
+    type: "Software Development",
+    location: "San Francisco Bay Area",
+    period: { from: new Date(2026, 8, 1), to: new Date(2026, 11, 1) },
+    skills: getSkills("python", "ts", "multi-agent", "llm"),
+    name: "Software Engineering Intern",
+    color: "red",
+    links: [],
+    logo: Assets.Unknown,
+    shortDescription:
+      "Firebolt — Internal agents to speed up both internal and customer-facing processes",
+  },
+  {
     slug: "shopify",
     company: "Shopify",
     description: "Monetization Team",

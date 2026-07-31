@@ -137,21 +137,10 @@ export default function SinglePage() {
               </span>
               <span className="hero__bio-divider">•</span>
               <span>
-                <strong>SWE @ Shopify</strong>
+                <strong>SWE @ Tesla, prev Shopify, Hamming AI (YC S24)</strong>
               </span>
             </span>
-            <span>Focused on agentic harnesses and post-training</span>
-            <span className="hero__bio-setup">
-              Coding agent:{" "}
-              <a
-                href="https://pi.dev/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Pi
-              </a>{" "}
-              &bull; Model: qwen3.6-Plus
-            </span>
+            <span>Focused on agentic harnesses, post-training, and evals</span>
           </div>
 
           <div className="hero__social-links">
