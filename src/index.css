@@ -375,6 +375,7 @@ img {
   align-items: center;
   gap: 0.5rem;
   font-size: 1rem;
+  color: var(--ink-secondary);
 }
 
 .hero__bio-divider {
