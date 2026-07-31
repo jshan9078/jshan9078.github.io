@@ -137,7 +137,7 @@ export default function SinglePage() {
               </span>
               <span className="hero__bio-divider">•</span>
               <span>
-                <strong>SWE @ Tesla</strong>, prev Shopify, Hamming AI (YC S24)
+                <strong>SWE @ Tesla</strong>
               </span>
             </span>
             <span>Focused on agentic harnesses, post-training, and evals</span>
