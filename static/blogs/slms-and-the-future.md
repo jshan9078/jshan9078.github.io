@@ -21,7 +21,7 @@ SLMs achieve their compact size through three main optimization techniques:
 ---
 
 ### Current Limitations
-These limitations represent the current state of the art; breakthroughs are occurring rapidly. For instance, Google's *DiffusionGemma* optimized inference speeds, and Gemma 4 demonstrated remarkable intelligence relative to their size.
+These limitations represent the current state of the art; breakthroughs are occurring rapidly. For instance, Google's *DiffusionGemma* optimized inference speeds, and Gemma 4 demonstrated remarkable intelligence relative to its size.
 
 However, several core challenges remain:
 1.  **Poor Generalization**: A small model fine-tuned for a specific task will perform poorly on unrelated tasks. They lack the broad, cross-domain capabilities of frontier LLMs.
@@ -67,4 +67,4 @@ As shown by companies like Uber, Microsoft, and Meta slowly rolling back frontie
 
 The future points toward specialized networks of smaller, focused models rather than a single massive general intelligence model. In most professional settings, workers complete specific, repeatable tasks. 
 
-This opens the door for **hybrid routing architectures**: a lightweight classifier router model analyzes incoming queries and routes them to specialized, local SLMs (or Expert Language Models) depending on the task domain. This makes agentic systems highly scalable and cost-effective; scaling is as simple as dropping in a new specialized SLM and updating the router's classification prompt.
+This opens the door for **hybrid routing architectures**: a lightweight classifier router model analyzes incoming queries and routes them to specialized, local SLMs (or Expert Language Models) depending on the task domain. This makes agentic systems highly scalable and cost-effective. Scaling comes down to dropping in a new specialized SLM and updating the router's classification prompt or the router itself.
