@@ -14,7 +14,7 @@ const experiences: Experience[] = [
     type: "Software Development",
     location: "San Francisco Bay Area",
     period: { from: new Date(2026, 8, 1), to: new Date(2026, 11, 1) },
-    skills: getSkills("python", "ts", "multi-agent", "llm"),
+    skills: getSkills("python", "golang", "multi-agent", "llm"),
     name: "Software Engineering Intern",
     color: "red",
     links: [],

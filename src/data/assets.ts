@@ -57,6 +57,7 @@ const Assets: Record<string, { light: string; dark: string }> = {
   PostgreSQL: asset('postgres.png'),
   Stripe: asset('stripe.png'),
   MultiAgent: asset('llm.png'),
+  Go: asset('go.svg'),
   Unknown: asset('no-img.svg'),
 };
 

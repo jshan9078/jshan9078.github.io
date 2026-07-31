@@ -15,6 +15,7 @@ const defineSkill = (
 
 const skills: Skill[] = [
   defineSkill("ts", "TypeScript", Assets.TypeScript, "blue"),
+  defineSkill("golang", "Go", Assets.Go, "cyan"),
   defineSkill("js", "JavaScript", Assets.JavaScript, "yellow"),
   defineSkill("python", "Python", Assets.Python, "yellow"),
   defineSkill("cpp", "C++", Assets.Cpp, "blue"),
