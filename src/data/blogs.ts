@@ -1,4 +1,5 @@
 import slmsContent from '../../static/blogs/slms-and-the-future.md?raw';
+import cweSlmContent from '../../static/blogs/slm-vulnerability-detection.md?raw';
 
 export interface Blog {
   slug: string;
@@ -9,6 +10,13 @@ export interface Blog {
 }
 
 export const blogs: Blog[] = [
+  {
+    slug: 'slm-vulnerability-detection',
+    title: 'Can Small Language Models Deliver Frontier-Level Vulnerability Detection?',
+    date: '2026-08-12',
+    excerpt: 'I fine-tune five on-device SLMs for C/C++ CWE detection and benchmark them against a frontier model on synthetic and real-world code, finding where small models reach parity, where they beat the frontier, and where everything hits a wall.',
+    content: cweSlmContent,
+  },
   {
     slug: 'slms-and-the-future',
     title: 'SLMs and the Future',

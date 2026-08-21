@@ -8,6 +8,27 @@ const url = (file: string) => `/logos/${file}`;
 
 const projects: Project[] = [
   {
+    slug: "slm-vulnerability-detection",
+    color: "#5e95e3",
+    description: `On-device Small Language Models (1B to 12B) fine-tuned for C/C++ CWE vulnerability detection, benchmarked against a frozen frontier model (gpt-5.6-luna) on both raw source and compiler-derived LLVM IR. The goal is a security reviewer cheap and fast enough to run on every pull request without a cloud API.\n\n### Key Findings\n\n**Synthetic parity**: with reasoning-distillation SFT, a 9B model matches the frontier on a clean synthetic benchmark (0.626 vs 0.629 balanced accuracy) at a third of the false-positive rate.\n\n**The discrimination wall**: on real-world CVE code every on-device model sits at chance balanced accuracy (0.50 to 0.51), and even the frontier only reaches 0.545. An isolated function often isn't decidable without the macros, types, and callers around it.\n\n**Small models still win where it counts**: on minimal-diff CVE pairs the on-device models lead the frontier on pair-consistency (0.226 vs 0.156) and family-level CWE naming (0.442 vs 0.362), and a 2.6B model names real weaknesses about as accurately as the frontier.\n\n**DPO shifts caution, not skill**: preference optimization slid the operating point along the ROC diagonal, making the model quieter without making it better at telling vulnerable from safe.\n\n### Technical Details\n\n**Benchmarks**: a synthetic benchmark from a custom generator where every insecure sample is proven insecure by a dynamic oracle that crashes the binary with a real payload, plus a real-world benchmark built from PrimeVul, BigVul, and Juliet.\n\n**Training**: off-policy reasoning distillation from a Claude Opus teacher, LoRA supervised fine-tuning across five architectures (Liquid AI LFM2.5, Qwen-3.5-9B, Qwen2.5-Coder-7B, Gemma-4-12B), a LoRA rank sweep on both source and LLVM IR, and a Direct Preference Optimization stage on top.\n\n**Infrastructure**: all training and evaluation ran on AWS with a single NVIDIA L40S (48 GB) per job, at a total compute cost of $404.\n\n**Deployment**: a detect-then-name cascade with a reviewer in the loop, where a generalist screens the diff and a 2.6B real-code specialist names the CWE on whatever gets flagged.`,
+    shortDescription:
+      "Post-training on-device SLMs (reasoning-distillation SFT + DPO) for C/C++ CWE vulnerability detection, benchmarked against a frontier model on synthetic and real-world code.",
+    links: [
+      {
+        to: "https://github.com/jshan9078/cwe-model-training",
+        label: "GitHub",
+      },
+      { to: "/blog/slm-vulnerability-detection", label: "Blog Post" },
+    ],
+    logo: Assets.LLM,
+    name: "On-Device SLMs for Vulnerability Detection",
+    period: { from: new Date(2026, 7, 12), to: new Date(2026, 7, 12) },
+    skills: getSkills("python", "pytorch", "llm", "aws", "cpp", "compilers"),
+    type: "SLM Post-Training & Security",
+    screenshots: [],
+    pdf: "/cwe-slm-paper.pdf",
+  },
+  {
     slug: "ross",
     color: "#5e95e3",
     description: `ROSS makes visual art accessible to those with visual impairments. We use computer vision to segment paintings/photographs and then apply mathematical procedures to turn those segments into vectors the robot can follow. We also added narration as the robot draws on the user's palm and music generation powered by multimodal sentiment analysis.\n\n### Technical Details\n\n**Segmentation**: We input an image into Meta SAM (Segment Anything Model) to isolate meaningful elements (e.g., trees, people).\n\n**Path Planning**: For each mask, we generate a simplified stroke outline and convert detected strokes into intelligent graph structures that understand connectivity and optimal traversal.\n\n**Vectorization**: Pixel-based stroke data is transformed into smooth mathematical curves using algorithms like Ramer-Douglas-Peucker simplification.\n\n**Calibration**: Digital coordinates are converted into real-world millimeter measurements with 1mm spacing accuracy.\n\n**Feedback**: Parts of the painting are categorized as warm or cool based on color proximity to red or blue. A two-axis robot draws with two brushes: one with a heated resistor (warm) and one with alcohol/hand sanitizer (cold) to convey color via temperature.\n\n**Hardware Control**: Numerical outputs are fed to an Arduino to control the hardware.\n\n**Narration**: While painting, relevant music is generated based on sentiment, along with a Bob Ross voiceover using a fine-tuned HuggingFace model.`,

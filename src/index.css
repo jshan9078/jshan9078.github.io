@@ -1702,6 +1702,42 @@ img {
   color: var(--ink);
 }
 
+.blog-post__content table {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: var(--space-lg) 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--ink-secondary);
+}
+
+.blog-post__content thead th {
+  text-align: left;
+  white-space: nowrap;
+  font-weight: 500;
+  color: var(--ink);
+  padding: 0.55rem 1.5rem 0.55rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.24);
+}
+
+.blog-post__content tbody td {
+  color: var(--ink-secondary);
+  font-weight: 400;
+  padding: 0.5rem 1.5rem 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  vertical-align: top;
+}
+
+.blog-post__content tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.blog-post__content table strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
 .blog-post__not-found {
   font-size: var(--text-lg);
   color: var(--ink-secondary);

@@ -45,7 +45,7 @@ export default function BlogDetail() {
 
         <article className="blog-post__content">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {post.content}
+            {post.content.replace(/^\s*#\s+.*\r?\n+/, "")}
           </ReactMarkdown>
         </article>
       </div>
