@@ -16,7 +16,9 @@ function ProjectCard({
       <div className="project-card__title-row">
         <span className="project-card__name">{project.name}</span>
         <div className="project-card__links">
-          {project.links.map((link) => (
+          {project.links
+            .filter((link) => !link.to.includes("pypi.org"))
+            .map((link) => (
             <button
               key={link.to}
               className="project-card__link"
@@ -54,6 +56,30 @@ function ProjectCard({
         </div>
       </div>
       <p className="project-card__description">{project.shortDescription}</p>
+      {project.downloads && project.downloadsUrl && (
+        <button
+          className="download-pill"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            window.open(project.downloadsUrl, "_blank", "noopener,noreferrer");
+          }}
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" />
+          </svg>
+          {project.downloads} downloads
+        </button>
+      )}
       <Link to={`/projects/${project.slug}`} className="project-card__arrow">
         <svg
           width="20"

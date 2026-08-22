@@ -8,6 +8,32 @@ const url = (file: string) => `/logos/${file}`;
 
 const projects: Project[] = [
   {
+    slug: "browser-cli",
+    color: "#5e95e3",
+    description: `Browser Automation CLI is a lightweight, self-hosted browser automation tool with a background daemon and a CLI client. It gives coding agents persistent, authenticated web sessions so they can navigate, screenshot, snapshot the DOM, and interact with pages through simple subprocess commands. You log into a site once and every later agent call reuses that session.\n\n### Why it exists\n\nCoding agents need to drive authenticated web apps, and the existing options all have tradeoffs. Chrome DevTools MCP needs Node and per-agent MCP config, extension-based tools lock into an ecosystem and bloat the agent's context with tool definitions, and raw Playwright scripts mean writing code for every interaction with no persistent auth. Browser Automation CLI is a persistent daemon that any agent can call as a subprocess. No extensions, no MCP, no SDKs, no ecosystem lock-in.\n\n### Technical Details\n\n**Architecture**: a long-lived daemon (server plus session manager) owns the browser and holds session state, while a thin CLI client issues commands to it. Sessions persist across agent calls, so authentication is done once and reused.\n\n**Automation**: built on Playwright driving Chromium. Commands cover navigation, DOM snapshots with CSS selectors, clicks, typing, and JPEG screenshots.\n\n**Integration**: ships a SKILL.md that drops into a coding agent's harness for seamless use, plus an AGENTS.md for setup. Installed as a single uv or pip tool (browser-automation-cli) with no per-agent configuration.`,
+    shortDescription:
+      "A self-hosted browser automation daemon and CLI that gives coding agents persistent, authenticated web sessions without MCP, extensions, or SDKs.",
+    links: [
+      {
+        to: "https://github.com/jshan9078/browser-automation-cli",
+        label: "GitHub",
+      },
+      {
+        to: "https://pypi.org/project/browser-automation-cli/",
+        label: "PyPI",
+      },
+    ],
+    logo: Assets.Python,
+    name: "Browser Automation CLI",
+    period: { from: new Date(2026, 7, 1) },
+    skills: getSkills("python", "llm", "multi-agent"),
+    type: "Developer Tooling & Agent Infra",
+    screenshots: [],
+    install: "uv tool install browser-automation-cli",
+    downloads: "6k",
+    downloadsUrl: "https://pepy.tech/projects/browser-automation-cli",
+  },
+  {
     slug: "slm-vulnerability-detection",
     color: "#5e95e3",
     description: `On-device Small Language Models (1B to 12B) fine-tuned for C/C++ CWE vulnerability detection, benchmarked against a frozen frontier model (gpt-5.6-luna) on both raw source and compiler-derived LLVM IR. The goal is a security reviewer cheap and fast enough to run on every pull request without a cloud API.\n\n### Key Findings\n\n**Synthetic parity**: with reasoning-distillation SFT, a 9B model matches the frontier on a clean synthetic benchmark (0.626 vs 0.629 balanced accuracy) at a third of the false-positive rate.\n\n**The discrimination wall**: on real-world CVE code every on-device model sits at chance balanced accuracy (0.50 to 0.51), and even the frontier only reaches 0.545. An isolated function often isn't decidable without the macros, types, and callers around it.\n\n**Small models still win where it counts**: on minimal-diff CVE pairs the on-device models lead the frontier on pair-consistency (0.226 vs 0.156) and family-level CWE naming (0.442 vs 0.362), and a 2.6B model names real weaknesses about as accurately as the frontier.\n\n**DPO shifts caution, not skill**: preference optimization slid the operating point along the ROC diagonal, making the model quieter without making it better at telling vulnerable from safe.\n\n### Technical Details\n\n**Benchmarks**: a synthetic benchmark from a custom generator where every insecure sample is proven insecure by a dynamic oracle that crashes the binary with a real payload, plus a real-world benchmark built from PrimeVul, BigVul, and Juliet.\n\n**Training**: off-policy reasoning distillation from a Claude Opus teacher, LoRA supervised fine-tuning across five architectures (Liquid AI LFM2.5, Qwen-3.5-9B, Qwen2.5-Coder-7B, Gemma-4-12B), a LoRA rank sweep on both source and LLVM IR, and a Direct Preference Optimization stage on top.\n\n**Infrastructure**: all training and evaluation ran on AWS with a single NVIDIA L40S (48 GB) per job, at a total compute cost of $404.\n\n**Deployment**: a detect-then-name cascade with a reviewer in the loop, where a generalist screens the diff and a 2.6B real-code specialist names the CWE on whatever gets flagged.`,
@@ -27,6 +53,22 @@ const projects: Project[] = [
     type: "SLM Post-Training & Security",
     screenshots: [],
     pdf: "/cwe-slm-paper.pdf",
+  },
+  {
+    slug: "opencord",
+    color: "#5e95e3",
+    description: `A serverless Discord-to-AI bridge enabling developers to run persistent, stateful AI coding agent sessions directly inside Discord threads. Built using Vercel Sandboxes and the OpenCode SDK, OpenCord allows chat-based execution, debugging, and environment control.\n\n### Technical Details\n\n**Core Integration**: Built with Vercel Sandboxes and the OpenCode SDK to launch isolated Linux developer sandboxes straight from chat threads.\n\n**Real-Time SSE Relay**: Architected a custom TypeScript relay that streams AI reasoning steps, tool usage events, and text deltas from Server-Sent Events (SSE) directly into Discord message sinks.\n\n**Distributed State Management**: Orchestrated Vercel Blob to build a distributed persistence layer, securing multi-provider OAuth tokens, thread context, and workspace metadata inside a stateless, serverless architecture.`,
+    shortDescription:
+      "A serverless Discord-to-AI bridge that runs persistent AI coding agent sessions and real-time SSE relays straight in chat threads.",
+    links: [
+      { to: "https://github.com/jshan9078/OpenCord", label: "GitHub" },
+    ],
+    logo: Assets.TypeScript,
+    name: "OpenCord",
+    period: { from: new Date(2026, 4), to: new Date(2026, 4) },
+    skills: getSkills("ts", "llm"),
+    type: "Agent Harnesses & Developer Tools",
+    screenshots: [],
   },
   {
     slug: "ross",
@@ -50,6 +92,22 @@ const projects: Project[] = [
       { label: "CAD Model", src: url("ross_cad.png") },
       { label: "Wiring", src: url("ross_wiring.png") },
     ],
+  },
+  {
+    slug: "microgradcpp",
+    color: "#5e95e3",
+    description: `A highly modular, performance-oriented C++ implementation of Andrej Karpathy's micrograd autograd engine and neural network. This project ports the scalar-based automatic differentiation system to C++, featuring custom operator overloading, dynamic backpropagation, and a complete Multi-Layer Perceptron (MLP) API.\n\n### Technical Details\n\n**Autograd Engine**: Leverages custom C++ pointer structures for dynamic computational graph tracking. Overloads math operators (\`+\`, \`-\`, \`*\`, \`/\`, \`pow\`) to construct automatic backpropagation DAGs natively.\n\n**Neural Network**: Implements a Multi-Layer Perceptron (MLP) library, supporting dynamic initialization of neurons, layers, and network architectures.\n\n**Model Training**: Standardizes model training on true normalized Mean Squared Error (MSE) loss.\n\n**Testing Suite**: Includes a dedicated unit testing suite validating mathematical derivatives and gradient outputs against reference evaluations.`,
+    shortDescription:
+      "A modular, high-performance C++ autograd engine and neural network library featuring dynamic backpropagation and normalized MSE training.",
+    links: [
+      { to: "https://github.com/jshan9078/microgradcpp", label: "GitHub" },
+    ],
+    logo: Assets.Cpp,
+    name: "MicrogradCPP",
+    period: { from: new Date(2026, 4), to: new Date(2026, 4) },
+    skills: getSkills("cpp"),
+    type: "C++ & Deep Learning",
+    screenshots: [],
   },
   {
     slug: "psa-grade-predictor",
@@ -94,38 +152,6 @@ const projects: Project[] = [
       { label: "Music Playlists", src: url("soundtrack5.png") },
       { label: "Timeline", src: url("soundtrack6.png") },
     ],
-  },
-  {
-    slug: "microgradcpp",
-    color: "#5e95e3",
-    description: `A highly modular, performance-oriented C++ implementation of Andrej Karpathy's micrograd autograd engine and neural network. This project ports the scalar-based automatic differentiation system to C++, featuring custom operator overloading, dynamic backpropagation, and a complete Multi-Layer Perceptron (MLP) API.\n\n### Technical Details\n\n**Autograd Engine**: Leverages custom C++ pointer structures for dynamic computational graph tracking. Overloads math operators (\`+\`, \`-\`, \`*\`, \`/\`, \`pow\`) to construct automatic backpropagation DAGs natively.\n\n**Neural Network**: Implements a Multi-Layer Perceptron (MLP) library, supporting dynamic initialization of neurons, layers, and network architectures.\n\n**Model Training**: Standardizes model training on true normalized Mean Squared Error (MSE) loss.\n\n**Testing Suite**: Includes a dedicated unit testing suite validating mathematical derivatives and gradient outputs against reference evaluations.`,
-    shortDescription:
-      "A modular, high-performance C++ autograd engine and neural network library featuring dynamic backpropagation and normalized MSE training.",
-    links: [
-      { to: "https://github.com/jshan9078/microgradcpp", label: "GitHub" },
-    ],
-    logo: Assets.Cpp,
-    name: "MicrogradCPP",
-    period: { from: new Date(2026, 4), to: new Date(2026, 4) },
-    skills: getSkills("cpp"),
-    type: "C++ & Deep Learning",
-    screenshots: [],
-  },
-  {
-    slug: "opencord",
-    color: "#5e95e3",
-    description: `A serverless Discord-to-AI bridge enabling developers to run persistent, stateful AI coding agent sessions directly inside Discord threads. Built using Vercel Sandboxes and the OpenCode SDK, OpenCord allows chat-based execution, debugging, and environment control.\n\n### Technical Details\n\n**Core Integration**: Built with Vercel Sandboxes and the OpenCode SDK to launch isolated Linux developer sandboxes straight from chat threads.\n\n**Real-Time SSE Relay**: Architected a custom TypeScript relay that streams AI reasoning steps, tool usage events, and text deltas from Server-Sent Events (SSE) directly into Discord message sinks.\n\n**Distributed State Management**: Orchestrated Vercel Blob to build a distributed persistence layer, securing multi-provider OAuth tokens, thread context, and workspace metadata inside a stateless, serverless architecture.`,
-    shortDescription:
-      "A serverless Discord-to-AI bridge that runs persistent AI coding agent sessions and real-time SSE relays straight in chat threads.",
-    links: [
-      { to: "https://github.com/jshan9078/OpenCord", label: "GitHub" },
-    ],
-    logo: Assets.TypeScript,
-    name: "OpenCord",
-    period: { from: new Date(2026, 4), to: new Date(2026, 4) },
-    skills: getSkills("ts", "llm"),
-    type: "Agent Harnesses & Developer Tools",
-    screenshots: [],
   },
   {
     slug: "PowerMap",

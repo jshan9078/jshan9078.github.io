@@ -29,6 +29,9 @@ export interface Project {
   skills: Skill[];
   screenshots?: Screenshot[];
   pdf?: string;
+  install?: string;
+  downloads?: string;
+  downloadsUrl?: string;
 }
 
 export interface Experience extends Project {

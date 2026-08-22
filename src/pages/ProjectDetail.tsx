@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import ProjectsData from "@/data/projects";
@@ -19,6 +20,7 @@ export default function ProjectDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const project = ProjectsData.items.find((p) => p.slug === slug);
+  const [copied, setCopied] = useState(false);
 
   const scrollToProjects = () => {
     navigate("/#projects");
@@ -51,6 +53,28 @@ export default function ProjectDetail() {
           <span>Back to Projects</span>
         </button>
         <div className="project-detail__links">
+          {project.downloads && project.downloadsUrl && (
+            <a
+              className="download-pill"
+              href={project.downloadsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" />
+              </svg>
+              {project.downloads} downloads
+            </a>
+          )}
           {project.links.map((link) => (
             <a
               key={link.to}
@@ -89,6 +113,22 @@ export default function ProjectDetail() {
           </span>
         ))}
       </div>
+
+      {project.install && (
+        <div className="project-detail__install">
+          <code className="project-detail__install-cmd">{project.install}</code>
+          <button
+            className="project-detail__install-copy"
+            onClick={() => {
+              navigator.clipboard?.writeText(project.install!);
+              setCopied(true);
+              setTimeout(() => setCopied(false), 1500);
+            }}
+          >
+            {copied ? "Copied" : "Copy"}
+          </button>
+        </div>
+      )}
 
       <div className="project-detail__description">
         <ReactMarkdown>{project.description}</ReactMarkdown>
