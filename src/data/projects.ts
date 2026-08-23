@@ -10,9 +10,9 @@ const projects: Project[] = [
   {
     slug: "browser-cli",
     color: "#5e95e3",
-    description: `Browser Automation CLI is a lightweight, self-hosted browser automation tool with a background daemon and a CLI client. It gives coding agents persistent, authenticated web sessions so they can navigate, screenshot, snapshot the DOM, and interact with pages through simple subprocess commands. You log into a site once and every later agent call reuses that session.\n\n### Why it exists\n\nCoding agents need to drive authenticated web apps, and the existing options all have tradeoffs. Chrome DevTools MCP needs Node and per-agent MCP config, extension-based tools lock into an ecosystem and bloat the agent's context with tool definitions, and raw Playwright scripts mean writing code for every interaction with no persistent auth. Browser Automation CLI is a persistent daemon that any agent can call as a subprocess. No extensions, no MCP, no SDKs, no ecosystem lock-in.\n\n### Technical Details\n\n**Architecture**: a long-lived daemon (server plus session manager) owns the browser and holds session state, while a thin CLI client issues commands to it. Sessions persist across agent calls, so authentication is done once and reused.\n\n**Automation**: built on Playwright driving Chromium. Commands cover navigation, DOM snapshots with CSS selectors, clicks, typing, and JPEG screenshots.\n\n**Integration**: ships a SKILL.md that drops into a coding agent's harness for seamless use, plus an AGENTS.md for setup. Installed as a single uv or pip tool (browser-automation-cli) with no per-agent configuration.`,
+    description: `Browser Automation CLI is a self-hosted browser automation daemon with a CLI client, built for coding agents. It gives them persistent, authenticated web sessions they can drive through plain subprocess commands: navigate, take a compact snapshot of the page, click, type, screenshot. You log into a site once and every later agent call reuses that session, headless, from any agent harness.\n\n### Why it exists\n\nCoding agents need to drive authenticated web apps, and the existing options all have tradeoffs. Chrome DevTools MCP needs Node and per-agent MCP config, extension-based tools lock into an ecosystem and bloat the agent's context with tool definitions, and raw Playwright scripts mean writing code for every interaction with no persistent auth. Browser Automation CLI is a long-lived daemon that any agent calls as a subprocess. No extensions, no MCP, no SDKs, no ecosystem lock-in.\n\n### Designed for agents, measured on agents\n\n**Snapshots an agent can act on**: instead of dumping the DOM, a snapshot lists only the visible interactive elements (including those inside iframes and shadow DOM) as one line each with a stable ref, so a login page costs about 245 tokens instead of 6,700. Agents click by ref, visible text, ARIA role or form label, and ambiguous selectors are refused rather than clicking the wrong thing.\n\n**Cheap to leave running**: headless by default, with a visible window only while a session is shown for the user to log in. Idle sessions are frozen and later hibernated to disk, which took a parked Cloudflare dashboard from 264% CPU and 2.1 GB to 2% and 1 GB. Sessions survive daemon restarts.\n\n**Verified with a benchmark, not vibes**: a deterministic admin app with 17 verifier-judged tasks (iframes, shadow DOM, overlays that block clicks, infinite scroll, date pickers, password re-confirmation, validation errors) is run by fresh LLM agents that only have the CLI. The current release passes 17/17 at pass@2 on both Claude Sonnet and Claude Haiku, and the Rust rewrite halved the CLI calls per task versus the Python version.\n\n### Technical Details\n\n**Rust daemon and client**: a rewrite from Python/Playwright to Rust speaking raw Chrome DevTools Protocol over a websocket, with no Python or Node at runtime. Per-call overhead dropped from 40 ms to 2 ms and daemon memory by about 90 MB. Both implementations share one JSON-over-Unix-socket protocol and one end-to-end test suite, so the rewrite was validated against the exact same tests and benchmarks.\n\n**Browser management**: downloads the same Chrome for Testing build Playwright pins into Playwright's cache layout, runs a headless shell for agent work and a headed Chromium only on demand, and hands sessions between them with cookies and storage intact.\n\n**Distribution**: one PyPI package with platform wheels for Linux and macOS (x86_64 and arm64) built by CI, a daily update check that tells users when a new release exists, and a SKILL.md plus AGENTS.md that drop into any coding agent harness.`,
     shortDescription:
-      "A self-hosted browser automation daemon and CLI that gives coding agents persistent, authenticated web sessions without MCP, extensions, or SDKs.",
+      "A Rust browser-automation daemon and CLI that gives coding agents persistent, authenticated web sessions and token-efficient page snapshots, benchmarked on 17 verifier-judged agent tasks.",
     links: [
       {
         to: "https://github.com/jshan9078/browser-automation-cli",
@@ -22,11 +22,15 @@ const projects: Project[] = [
         to: "https://pypi.org/project/browser-automation-cli/",
         label: "PyPI",
       },
+      {
+        to: "https://github.com/jshan9078/browser-automation-cli/blob/main/AGENTBENCH.md",
+        label: "Benchmarks",
+      },
     ],
-    logo: Assets.Python,
+    logo: Assets.Rust,
     name: "Browser Automation CLI",
     period: { from: new Date(2026, 7, 1) },
-    skills: getSkills("python", "llm", "multi-agent"),
+    skills: getSkills("rust", "python", "llm", "multi-agent"),
     type: "Developer Tooling & Agent Infra",
     screenshots: [],
     install: "uv tool install browser-automation-cli",

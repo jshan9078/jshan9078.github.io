@@ -15,6 +15,7 @@ const Assets: Record<string, { light: string; dark: string }> = {
   TypeScript: asset('ts.png'),
   ReactJs: asset('react.svg'),
   Python: asset('python.png'),
+  Rust: asset('rust.svg'),
   Svelte: asset('svelte.svg'),
   ExpressJs: asset('express.png'),
   JavaScript: asset('js.png'),
