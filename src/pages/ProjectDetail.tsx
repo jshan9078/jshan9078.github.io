@@ -21,7 +21,23 @@ export default function ProjectDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const project = ProjectsData.items.find((p) => p.slug === slug);
-  const [copied, setCopied] = useState(false);
+  const [copiedCmd, setCopiedCmd] = useState<string | null>(null);
+
+  const renderInstall = (cmd: string) => (
+    <div className="project-detail__install" key={cmd}>
+      <code className="project-detail__install-cmd">{cmd}</code>
+      <button
+        className="project-detail__install-copy"
+        onClick={() => {
+          navigator.clipboard?.writeText(cmd);
+          setCopiedCmd(cmd);
+          setTimeout(() => setCopiedCmd((c) => (c === cmd ? null : c)), 1500);
+        }}
+      >
+        {copiedCmd === cmd ? "Copied" : "Copy"}
+      </button>
+    </div>
+  );
 
   const scrollToProjects = () => {
     navigate("/#projects");
@@ -116,18 +132,14 @@ export default function ProjectDetail() {
       </div>
 
       {project.install && (
-        <div className="project-detail__install">
-          <code className="project-detail__install-cmd">{project.install}</code>
-          <button
-            className="project-detail__install-copy"
-            onClick={() => {
-              navigator.clipboard?.writeText(project.install!);
-              setCopied(true);
-              setTimeout(() => setCopied(false), 1500);
-            }}
-          >
-            {copied ? "Copied" : "Copy"}
-          </button>
+        <div className="project-detail__installs">
+          {renderInstall(project.install)}
+          {project.installPip && (
+            <>
+              <span className="project-detail__install-or">or</span>
+              {renderInstall(project.installPip)}
+            </>
+          )}
         </div>
       )}
 

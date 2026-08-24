@@ -34,6 +34,7 @@ const projects: Project[] = [
     type: "Developer Tooling & Agent Infra",
     screenshots: [],
     install: "uv tool install browser-automation-cli",
+    installPip: "pip install browser-automation-cli",
     downloads: "6k",
     downloadsUrl: "https://pepy.tech/projects/browser-automation-cli",
   },

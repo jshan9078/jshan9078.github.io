@@ -30,6 +30,7 @@ export interface Project {
   screenshots?: Screenshot[];
   pdf?: string;
   install?: string;
+  installPip?: string;
   downloads?: string;
   downloadsUrl?: string;
 }
