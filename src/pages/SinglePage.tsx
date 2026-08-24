@@ -4,6 +4,7 @@ import BaseData from "@/data/base";
 import Assets from "@/data/assets";
 import ExperienceData from "@/data/experience";
 import ProjectsData from "@/data/projects";
+import { getDownloads } from "@/data/downloads";
 import { blogs } from "@/data/blogs";
 
 function ProjectCard({
@@ -77,7 +78,7 @@ function ProjectCard({
           >
             <path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" />
           </svg>
-          {project.downloads} downloads
+          {getDownloads(project)} downloads
         </button>
       )}
       <Link to={`/projects/${project.slug}`} className="project-card__arrow">

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import ProjectsData from "@/data/projects";
+import { getDownloads } from "@/data/downloads";
 
 const ArrowLeftIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -72,7 +73,7 @@ export default function ProjectDetail() {
               >
                 <path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" />
               </svg>
-              {project.downloads} downloads
+              {getDownloads(project)} downloads
             </a>
           )}
           {project.links.map((link) => (
