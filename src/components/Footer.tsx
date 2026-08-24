@@ -21,6 +21,14 @@ export default function Footer() {
         >
           LinkedIn
         </a>
+        <a
+          href="https://x.com/jshan9078"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="footer__link"
+        >
+          X
+        </a>
         <a href="mailto:jshan9078@gmail.com" className="footer__link">
           Email
         </a>

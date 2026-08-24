@@ -13,6 +13,12 @@ const LinkedInIcon = () => (
   </svg>
 );
 
+const XIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 1200 1227" fill="currentColor">
+    <path d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z" />
+  </svg>
+);
+
 const EmailIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <rect x="2" y="4" width="20" height="16" rx="2"/>
@@ -65,6 +71,14 @@ export default function Home() {
             style={{ color: 'var(--ink-secondary)' }}
           >
             <LinkedInIcon />
+          </a>
+          <a
+            href="https://x.com/jshan9078"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'var(--ink-secondary)' }}
+          >
+            <XIcon />
           </a>
           <a
             href="mailto:jshan9078@gmail.com"
