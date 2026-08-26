@@ -16,6 +16,39 @@ export interface Skill {
   color: string;
 }
 
+export interface BenchRow {
+  model: string;
+  harness: string;
+  browser: string;
+  value: number;
+  display: string;
+  time: string;
+  cost: string;
+  highlight?: boolean;
+}
+
+export interface WebBenchRow {
+  model: string;
+  thinking: string;
+  harness: string;
+  time: number; // seconds
+  tokens: number; // agent tokens
+  calls: number; // browser CLI calls
+  cost: number; // median USD per task
+  ram: number; // peak RSS, MB
+}
+
+export interface Benchmarks {
+  barTitle: string;
+  repoUrl: string;
+  buRows: BenchRow[];
+  barCaption: string[];
+  tableTitle: string;
+  tableDesc?: string;
+  webRows: WebBenchRow[];
+  tableCaption: string[];
+}
+
 export interface Project {
   slug: string;
   name: string;
@@ -33,6 +66,8 @@ export interface Project {
   installPip?: string;
   downloads?: string;
   downloadsUrl?: string;
+  benchmarks?: Benchmarks;
+  techMetrics?: { value: string; label: string; note: string }[];
 }
 
 export interface Experience extends Project {
