@@ -6,11 +6,11 @@ export type { Project } from "./types";
 
 const url = (file: string) => `/logos/${file}`;
 
-// Shared WebBench data — rendered on both the browser-automation-cli page and the WebBench project.
+// Shared WebBench data, rendered on both the browser-automation-cli page and the WebBench project.
 const WEBBENCH = {
   tableTitle: "WebBench",
   tableDesc:
-    "A collection of tasks built around real-world user interactions on live sites like Amazon and X, measuring how efficiently each configuration completes them. Each harness is given access only to browser-automation-cli and a [skill](https://github.com/jshan9078/browser-automation-cli/blob/main/SKILL.md) that explains how to use it. [See all tasks](https://github.com/jshan9078/web-bench#tasks).",
+    "A collection of tasks built around real-world user interactions on live sites like Amazon and X, measuring how efficiently each configuration completes them. Each harness is given access only to browser-automation-cli and a [skill](https://github.com/jshan9078/browser-automation-cli/blob/main/SKILL.md) that explains how to use it. [See all tasks](https://github.com/jshan9078/web-bench/tree/main/tasks).",
   webRows: [
     { model: "Sonnet 5", thinking: "low", harness: "Claude Code", time: 14, tokens: 361927, calls: 8, cost: 0.18, ram: 1875 },
     { model: "Opus 5", thinking: "low", harness: "Claude Code", time: 16, tokens: 276639, calls: 9, cost: 0.48, ram: 1887 },
@@ -96,9 +96,9 @@ const projects: Project[] = [
   {
     slug: "web-bench",
     color: "#a78bfa",
-    description: `WebBench is a benchmark for how efficiently an LLM drives a browser on real websites. Every configuration is given the same browser tool ([browser-automation-cli](https://github.com/jshan9078/browser-automation-cli)) and the same 7 tasks on live sites (Amazon, X, Hacker News, MLB, the National Weather Service, and a local canvas app), then measured on the *cost of success* — time, tokens, tool calls, and dollars per task. There is no accuracy axis: every configuration passes all 7 tasks, so the benchmark isolates efficiency.\n\n### Technical Details\n\n**Matrix**: 18 configurations — Claude (Opus 5, Sonnet 5, Haiku 4.5) across five thinking levels via Claude Code, plus Gemini 3.7 Flash across three levels via the Antigravity harness — each run over all 7 tasks at pass@1.\n\n**Pretraining-proof tasks**: read-only tasks target current real-world data that cannot be in any training set (the agent must navigate and read), while action tasks (add-to-cart) are verified from a screenshot of the resulting state. Every task is graded by an LLM judge (gemini-2.5-flash) from captured evidence.\n\n**Capture-first**: each run writes a durable raw bundle (full model trace, end-state evidence, screenshots, token usage, and a headless video) before any judging, so verdicts can be re-derived offline without ever re-running the models.\n\n**Cost accounting**: computed from measured token usage (input, output, and cache reads/writes) at each model's public pricing, held constant across the matrix so only the model and thinking level vary.`,
+    description: `WebBench is a benchmark for how efficiently an LLM drives a browser on real websites. Every configuration is given the same browser tool ([browser-automation-cli](https://github.com/jshan9078/browser-automation-cli)) and the same 7 tasks on live sites (Amazon, X, Hacker News, MLB, the National Weather Service, and a local canvas app), then measured on the *cost of success*, time, tokens, tool calls, and dollars per task. There is no accuracy axis: every configuration passes all 7 tasks, so the benchmark isolates efficiency.\n\n### Technical Details\n\n**Matrix**: 18 configurations, Claude (Opus 5, Sonnet 5, Haiku 4.5) across five thinking levels via Claude Code, plus Gemini 3.7 Flash across three levels via the Antigravity harness, each run over all 7 tasks at pass@1.\n\n**Pretraining-proof tasks**: read-only tasks target current real-world data that cannot be in any training set (the agent must navigate and read), while action tasks (add-to-cart) are verified from a screenshot of the resulting state. Every task is graded by an LLM judge (gemini-2.5-flash) from captured evidence.\n\n**Capture-first**: each run writes a durable raw bundle (full model trace, end-state evidence, screenshots, token usage, and a headless video) before any judging, so verdicts can be re-derived offline without ever re-running the models.\n\n**Cost accounting**: computed from measured token usage (input, output, and cache reads/writes) at each model's public pricing, held constant across the matrix so only the model and thinking level vary.`,
     shortDescription:
-      "A benchmark measuring how efficiently different LLMs drive a browser on real websites — time, tokens, calls, and cost per task at a constant pass rate.",
+      "A benchmark measuring how efficiently different LLMs drive a browser on real websites, time, tokens, calls, and cost per task at a constant pass rate.",
     links: [
       {
         to: "https://github.com/jshan9078/web-bench",
@@ -259,7 +259,7 @@ const projects: Project[] = [
   {
     slug: "rex-autonomous-robot",
     color: "#5e95e3",
-    description: `Rex is an autonomous pathfinding robot in the form of a dog that helps those with blindness navigate. It has a conversational agent built-in to allow for communication with the user that leverages a vector database. It listens to your request — whatever it may be — and interprets that to be a nearby location. For example, if you told it "I'm feeling hungry", it would lead you to the nearest food spot. Along the way, it will look out for obstacles in your path and avoid them if necessary. It focuses highly on accessibility.`,
+    description: `Rex is an autonomous pathfinding robot in the form of a dog that helps those with blindness navigate. It has a conversational agent built-in to allow for communication with the user that leverages a vector database. It listens to your request, whatever it may be, and interprets that to be a nearby location. For example, if you told it "I'm feeling hungry", it would lead you to the nearest food spot. Along the way, it will look out for obstacles in your path and avoid them if necessary. It focuses highly on accessibility.`,
     shortDescription:
       "Rex is an autonomous pathfinding robot that helps those with blindness navigate. It has a built-in conversational agent to allow for communication with the user.",
     links: [
