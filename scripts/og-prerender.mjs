@@ -6,12 +6,13 @@
 // Blog cards come from the curated list in og-pages.mjs. Project cards are
 // generated automatically from src/data/projects.ts so every project gets a
 // card without hand-maintaining a list; a curated og-pages.mjs entry for the
-// same route wins, and each project uses public/og/<slug>.png if present or
-// falls back to public/og/default.png.
+// same route wins. Each project also gets a generated card image (project name
+// as the main text) unless a hand-made public/og/<slug>.png already exists.
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { pages as curatedPages } from "./og-pages.mjs";
+import { renderProjectCard } from "./og-image.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = join(ROOT, "dist");
@@ -43,13 +44,25 @@ async function autoProjectPages() {
           `project missing slug/name: ${JSON.stringify(p.slug ?? p.name ?? p)}`,
         );
       }
-      const custom = `/og/${p.slug}.png`;
-      return {
+      const rel = `/og/${p.slug}.png`;
+      const base = {
         route: `projects/${p.slug}`,
         title: p.name,
         description: p.shortDescription ?? "",
-        image: existsSync(join(PUBLIC, custom)) ? custom : "/og/default.png",
       };
+      // A hand-made image (in public/, already copied into dist/og by the build)
+      // takes precedence; otherwise generate a card into dist/og. If generation
+      // fails, fall back to the default image so the card still works.
+      if (existsSync(join(PUBLIC, rel))) return { ...base, image: rel };
+      try {
+        renderProjectCard({ title: p.name, outFile: join(DIST, rel) });
+        return { ...base, image: rel };
+      } catch (err) {
+        console.warn(
+          `[og-prerender] image gen failed for ${p.slug} (${err.message}) — using default.png`,
+        );
+        return { ...base, image: "/og/default.png" };
+      }
     });
   } finally {
     await vite?.close();
