@@ -19,8 +19,10 @@ const PUBLIC = join(ROOT, "public");
 const SITE = "https://jshan9078.github.io";
 
 // Load the real project data through Vite so path aliases and asset imports
-// resolve exactly as they do in the app. Falls back to no auto pages if the
-// loader fails, so the build never breaks over social previews.
+// resolve exactly as they do in the app. This is how every project — including
+// ones added in the future — gets a card with no manual step. A failure here is
+// fatal: we would rather fail the build than silently deploy projects with no
+// social cards, which is exactly the regression this guards against.
 async function autoProjectPages() {
   let vite;
   try {
@@ -32,20 +34,23 @@ async function autoProjectPages() {
     });
     const mod = await vite.ssrLoadModule("/src/data/projects.ts");
     const projects = mod.default?.items ?? mod.default ?? [];
-    return projects
-      .filter((p) => p.slug && p.name)
-      .map((p) => {
-        const custom = `/og/${p.slug}.png`;
-        return {
-          route: `projects/${p.slug}`,
-          title: p.name,
-          description: p.shortDescription ?? "",
-          image: existsSync(join(PUBLIC, custom)) ? custom : "/og/default.png",
-        };
-      });
-  } catch (err) {
-    console.warn(`[og-prerender] project auto-gen skipped (${err.message})`);
-    return [];
+    if (!Array.isArray(projects) || projects.length === 0) {
+      throw new Error("no projects found in src/data/projects.ts");
+    }
+    return projects.map((p) => {
+      if (!p.slug || !p.name) {
+        throw new Error(
+          `project missing slug/name: ${JSON.stringify(p.slug ?? p.name ?? p)}`,
+        );
+      }
+      const custom = `/og/${p.slug}.png`;
+      return {
+        route: `projects/${p.slug}`,
+        title: p.name,
+        description: p.shortDescription ?? "",
+        image: existsSync(join(PUBLIC, custom)) ? custom : "/og/default.png",
+      };
+    });
   } finally {
     await vite?.close();
   }
