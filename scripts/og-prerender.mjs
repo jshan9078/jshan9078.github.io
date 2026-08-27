@@ -1,15 +1,62 @@
-// Post-build step: emit dist/<route>/index.html for each page in og-pages.mjs,
-// identical to the built SPA shell but with page-specific OpenGraph/Twitter meta.
-// GitHub Pages serves these files directly, so social crawlers get per-page cards
-// while browsers still boot the React app and route normally.
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+// Post-build step: emit dist/<route>/index.html for each page, identical to the
+// built SPA shell but with page-specific OpenGraph/Twitter meta. GitHub Pages
+// serves these files directly, so social crawlers get per-page cards while
+// browsers still boot the React app and route normally.
+//
+// Blog cards come from the curated list in og-pages.mjs. Project cards are
+// generated automatically from src/data/projects.ts so every project gets a
+// card without hand-maintaining a list; a curated og-pages.mjs entry for the
+// same route wins, and each project uses public/og/<slug>.png if present or
+// falls back to public/og/default.png.
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { pages } from "./og-pages.mjs";
+import { pages as curatedPages } from "./og-pages.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = join(ROOT, "dist");
+const PUBLIC = join(ROOT, "public");
 const SITE = "https://jshan9078.github.io";
+
+// Load the real project data through Vite so path aliases and asset imports
+// resolve exactly as they do in the app. Falls back to no auto pages if the
+// loader fails, so the build never breaks over social previews.
+async function autoProjectPages() {
+  let vite;
+  try {
+    const { createServer } = await import("vite");
+    vite = await createServer({
+      server: { middlewareMode: true },
+      appType: "custom",
+      logLevel: "error",
+    });
+    const mod = await vite.ssrLoadModule("/src/data/projects.ts");
+    const projects = mod.default?.items ?? mod.default ?? [];
+    return projects
+      .filter((p) => p.slug && p.name)
+      .map((p) => {
+        const custom = `/og/${p.slug}.png`;
+        return {
+          route: `projects/${p.slug}`,
+          title: p.name,
+          description: p.shortDescription ?? "",
+          image: existsSync(join(PUBLIC, custom)) ? custom : "/og/default.png",
+        };
+      });
+  } catch (err) {
+    console.warn(`[og-prerender] project auto-gen skipped (${err.message})`);
+    return [];
+  } finally {
+    await vite?.close();
+  }
+}
+
+// Curated entries win over auto-generated ones for the same route.
+const auto = await autoProjectPages();
+const byRoute = new Map();
+for (const p of auto) byRoute.set(p.route, p);
+for (const p of curatedPages) byRoute.set(p.route, p);
+const pages = [...byRoute.values()];
 const START = "<!-- og:start -->";
 const END = "<!-- og:end -->";
 
