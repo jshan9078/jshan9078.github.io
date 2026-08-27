@@ -58,7 +58,7 @@ const projects: Project[] = [
         "Browsers are opened in headful mode when the agent is blocked by captchas / bot checks for user to complete.",
       ],
       tableTitle: "WebBench",
-      tableDesc: "A collection of tasks built around real-world user interactions on live sites like Amazon and X, measuring how efficiently each configuration completes them. Each harness is given access only to browser-automation-cli and a [skill](https://github.com/jshan9078/browser-automation-cli/blob/main/SKILL.md) that explains how to use it. [See all tasks](https://github.com/jshan9078/browser-automation-cli/blob/main/scratch/webbench/README.md).",
+      tableDesc: "A collection of tasks built around real-world user interactions on live sites like Amazon and X, measuring how efficiently each configuration completes them. Each harness is given access only to browser-automation-cli and a [skill](https://github.com/jshan9078/browser-automation-cli/blob/main/SKILL.md) that explains how to use it. [See all tasks](https://github.com/jshan9078/browser-automation-cli/blob/main/benchmarks/webbench/README.md).",
       webRows: [
         { model: "Sonnet 5", thinking: "low", harness: "Claude Code", time: 14, tokens: 361927, calls: 8, cost: 0.18, ram: 1875 },
         { model: "Opus 5", thinking: "low", harness: "Claude Code", time: 16, tokens: 276639, calls: 9, cost: 0.48, ram: 1887 },
