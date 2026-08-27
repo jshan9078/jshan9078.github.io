@@ -39,14 +39,16 @@ export interface WebBenchRow {
 }
 
 export interface Benchmarks {
-  barTitle: string;
-  repoUrl: string;
-  buRows: BenchRow[];
-  barCaption: string[];
-  tableTitle: string;
+  // BU-bench (accuracy) section — optional so a project can render only the WebBench section
+  barTitle?: string;
+  repoUrl?: string;
+  buRows?: BenchRow[];
+  barCaption?: string[];
+  // WebBench (efficiency) section — optional so a project can render only the BU section
+  tableTitle?: string;
   tableDesc?: string;
-  webRows: WebBenchRow[];
-  tableCaption: string[];
+  webRows?: WebBenchRow[];
+  tableCaption?: string[];
 }
 
 export interface Project {

@@ -299,7 +299,7 @@ export default function ProjectDetail() {
     { key: "calls", label: "Calls", fmt: (v) => `${v}` },
     { key: "cost", label: "Cost / task", fmt: (v) => `$${v.toFixed(2)}` },
   ];
-  const sortedRows = project.benchmarks
+  const sortedRows = project.benchmarks?.webRows
     ? [...project.benchmarks.webRows].sort((a, b) => {
         const col = BENCH_COLS.find((c) => c.key === sortKey);
         let x: string | number = (a as unknown as Record<string, string | number>)[sortKey];
@@ -412,6 +412,8 @@ export default function ProjectDetail() {
 
       {project.benchmarks && (
         <div className="project-detail__bench">
+          {project.benchmarks.buRows && (
+          <>
           <h3 className="project-detail__section-title bench-bu-title">
             {project.benchmarks.barTitle}
             <a
@@ -456,11 +458,15 @@ export default function ProjectDetail() {
             </table>
           </div>
           <div className="bench-caption">
-            {project.benchmarks.barCaption.map((line, i) => (
+            {project.benchmarks.barCaption?.map((line, i) => (
               <span key={i} className="bench-caption__line">{line}</span>
             ))}
           </div>
+          </>
+          )}
 
+          {project.benchmarks.webRows && (
+          <>
           <h3 className="project-detail__section-title bench-table-title">
             {project.benchmarks.tableTitle}
           </h3>
@@ -520,10 +526,12 @@ export default function ProjectDetail() {
             </table>
           </div>
           <div className="bench-caption">
-            {project.benchmarks.tableCaption.map((line, i) => (
+            {project.benchmarks.tableCaption?.map((line, i) => (
               <span key={i} className="bench-caption__line">{line}</span>
             ))}
           </div>
+          </>
+          )}
         </div>
       )}
 
