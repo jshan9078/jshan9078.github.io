@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState, useRef } from "react";
 import type { MouseEvent as ReactMouseEvent } from "react";
 import { motion } from "framer-motion";
@@ -474,16 +474,21 @@ export default function ProjectDetail() {
             <div className="bench-desc">
               <ReactMarkdown
                 components={{
-                  a: ({ href, children }) => (
-                    <a
-                      className="bench-desc__link"
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {children}
-                    </a>
-                  ),
+                  a: ({ href, children }) =>
+                    href && href.startsWith("/") ? (
+                      <Link className="bench-desc__link" to={href}>
+                        {children}
+                      </Link>
+                    ) : (
+                      <a
+                        className="bench-desc__link"
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {children}
+                      </a>
+                    ),
                 }}
               >
                 {project.benchmarks.tableDesc}

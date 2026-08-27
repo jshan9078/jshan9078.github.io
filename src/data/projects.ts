@@ -10,7 +10,7 @@ const url = (file: string) => `/logos/${file}`;
 const WEBBENCH = {
   tableTitle: "WebBench",
   tableDesc:
-    "A collection of tasks built around real-world user interactions on live sites like Amazon and X, measuring how efficiently each configuration completes them. Each harness is given access only to browser-automation-cli and a [skill](https://github.com/jshan9078/browser-automation-cli/blob/main/SKILL.md) that explains how to use it. [See all tasks](https://github.com/jshan9078/web-bench/tree/main/tasks).",
+    "A collection of tasks built around real-world user interactions on live sites like Amazon and X, measuring how efficiently each configuration completes them. Each harness is given access only to [browser-automation-cli](/projects/browser-cli) and a [skill](https://github.com/jshan9078/browser-automation-cli/blob/main/SKILL.md) that explains how to use it. [See all tasks](https://github.com/jshan9078/web-bench/tree/main/tasks).",
   webRows: [
     { model: "Sonnet 5", thinking: "low", harness: "Claude Code", time: 14, tokens: 361927, calls: 8, cost: 0.18, ram: 1875 },
     { model: "Opus 5", thinking: "low", harness: "Claude Code", time: 16, tokens: 276639, calls: 9, cost: 0.48, ram: 1887 },
@@ -90,7 +90,6 @@ const projects: Project[] = [
         "Benchmark uses same 100 tasks and gemini-2.5-flash judge in accordance with Browser Use's repo.",
         "Browsers are opened in headful mode when the agent is blocked by captchas / bot checks for user to complete.",
       ],
-      ...WEBBENCH,
     },
   },
   {
