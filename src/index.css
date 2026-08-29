@@ -1751,6 +1751,24 @@ img {
   line-height: 1.8;
 }
 
+.blog-post__content a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--ink-tertiary);
+  transition: text-decoration-color var(--transition-fast);
+}
+
+.blog-post__content a:hover {
+  text-decoration-color: var(--ink);
+}
+
+.blog-post__content a.blog-post__gh-link svg {
+  display: inline-block;
+  vertical-align: -2px;
+  margin-left: 0.4em;
+}
+
 .blog-post__content h2 {
   font-family: var(--font-heading);
   font-size: var(--text-xl);
