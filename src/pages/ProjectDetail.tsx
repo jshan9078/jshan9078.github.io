@@ -136,9 +136,11 @@ function WebBenchCurves({ rows, metric }: { rows: WebBenchRow[]; metric: "time" 
               <text x={lx} y={ly} textAnchor={anchorSide} className="bench-curves__fam" fill={f.color}>
                 {f.model}
               </text>
-              <text x={lx} y={ly + 12} textAnchor={anchorSide} className="bench-curves__eff" fill={f.color}>
-                {anchor.thinking === "n/a" ? "EFFORT N/A" : anchor.thinking.toUpperCase()}
-              </text>
+              {anchor.thinking !== "n/a" && (
+                <text x={lx} y={ly + 12} textAnchor={anchorSide} className="bench-curves__eff" fill={f.color}>
+                  {anchor.thinking.toUpperCase()}
+                </text>
+              )}
             </g>
           );
         })}
