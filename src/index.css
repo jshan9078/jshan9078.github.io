@@ -2052,8 +2052,8 @@ img {
 .bench-curves__tick { fill: var(--ink-secondary); font-size: 11px; font-variant-numeric: tabular-nums; }
 .bench-curves__axis-title { fill: var(--ink-secondary); font-size: 12px; }
 .bench-curves__ideal-label { fill: var(--ink-tertiary); font-size: 11px; font-style: italic; }
-.bench-curves__eff { font-size: 8.5px; letter-spacing: 0.06em; opacity: 0.75; }
-.bench-curves__fam { font-size: 12px; font-weight: 600; }
+.bench-curves__eff { font-size: 8.5px; letter-spacing: 0.08em; opacity: 0.8; paint-order: stroke; stroke: var(--bg); stroke-width: 3px; }
+.bench-curves__fam { font-size: 12px; font-weight: 600; paint-order: stroke; stroke: var(--bg); stroke-width: 3.5px; }
 
 /* WebBench per-configuration cards */
 .bench-configs-title { margin-top: 3rem; }
