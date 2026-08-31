@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WebBench 3D</title>
+<style>
+  :root { color-scheme: dark; }
+  html, body { margin: 0; height: 100%; background: #0a0a0a; overflow: hidden; }
+  body { font-family: "Geist", -apple-system, "Helvetica Neue", Arial, sans-serif; color: #eaeaea; }
+  #app { position: fixed; inset: 0; }
+  .hud { position: fixed; z-index: 10; pointer-events: none; }
+  #title { top: 28px; left: 32px; }
+  #title h1 { margin: 0; font-size: 15px; letter-spacing: 0.18em; font-weight: 600; }
+  #title p { margin: 6px 0 0; font-size: 12px; color: #8a8a8a; max-width: 340px; line-height: 1.5; }
+  #legend { bottom: 28px; left: 32px; display: flex; flex-direction: column; gap: 7px; }
+  .leg { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #cfcfcf; }
+  .leg i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  #hint { bottom: 28px; right: 32px; font-size: 11px; color: #6f6f6f; text-align: right; line-height: 1.6; }
+  #tip {
+    position: fixed; z-index: 20; pointer-events: none; display: none;
+    background: rgba(16,16,16,0.92); border: 1px solid #2c2c2c; border-radius: 8px;
+    padding: 9px 12px; font-size: 12px; line-height: 1.55; backdrop-filter: blur(6px);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+  }
+  #tip b { font-size: 12.5px; }
+  #tip .dim { color: #9a9a9a; }
+  /* CSS2D labels */
+  .lbl { font-size: 11px; color: #7d7d7d; letter-spacing: 0.02em; white-space: nowrap; }
+  .lbl.axis { font-size: 12px; color: #b9b9b9; letter-spacing: 0.14em; font-weight: 600; }
+  .lbl.fam { font-size: 12px; font-weight: 600; text-shadow: 0 0 6px #0a0a0a, 0 0 3px #0a0a0a; }
+  .lbl.fam small { display: block; font-size: 8.5px; font-weight: 400; opacity: 0.75; letter-spacing: 0.08em; }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="app"></div>
+<div class="hud" id="title">
+  <h1>WEBBENCH &middot; 3D</h1>
+  <p>Accuracy vs avg cost vs avg time per task. 45 live-site tasks per configuration, pass@1. Better is up, left, and near.</p>
+</div>
+<div class="hud" id="legend"></div>
+<div class="hud" id="hint">drag to orbit &middot; scroll to zoom<br/>hover a point for details</div>
+<div id="tip"></div>
+
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
+
+const ROWS = [
+  { model: "Haiku 4.5", thinking: "n/a", score: 67.6, time: 67.0, cost: 0.264 },
+  { model: "Gemini 3.7 Flash", thinking: "low", score: 95.6, time: 49.7, cost: 0.200 },
+  { model: "Gemini 3.7 Flash", thinking: "medium", score: 100.0, time: 71.4, cost: 0.331 },
+  { model: "Gemini 3.7 Flash", thinking: "high", score: 97.8, time: 54.3, cost: 0.255 },
+  { model: "Sonnet 5", thinking: "low", score: 95.6, time: 49.2, cost: 0.572 },
+  { model: "Sonnet 5", thinking: "medium", score: 91.1, time: 53.0, cost: 0.578 },
+  { model: "Sonnet 5", thinking: "high", score: 91.1, time: 64.3, cost: 0.699 },
+  { model: "Sonnet 5", thinking: "xhigh", score: 95.6, time: 67.0, cost: 0.717 },
+  { model: "Sonnet 5", thinking: "max", score: 91.1, time: 109.9, cost: 0.894 },
+  { model: "Opus 5", thinking: "low", score: 97.8, time: 62.0, cost: 0.611 },
+  { model: "Opus 5", thinking: "medium", score: 97.8, time: 80.3, cost: 0.711 },
+  { model: "Opus 5", thinking: "high", score: 95.6, time: 86.4, cost: 0.818 },
+  { model: "Opus 5", thinking: "xhigh", score: 93.3, time: 106.0, cost: 0.968 },
+  { model: "Opus 5", thinking: "max", score: 95.6, time: 122.7, cost: 1.055 },
+];
+const FAMS = [
+  { model: "Opus 5", color: 0xe0895a },
+  { model: "Sonnet 5", color: 0x8ab4e8 },
+  { model: "Haiku 4.5", color: 0xc9a0e8 },
+  { model: "Gemini 3.7 Flash", color: 0x7ec9a3 },
+];
+const THINK = ["low", "medium", "high", "xhigh", "max", "n/a"];
+
+// ---- scales: cost -> X, score -> Y, time -> Z --------------------------------
+const SX = 10, SY = 6.5, SZ = 10;             // box size in world units
+const COST = { min: 0, max: 1.2 };
+const SCORE = { min: 60, max: 100 };
+const TIME = { min: 0, max: 130 };
+const x = (c) => ((c - COST.min) / (COST.max - COST.min)) * SX;
+const y = (s) => ((s - SCORE.min) / (SCORE.max - SCORE.min)) * SY;
+const z = (t) => ((t - TIME.min) / (TIME.max - TIME.min)) * SZ;
+
+// ---- renderer / scene --------------------------------------------------------
+const app = document.getElementById("app");
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+app.appendChild(renderer.domElement);
+
+const labelRenderer = new CSS2DRenderer();
+labelRenderer.setSize(innerWidth, innerHeight);
+labelRenderer.domElement.style.position = "fixed";
+labelRenderer.domElement.style.inset = "0";
+labelRenderer.domElement.style.pointerEvents = "none";
+document.body.appendChild(labelRenderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0a0a);
+
+const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.1, 200);
+// pull back further on narrow/portrait windows so ticks and labels stay inside the frame
+const fit = Math.min(1.7, Math.max(1, 1.25 / (innerWidth / innerHeight)));
+camera.position.set(SX * 1.85 * fit, SY * 1.55 * fit, SZ * 1.95 * fit);
+scene.fog = new THREE.Fog(0x0a0a0a, 26 * fit, 46 * fit);
+
+const center = new THREE.Vector3(SX / 2, SY / 2, SZ / 2);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.copy(center);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.minDistance = 8;
+controls.maxDistance = 42;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.6;
+renderer.domElement.addEventListener("pointerdown", () => (controls.autoRotate = false), { once: true });
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.9));
+const key = new THREE.DirectionalLight(0xffffff, 1.4);
+key.position.set(14, 22, 10);
+scene.add(key);
+const rim = new THREE.DirectionalLight(0x8ab4e8, 0.35);
+rim.position.set(-10, 6, -12);
+scene.add(rim);
+
+// ---- axes, grids, ticks ------------------------------------------------------
+const thinLine = (a, b, color, opacity) => {
+  const g = new THREE.BufferGeometry().setFromPoints([a, b]);
+  const m = new THREE.LineBasicMaterial({ color, transparent: true, opacity });
+  return new THREE.Line(g, m);
+};
+const label = (text, pos, cls = "lbl") => {
+  const el = document.createElement("div");
+  el.className = cls;
+  el.innerHTML = text;
+  const o = new CSS2DObject(el);
+  o.position.copy(pos);
+  scene.add(o);
+  return o;
+};
+
+const GRID = 0x1f1f1f, EDGE = 0x3a3a3a;
+// floor grid (cost x time), at y=0
+for (let c = 0; c <= 1.2001; c += 0.3)
+  scene.add(thinLine(new THREE.Vector3(x(c), 0, 0), new THREE.Vector3(x(c), 0, SZ), GRID, 0.8));
+for (let t = 0; t <= 130.001; t += 26)
+  scene.add(thinLine(new THREE.Vector3(0, 0, z(t)), new THREE.Vector3(SX, 0, z(t)), GRID, 0.8));
+// back wall (cost x score), at z=0
+for (let c = 0; c <= 1.2001; c += 0.3)
+  scene.add(thinLine(new THREE.Vector3(x(c), 0, 0), new THREE.Vector3(x(c), SY, 0), GRID, 0.5));
+for (let s = 60; s <= 100.001; s += 10)
+  scene.add(thinLine(new THREE.Vector3(0, y(s), 0), new THREE.Vector3(SX, y(s), 0), GRID, 0.5));
+// side wall (time x score), at x=0
+for (let t = 0; t <= 130.001; t += 26)
+  scene.add(thinLine(new THREE.Vector3(0, 0, z(t)), new THREE.Vector3(0, SY, z(t)), GRID, 0.5));
+for (let s = 60; s <= 100.001; s += 10)
+  scene.add(thinLine(new THREE.Vector3(0, y(s), 0), new THREE.Vector3(0, y(s), SZ), GRID, 0.5));
+// emphasized box edges along the three axes
+scene.add(thinLine(new THREE.Vector3(0, 0, 0), new THREE.Vector3(SX, 0, 0), EDGE, 1));
+scene.add(thinLine(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, SY, 0), EDGE, 1));
+scene.add(thinLine(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, SZ), EDGE, 1));
+
+// tick labels
+for (let c = 0; c <= 1.2001; c += 0.3)
+  label(`$${c.toFixed(2)}`, new THREE.Vector3(x(c), -0.32, SZ + 0.45));
+for (let t = 0; t <= 130.001; t += 26)
+  label(`${Math.round(t)}s`, new THREE.Vector3(SX + 0.55, -0.32, z(t)));
+for (let s = 60; s <= 100.001; s += 10)
+  label(`${s}%`, new THREE.Vector3(-0.55, y(s), SZ + 0.4));
+// axis titles
+label("AVG COST / TASK", new THREE.Vector3(SX / 2, -1.15, SZ + 1.15), "lbl axis");
+label("AVG TIME / TASK", new THREE.Vector3(SX + 1.7, -1.15, SZ / 2), "lbl axis");
+label("ACCURACY", new THREE.Vector3(-1.5, SY + 0.55, SZ + 0.2), "lbl axis");
+
+// ---- points, stems, family curves --------------------------------------------
+const tip = document.getElementById("tip");
+const pickables = [];
+const sphereGeo = new THREE.SphereGeometry(0.14, 32, 24);
+
+for (const fam of FAMS) {
+  const rows = ROWS.filter((r) => r.model === fam.model)
+    .sort((a, b) => THINK.indexOf(a.thinking) - THINK.indexOf(b.thinking));
+  const color = new THREE.Color(fam.color);
+
+  const pts = rows.map((r) => new THREE.Vector3(x(r.cost), y(r.score), z(r.time)));
+
+  // connect thinking levels with a smooth tube
+  if (pts.length > 1) {
+    const curve = new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.15);
+    const tube = new THREE.Mesh(
+      new THREE.TubeGeometry(curve, 64, 0.022, 8, false),
+      new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.55 })
+    );
+    scene.add(tube);
+  }
+
+  rows.forEach((r, i) => {
+    const p = pts[i];
+    const mat = new THREE.MeshStandardMaterial({
+      color, roughness: 0.55, metalness: 0.05,
+      emissive: color, emissiveIntensity: 0.08,
+    });
+    const s = new THREE.Mesh(sphereGeo, mat);
+    s.position.copy(p);
+    s.userData = r;
+    scene.add(s);
+    pickables.push(s);
+
+    // drop stem to the floor for depth reading
+    scene.add(thinLine(p, new THREE.Vector3(p.x, 0, p.z), fam.color, 0.22));
+    const foot = new THREE.Mesh(
+      new THREE.CircleGeometry(0.055, 20),
+      new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.4 })
+    );
+    foot.rotation.x = -Math.PI / 2;
+    foot.position.set(p.x, 0.012, p.z);
+    scene.add(foot);
+  });
+
+  // one label per family at its last (highest-thinking) point
+  const last = rows[rows.length - 1];
+  const lp = pts[pts.length - 1].clone().add(new THREE.Vector3(0, 0.42, 0));
+  const hex = "#" + color.getHexString();
+  const tag = last.thinking === "n/a" ? "" : `<small>${last.thinking.toUpperCase()}</small>`;
+  const el = label(`${fam.model}${tag}`, lp, "lbl fam");
+  el.element.style.color = hex;
+}
+
+// ---- optimal region: score >= 95, cost <= $0.35, time <= 60 s ---------------
+{
+  const OPT = { score: 95, cost: 0.35, time: 60 };
+  const w = x(OPT.cost), h = SY - y(OPT.score), d = z(OPT.time);
+  const box = new THREE.Mesh(
+    new THREE.BoxGeometry(w, h, d),
+    new THREE.MeshBasicMaterial({
+      color: 0xf0c948, transparent: true, opacity: 0.05,
+      depthWrite: false, side: THREE.DoubleSide,
+    })
+  );
+  box.position.set(w / 2, y(OPT.score) + h / 2, d / 2);
+  scene.add(box);
+  const edges = new THREE.LineSegments(
+    new THREE.EdgesGeometry(new THREE.BoxGeometry(w, h, d)),
+    new THREE.LineBasicMaterial({ color: 0xf0c948, transparent: true, opacity: 0.6 })
+  );
+  edges.position.copy(box.position);
+  scene.add(edges);
+  const opt = label(
+    'OPTIMAL<br/><small style="font-weight:400;letter-spacing:0.04em">&ge;95% &middot; &le;$0.35 &middot; &le;60s</small>',
+    new THREE.Vector3(w / 2, SY + 0.55, d / 2), "lbl fam"
+  );
+  opt.element.style.color = "#f0c948";
+}
+
+// ---- legend --------------------------------------------------------------
+const legend = document.getElementById("legend");
+for (const fam of FAMS) {
+  const d = document.createElement("div");
+  d.className = "leg";
+  const hex = "#" + new THREE.Color(fam.color).getHexString();
+  const extra = fam.model === "Haiku 4.5" ? ' <span style="color:#7a7a7a">(effort n/a, 5-run avg)</span>' : "";
+  d.innerHTML = `<i style="background:${hex}"></i>${fam.model}${extra}`;
+  legend.appendChild(d);
+}
+
+// ---- hover tooltip -------------------------------------------------------
+const ray = new THREE.Raycaster();
+ray.params.Points = { threshold: 0.2 };
+const mouse = new THREE.Vector2();
+let hovered = null;
+
+addEventListener("pointermove", (e) => {
+  mouse.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+  ray.setFromCamera(mouse, camera);
+  const hit = ray.intersectObjects(pickables, false)[0];
+  if (hovered && (!hit || hit.object !== hovered)) {
+    hovered.scale.setScalar(1);
+    hovered = null;
+    tip.style.display = "none";
+    document.body.style.cursor = "";
+  }
+  if (hit && hit.object !== hovered) {
+    hovered = hit.object;
+    hovered.scale.setScalar(1.5);
+    const r = hovered.userData;
+    const think = r.thinking === "n/a" ? "effort not supported (5-run avg)" : `${r.thinking} thinking`;
+    tip.innerHTML = `<b>${r.model}</b> <span class="dim">${think}</span><br/>` +
+      `score <b>${r.score.toFixed(1)}%</b><br/>` +
+      `<span class="dim">$${r.cost.toFixed(3)} &middot; ${r.time.toFixed(0)}s per task</span>`;
+    tip.style.display = "block";
+    document.body.style.cursor = "pointer";
+  }
+  if (hovered) {
+    tip.style.left = Math.min(e.clientX + 14, innerWidth - 190) + "px";
+    tip.style.top = e.clientY + 14 + "px";
+  }
+});
+
+// ---- loop / resize -------------------------------------------------------
+addEventListener("resize", () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+  labelRenderer.setSize(innerWidth, innerHeight);
+});
+
+renderer.setAnimationLoop(() => {
+  controls.update();
+  renderer.render(scene, camera);
+  labelRenderer.render(scene, camera);
+});
+</script>
+</body>
+</html>
