@@ -25,102 +25,38 @@ const GitHubIcon = () => (
   </svg>
 );
 
-type MarkerShape = "circle" | "square" | "triangle" | "diamond";
-
-const WB_MODELS: { model: string; shape: MarkerShape }[] = [
-  { model: "Opus 5", shape: "circle" },
-  { model: "Sonnet 5", shape: "square" },
-  { model: "Haiku 4.5", shape: "triangle" },
-  { model: "Gemini 3.7 Flash", shape: "diamond" },
+const WB_FAMILIES: { model: string; color: string }[] = [
+  { model: "Opus 5", color: "#e0895a" },
+  { model: "Sonnet 5", color: "#8ab4e8" },
+  { model: "Haiku 4.5", color: "#c9a0e8" },
+  { model: "Gemini 3.7 Flash", color: "#7ec9a3" },
 ];
-
-// Shape encodes model; opacity encodes thinking level (more thinking = more intense).
 const THINK_ORDER = ["low", "medium", "high", "xhigh", "max"];
-const THINK_OPACITY: Record<string, number> = {
-  low: 0.32,
-  medium: 0.5,
-  high: 0.68,
-  xhigh: 0.84,
-  max: 1,
-};
+const famColor = (m: string) => WB_FAMILIES.find((f) => f.model === m)?.color ?? "#ffffff";
 
-type MarkerHandlers = {
-  onMouseEnter?: (e: ReactMouseEvent) => void;
-  onMouseMove?: (e: ReactMouseEvent) => void;
-  onMouseLeave?: (e: ReactMouseEvent) => void;
-};
-
-const Marker = ({
-  shape,
-  x,
-  y,
-  fill = "#ffffff",
-  opacity = 1,
-  r = 5.5,
-  interactive,
-  handlers,
-}: {
-  shape: MarkerShape;
-  x: number;
-  y: number;
-  fill?: string;
-  opacity?: number;
-  r?: number;
-  interactive?: boolean;
-  handlers?: MarkerHandlers;
-}) => {
-  const common = {
-    fill,
-    fillOpacity: opacity,
-    stroke: "var(--bg)",
-    strokeWidth: 1.5,
-    style: interactive ? { cursor: "pointer" } : undefined,
-    ...handlers,
-  };
-  if (shape === "square") {
-    const s = r * 1.8;
-    return <rect x={x - s / 2} y={y - s / 2} width={s} height={s} {...common} />;
-  }
-  if (shape === "triangle") {
-    const s = r * 1.5;
-    return <polygon points={`${x},${y - s} ${x - s},${y + s * 0.85} ${x + s},${y + s * 0.85}`} {...common} />;
-  }
-  if (shape === "diamond") {
-    const s = r * 1.45;
-    return <polygon points={`${x},${y - s} ${x + s},${y} ${x},${y + s} ${x - s},${y}`} {...common} />;
-  }
-  return <circle cx={x} cy={y} r={r} {...common} />;
-};
-
-const median = (arr: number[]) => {
-  const s = [...arr].sort((a, b) => a - b);
-  const m = Math.floor(s.length / 2);
-  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
-};
-
-function WebBenchScatter({ rows }: { rows: WebBenchRow[] }) {
+// DeepSWE-style efficiency curves: y = score, x = avg time or avg cost per task.
+// One connected line per model family across its thinking levels; most efficient is top-left.
+function WebBenchCurves({ rows, metric }: { rows: WebBenchRow[]; metric: "time" | "cost" }) {
   const W = 680;
-  const H = 440;
-  const ml = 64;
-  const mr = 20;
-  const mt = 20;
-  const mb = 56;
+  const H = 430;
+  const ml = 56;
+  const mr = 24;
+  const mt = 30;
+  const mb = 52;
   const plotW = W - ml - mr;
   const plotH = H - mt - mb;
   const bottom = mt + plotH;
-
-  const times = rows.map((r) => r.time);
-  const costs = rows.map((r) => r.cost);
-  const xMax = Math.ceil(Math.max(...times) / 30) * 30;
-  const yMax = Math.ceil(Math.max(...costs) / 0.3) * 0.3;
-  const sx = (t: number) => ml + (t / xMax) * plotW;
-  const sy = (c: number) => mt + (1 - c / yMax) * plotH;
-  const medT = median(times);
-  const medC = median(costs);
-
-  const xTicks = Array.from({ length: xMax / 30 + 1 }, (_, i) => i * 30);
-  const yTicks = Array.from({ length: Math.round(yMax / 0.3) + 1 }, (_, i) => +(i * 0.3).toFixed(2));
-  const shapeFor = (m: string) => WB_MODELS.find((x) => x.model === m) ?? WB_MODELS[0];
+  const xs = rows.map((r) => r[metric]);
+  const xMax = metric === "time" ? Math.ceil(Math.max(...xs) / 30) * 30 : Math.ceil(Math.max(...xs) / 0.3) * 0.3;
+  const yMin = 55;
+  const sx = (v: number) => ml + (v / xMax) * plotW;
+  const sy = (v: number) => mt + (1 - (v - yMin) / (100 - yMin)) * plotH;
+  const xTicks =
+    metric === "time"
+      ? Array.from({ length: xMax / 30 + 1 }, (_, i) => i * 30)
+      : Array.from({ length: Math.round(xMax / 0.3) + 1 }, (_, i) => +(i * 0.3).toFixed(2));
+  const yTicks = [60, 70, 80, 90, 100];
+  const fmtX = (v: number) => (metric === "time" ? `${v}s` : `$${v.toFixed(2)}`);
 
   const wrapRef = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState<{ row: WebBenchRow; left: number; top: number } | null>(null);
@@ -131,59 +67,78 @@ function WebBenchScatter({ rows }: { rows: WebBenchRow[] }) {
   };
 
   return (
-    <div className="bench-scatter" ref={wrapRef}>
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="WebBench cost versus time per configuration">
-        {/* ideal quadrant: low time, low cost (bottom-left) */}
-        <rect x={ml} y={sy(medC)} width={sx(medT) - ml} height={bottom - sy(medC)} className="bench-scatter__ideal" />
-        <text x={ml + 8} y={bottom - 8} className="bench-scatter__ideal-label">
-          ideal · low time, low cost
-        </text>
-
-        {/* quadrant medians */}
-        <line x1={sx(medT)} y1={mt} x2={sx(medT)} y2={bottom} className="bench-scatter__div" />
-        <line x1={ml} y1={sy(medC)} x2={ml + plotW} y2={sy(medC)} className="bench-scatter__div" />
-
-        {/* axes */}
-        <line x1={ml} y1={bottom} x2={ml + plotW} y2={bottom} className="bench-scatter__axis" />
-        <line x1={ml} y1={mt} x2={ml} y2={bottom} className="bench-scatter__axis" />
-
-        {/* ticks */}
-        {xTicks.map((t) => (
-          <text key={`x${t}`} x={sx(t)} y={bottom + 18} textAnchor="middle" className="bench-scatter__tick">
-            {t}
+    <div className="bench-curves" ref={wrapRef}>
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        role="img"
+        aria-label={`WebBench score versus average ${metric} per task`}
+      >
+        {yTicks.map((v) => (
+          <line key={`gy${v}`} x1={ml} y1={sy(v)} x2={ml + plotW} y2={sy(v)} className="bench-curves__grid" />
+        ))}
+        <line x1={ml} y1={bottom} x2={ml + plotW} y2={bottom} className="bench-curves__axis" />
+        {xTicks.map((v) => (
+          <text key={`x${v}`} x={sx(v)} y={bottom + 18} textAnchor="middle" className="bench-curves__tick">
+            {fmtX(v)}
           </text>
         ))}
-        {yTicks.map((c) => (
-          <text key={`y${c}`} x={ml - 10} y={sy(c) + 4} textAnchor="end" className="bench-scatter__tick">
-            ${c.toFixed(2)}
+        {yTicks.map((v) => (
+          <text key={`y${v}`} x={ml - 10} y={sy(v) + 4} textAnchor="end" className="bench-curves__tick">
+            {v}%
           </text>
         ))}
-
-        {/* axis titles */}
-        <text x={ml + plotW / 2} y={H - 8} textAnchor="middle" className="bench-scatter__axis-title">
-          Time / task (s)
+        <text x={ml + plotW / 2} y={H - 6} textAnchor="middle" className="bench-curves__axis-title">
+          {metric === "time" ? "Avg time per task" : "Avg cost per task"}
         </text>
-        <text
-          transform={`translate(16 ${mt + plotH / 2}) rotate(-90)`}
-          textAnchor="middle"
-          className="bench-scatter__axis-title"
-        >
-          Cost / task ($)
+        <text x={ml + 8} y={mt + 4} className="bench-curves__ideal-label">
+          most efficient
         </text>
-
-        {/* points: shape = model, opacity = thinking level */}
-        {rows.map((r, i) => {
-          const s = shapeFor(r.model);
+        {WB_FAMILIES.map((f, fi) => {
+          const effDy = fi % 2 ? -12 : 16;
+          const pts = rows
+            .filter((r) => r.model === f.model)
+            .sort((a, b) => THINK_ORDER.indexOf(a.thinking) - THINK_ORDER.indexOf(b.thinking));
+          if (!pts.length) return null;
+          const path = pts.map((r, i) => `${i ? "L" : "M"}${sx(r[metric])},${sy(r.score)}`).join(" ");
+          const anchor = pts[pts.length - 1];
           return (
-            <Marker
-              key={i}
-              shape={s.shape}
-              opacity={THINK_OPACITY[r.thinking] ?? 1}
-              x={sx(r.time)}
-              y={sy(r.cost)}
-              interactive
-              handlers={{ onMouseEnter: at(r), onMouseMove: at(r), onMouseLeave: () => setHover(null) }}
-            />
+            <g key={f.model}>
+              <path d={path} fill="none" stroke={f.color} strokeWidth={1.75} strokeOpacity={0.75} />
+              {pts.map((r) => (
+                <g key={r.thinking}>
+                  <circle
+                    cx={sx(r[metric])}
+                    cy={sy(r.score)}
+                    r={5}
+                    fill={f.color}
+                    stroke="var(--bg)"
+                    strokeWidth={1.5}
+                    style={{ cursor: "pointer" }}
+                    onMouseEnter={at(r)}
+                    onMouseMove={at(r)}
+                    onMouseLeave={() => setHover(null)}
+                  />
+                  <text
+                    x={sx(r[metric])}
+                    y={sy(r.score) + effDy}
+                    textAnchor="middle"
+                    className="bench-curves__eff"
+                    fill={f.color}
+                  >
+                    {r.thinking.toUpperCase()}
+                  </text>
+                </g>
+              ))}
+              <text
+                x={Math.min(sx(anchor[metric]) + 10, ml + plotW - 4)}
+                y={sy(anchor.score) + (fi % 2 ? 22 : -12)}
+                className="bench-curves__fam"
+                fill={f.color}
+                textAnchor={sx(anchor[metric]) > ml + plotW - 120 ? "end" : "start"}
+              >
+                {f.model}
+              </text>
+            </g>
           );
         })}
       </svg>
@@ -200,45 +155,50 @@ function WebBenchScatter({ rows }: { rows: WebBenchRow[] }) {
           <span className="bench-scatter__tip-row">{hover.row.thinking} thinking</span>
           <span className="bench-scatter__tip-row">{hover.row.harness}</span>
           <span className="bench-scatter__tip-meta">
-            {hover.row.time}s · ${hover.row.cost.toFixed(2)}
+            {hover.row.score}% · {hover.row.time}s · ${hover.row.cost.toFixed(2)}
           </span>
         </div>
       )}
-      <div className="bench-scatter__legend">
-        <div className="bench-legend-group">
-          {WB_MODELS.map((m) => (
-            <span key={m.model} className="bench-legend-item">
-              <svg viewBox="0 0 16 16" aria-hidden="true">
-                <Marker shape={m.shape} x={8} y={8} r={5} />
-              </svg>
-              {m.model}
-            </span>
-          ))}
-        </div>
-        <div className="bench-legend-group">
-          <span className="bench-legend-cap">Thinking</span>
-          <span className="bench-legend-item">low</span>
-          <span className="bench-legend-ramp">
-            {THINK_ORDER.map((t) => (
-              <svg key={t} viewBox="0 0 16 16" aria-hidden="true">
-                <Marker shape="circle" opacity={THINK_OPACITY[t]} x={8} y={8} r={5} />
-              </svg>
-            ))}
-          </span>
-          <span className="bench-legend-item">max</span>
-        </div>
-      </div>
     </div>
   );
 }
 
-export default function ProjectDetail() {
+// DeepSWE-style per-configuration cards: score bar plus average cost, output tokens, steps, time.
+function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
+  const sorted = [...rows].sort((a, b) => b.score - a.score || a.cost - b.cost);
+  return (
+    <div className="bench-configs">
+      {sorted.map((r) => (
+        <div key={`${r.model}-${r.thinking}`} className="bench-config">
+          <div className="bench-config__head">
+            <span className="bench-config__name">
+              {r.model} <span className="bench-config__eff">[{r.thinking}]</span>
+            </span>
+            <span className="bench-config__score">{r.score}%</span>
+          </div>
+          <div className="bench-config__bar">
+            <span
+              className="bench-config__fill"
+              style={{ width: `${r.score}%`, background: famColor(r.model) }}
+            />
+          </div>
+          <div className="bench-config__meta">
+            <span>Avg cost <b>${r.cost.toFixed(2)}</b></span>
+            <span>Out tok <b>{(r.outTok / 1000).toFixed(1)}k</b></span>
+            <span>Steps <b>{Math.round(r.steps)}</b></span>
+            <span>Time <b>{Math.round(r.time)}s</b></span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ProjectDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const project = ProjectsData.items.find((p) => p.slug === slug);
   const [copiedCmd, setCopiedCmd] = useState<string | null>(null);
-  const [sortKey, setSortKey] = useState<string>("time");
-  const [sortDir, setSortDir] = useState<number>(1);
 
   const renderInstall = (cmd: string) => (
     <div className="project-detail__install" key={cmd}>
@@ -283,42 +243,6 @@ export default function ProjectDetail() {
   const techNl = techMd.indexOf("\n");
   const techHeading = techNl >= 0 ? techMd.slice(0, techNl) : techMd;
   const techBody = techNl >= 0 ? techMd.slice(techNl).trim() : "";
-
-  const THINK_RANK: Record<string, number> = { low: 0, medium: 1, high: 2, xhigh: 3, max: 4 };
-  const BENCH_COLS: {
-    key: string;
-    label: string;
-    rank?: boolean;
-    fmt?: (v: number) => string;
-  }[] = [
-    { key: "model", label: "Model" },
-    { key: "thinking", label: "Thinking", rank: true },
-    { key: "harness", label: "Harness" },
-    { key: "time", label: "Time", fmt: (v) => `${v}s` },
-    { key: "tokens", label: "Tokens", fmt: (v) => `${Math.round(v / 1000)}k` },
-    { key: "calls", label: "Calls", fmt: (v) => `${v}` },
-    { key: "cost", label: "Cost / task", fmt: (v) => `$${v.toFixed(2)}` },
-  ];
-  const sortedRows = project.benchmarks?.webRows
-    ? [...project.benchmarks.webRows].sort((a, b) => {
-        const col = BENCH_COLS.find((c) => c.key === sortKey);
-        let x: string | number = (a as unknown as Record<string, string | number>)[sortKey];
-        let y: string | number = (b as unknown as Record<string, string | number>)[sortKey];
-        if (col?.rank) {
-          x = THINK_RANK[a.thinking];
-          y = THINK_RANK[b.thinking];
-        }
-        if (typeof x === "number" && typeof y === "number") return sortDir * (x - y);
-        return sortDir * String(x).localeCompare(String(y));
-      })
-    : [];
-  const sortBy = (key: string) => {
-    if (key === sortKey) setSortDir((d) => -d);
-    else {
-      setSortKey(key);
-      setSortDir(1);
-    }
-  };
 
   return (
     <motion.div
@@ -490,41 +414,10 @@ export default function ProjectDetail() {
               </ReactMarkdown>
             </div>
           )}
-          <WebBenchScatter rows={project.benchmarks.webRows} />
-          <div className="bench-table-wrap">
-            <table className="bench-table">
-              <thead>
-                <tr>
-                  {BENCH_COLS.map((c) => (
-                    <th
-                      key={c.key}
-                      className={`bench-th${sortKey === c.key ? " bench-th--on" : ""}`}
-                      onClick={() => sortBy(c.key)}
-                    >
-                      {c.label}
-                      <span className="bench-th__arr">
-                        {sortKey === c.key ? (sortDir > 0 ? " ↑" : " ↓") : ""}
-                      </span>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {sortedRows.map((row, i) => (
-                  <tr key={i}>
-                    {BENCH_COLS.map((c) => {
-                      const raw = (row as unknown as Record<string, string | number>)[c.key];
-                      return (
-                        <td key={c.key}>
-                          {c.fmt ? c.fmt(raw as number) : raw}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <WebBenchCurves rows={project.benchmarks.webRows} metric="time" />
+          <WebBenchCurves rows={project.benchmarks.webRows} metric="cost" />
+          <h3 className="project-detail__section-title bench-configs-title">Configurations</h3>
+          <WebBenchConfigs rows={project.benchmarks.webRows} />
           <div className="bench-caption">
             {project.benchmarks.tableCaption?.map((line, i) => (
               <span key={i} className="bench-caption__line">{line}</span>
@@ -583,3 +476,5 @@ export default function ProjectDetail() {
     </motion.div>
   );
 }
+
+export default ProjectDetail;

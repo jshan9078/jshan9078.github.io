@@ -31,11 +31,11 @@ export interface WebBenchRow {
   model: string;
   thinking: string;
   harness: string;
-  time: number; // seconds
-  tokens: number; // agent tokens
-  calls: number; // browser CLI calls
-  cost: number; // median USD per task
-  ram: number; // peak RSS, MB
+  score: number; // % of the 45 tasks passed (pass@1)
+  time: number; // average seconds per task
+  cost: number; // average USD per task
+  outTok: number; // average output tokens per task
+  steps: number; // average browser CLI calls per task
 }
 
 export interface Benchmarks {
