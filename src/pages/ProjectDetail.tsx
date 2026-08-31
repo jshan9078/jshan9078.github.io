@@ -49,7 +49,8 @@ function WebBenchCurves({ rows, metric }: { rows: WebBenchRow[]; metric: "time" 
   const xs = rows.map((r) => r[metric]);
   const xMax = metric === "time" ? Math.ceil(Math.max(...xs) / 30) * 30 : Math.ceil(Math.max(...xs) / 0.3) * 0.3;
   const yMin = 55;
-  const sx = (v: number) => ml + (v / xMax) * plotW;
+  // DeepSWE-style reversed x-axis: smaller (better) values on the right, so most efficient is top-right.
+  const sx = (v: number) => ml + (1 - v / xMax) * plotW;
   const sy = (v: number) => mt + (1 - (v - yMin) / (100 - yMin)) * plotH;
   const xTicks =
     metric === "time"
@@ -90,7 +91,7 @@ function WebBenchCurves({ rows, metric }: { rows: WebBenchRow[]; metric: "time" 
         <text x={ml + plotW / 2} y={H - 6} textAnchor="middle" className="bench-curves__axis-title">
           {metric === "time" ? "Avg time per task" : "Avg cost per task"}
         </text>
-        <text x={ml + 8} y={mt + 4} className="bench-curves__ideal-label">
+        <text x={ml + plotW - 8} y={mt + 4} textAnchor="end" className="bench-curves__ideal-label">
           most efficient
         </text>
         {WB_FAMILIES.map((f, fi) => {
@@ -130,11 +131,11 @@ function WebBenchCurves({ rows, metric }: { rows: WebBenchRow[]; metric: "time" 
                 </g>
               ))}
               <text
-                x={Math.min(sx(anchor[metric]) + 10, ml + plotW - 4)}
+                x={Math.max(Math.min(sx(anchor[metric]) + 10, ml + plotW - 4), ml + 4)}
                 y={sy(anchor.score) + (fi % 2 ? 22 : -12)}
                 className="bench-curves__fam"
                 fill={f.color}
-                textAnchor={sx(anchor[metric]) > ml + plotW - 120 ? "end" : "start"}
+                textAnchor={sx(anchor[metric]) > ml + plotW - 130 ? "end" : "start"}
               >
                 {f.model}
               </text>
