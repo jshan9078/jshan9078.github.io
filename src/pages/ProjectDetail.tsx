@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import ProjectsData from "@/data/projects";
 import type { WebBenchRow } from "@/data/types";
+import WebBench3D from "./WebBench3D";
 import { getDownloads } from "@/data/downloads";
 
 const ArrowLeftIcon = () => (
@@ -33,6 +34,11 @@ const WB_FAMILIES: { model: string; color: string }[] = [
 ];
 const THINK_ORDER = ["low", "medium", "high", "xhigh", "max"];
 const famColor = (m: string) => WB_FAMILIES.find((f) => f.model === m)?.color ?? "#ffffff";
+// Higher thinking level = stronger glow around the point (0 for low and n/a).
+const glowT = (thinking: string) => {
+  const i = THINK_ORDER.indexOf(thinking);
+  return i <= 0 ? 0 : i / (THINK_ORDER.length - 1);
+};
 
 // DeepSWE-style efficiency curves: y = score, x = avg time or avg cost per task.
 // One connected line per model family across its thinking levels; most efficient is top-left.
@@ -74,6 +80,11 @@ function WebBenchCurves({ rows, metric }: { rows: WebBenchRow[]; metric: "time" 
         role="img"
         aria-label={`WebBench score versus average ${metric} per task`}
       >
+        <defs>
+          <filter id={`dot-glow-${metric}`} x="-300%" y="-300%" width="700%" height="700%">
+            <feGaussianBlur stdDeviation="3" />
+          </filter>
+        </defs>
         {yTicks.map((v) => (
           <line key={`gy${v}`} x1={ml} y1={sy(v)} x2={ml + plotW} y2={sy(v)} className="bench-curves__grid" />
         ))}
@@ -115,29 +126,44 @@ function WebBenchCurves({ rows, metric }: { rows: WebBenchRow[]; metric: "time" 
           return (
             <g key={f.model}>
               <path d={path} fill="none" stroke={f.color} strokeWidth={1.1} strokeOpacity={0.7} />
-              {pts.map((r) => (
-                <circle
-                  key={r.thinking}
-                  cx={sx(r[metric])}
-                  cy={sy(r.score)}
-                  r={3.5}
-                  fill={f.color}
-                  stroke="var(--bg)"
-                  strokeWidth={1}
-                  style={{ cursor: "pointer" }}
-                  onMouseEnter={at(r)}
-                  onMouseMove={at(r)}
-                  onMouseLeave={() => setHover(null)}
-                />
-              ))}
+              {pts.map((r) => {
+                const t = glowT(r.thinking);
+                return (
+                  <g key={r.thinking}>
+                    {t > 0 && (
+                      <circle
+                        cx={sx(r[metric])}
+                        cy={sy(r.score)}
+                        r={4 + 5 * t}
+                        fill={f.color}
+                        opacity={0.25 + 0.55 * t}
+                        filter={`url(#dot-glow-${metric})`}
+                        pointerEvents="none"
+                      />
+                    )}
+                    <circle
+                      cx={sx(r[metric])}
+                      cy={sy(r.score)}
+                      r={3.5}
+                      fill={f.color}
+                      stroke="var(--bg)"
+                      strokeWidth={1}
+                      style={{ cursor: "pointer" }}
+                      onMouseEnter={at(r)}
+                      onMouseMove={at(r)}
+                      onMouseLeave={() => setHover(null)}
+                    />
+                  </g>
+                );
+              })}
               <text x={lx} y={ly} textAnchor={anchorSide} className="bench-curves__fam" fill={f.color}>
                 {f.model}
               </text>
-              {anchor.thinking !== "n/a" && (
-                <text x={lx} y={ly + 12} textAnchor={anchorSide} className="bench-curves__eff" fill={f.color}>
-                  {anchor.thinking.toUpperCase()}
-                </text>
-              )}
+              <text x={lx} y={ly + 12} textAnchor={anchorSide} className="bench-curves__eff" fill={f.color}>
+                {anchor.thinking === "n/a"
+                  ? anchor.harness.toUpperCase()
+                  : `${anchor.thinking.toUpperCase()} · ${anchor.harness.toUpperCase()}`}
+              </text>
             </g>
           );
         })}
@@ -152,9 +178,9 @@ function WebBenchCurves({ rows, metric }: { rows: WebBenchRow[]; metric: "time" 
           }}
         >
           <span className="bench-scatter__tip-model">{hover.row.model}</span>
-          <span className="bench-scatter__tip-row">
-            {hover.row.thinking === "n/a" ? "effort not supported (5-run avg)" : `${hover.row.thinking} thinking`}
-          </span>
+          {hover.row.thinking !== "n/a" && (
+            <span className="bench-scatter__tip-row">{hover.row.thinking} thinking</span>
+          )}
           <span className="bench-scatter__tip-row">{hover.row.harness}</span>
           <span className="bench-scatter__tip-meta">
             {hover.row.score}% · {hover.row.time}s · ${hover.row.cost.toFixed(2)}
@@ -175,7 +201,9 @@ function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
           <div className="bench-config__head">
             <span className="bench-config__name">
               {r.model}{" "}
-              <span className="bench-config__eff">[{r.thinking === "n/a" ? "effort n/a" : r.thinking}]</span>
+              <span className="bench-config__eff">
+                {r.thinking === "n/a" ? <>&middot; {r.harness}</> : <>[{r.thinking}] &middot; {r.harness}</>}
+              </span>
             </span>
             <span className="bench-config__score">{r.score}%</span>
           </div>
@@ -202,6 +230,7 @@ function ProjectDetail() {
   const navigate = useNavigate();
   const project = ProjectsData.items.find((p) => p.slug === slug);
   const [copiedCmd, setCopiedCmd] = useState<string | null>(null);
+  const [benchView, setBenchView] = useState<"3d" | "2d">("3d");
 
   const renderInstall = (cmd: string) => (
     <div className="project-detail__install" key={cmd}>
@@ -417,8 +446,35 @@ function ProjectDetail() {
               </ReactMarkdown>
             </div>
           )}
-          <WebBenchCurves rows={project.benchmarks.webRows} metric="time" />
-          <WebBenchCurves rows={project.benchmarks.webRows} metric="cost" />
+          <div className="bench-view">
+            <div className="bench-view__toggle" role="tablist" aria-label="Chart view">
+              <button
+                type="button"
+                className={benchView === "3d" ? "bench-view__btn bench-view__btn--on" : "bench-view__btn"}
+                onClick={() => setBenchView("3d")}
+              >
+                3D
+              </button>
+              <button
+                type="button"
+                className={benchView === "2d" ? "bench-view__btn bench-view__btn--on" : "bench-view__btn"}
+                onClick={() => setBenchView("2d")}
+              >
+                2D
+              </button>
+            </div>
+            <span className="bench-view__note">
+              Each point is a model + harness configuration: Claude models run in Claude Code, Gemini 3.7 Flash in Antigravity. A stronger glow marks a higher thinking level.
+            </span>
+          </div>
+          {benchView === "3d" ? (
+            <WebBench3D rows={project.benchmarks.webRows} />
+          ) : (
+            <>
+              <WebBenchCurves rows={project.benchmarks.webRows} metric="time" />
+              <WebBenchCurves rows={project.benchmarks.webRows} metric="cost" />
+            </>
+          )}
           <h3 className="project-detail__section-title bench-configs-title">Configurations</h3>
           <WebBenchConfigs rows={project.benchmarks.webRows} />
           <div className="bench-caption">
