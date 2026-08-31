@@ -137,7 +137,7 @@ function WebBenchCurves({ rows, metric }: { rows: WebBenchRow[]; metric: "time" 
                 {f.model}
               </text>
               <text x={lx} y={ly + 12} textAnchor={anchorSide} className="bench-curves__eff" fill={f.color}>
-                {anchor.thinking.toUpperCase()}
+                {anchor.thinking === "n/a" ? "EFFORT N/A" : anchor.thinking.toUpperCase()}
               </text>
             </g>
           );
@@ -153,7 +153,9 @@ function WebBenchCurves({ rows, metric }: { rows: WebBenchRow[]; metric: "time" 
           }}
         >
           <span className="bench-scatter__tip-model">{hover.row.model}</span>
-          <span className="bench-scatter__tip-row">{hover.row.thinking} thinking</span>
+          <span className="bench-scatter__tip-row">
+            {hover.row.thinking === "n/a" ? "effort not supported (5-run avg)" : `${hover.row.thinking} thinking`}
+          </span>
           <span className="bench-scatter__tip-row">{hover.row.harness}</span>
           <span className="bench-scatter__tip-meta">
             {hover.row.score}% · {hover.row.time}s · ${hover.row.cost.toFixed(2)}
@@ -173,7 +175,8 @@ function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
         <div key={`${r.model}-${r.thinking}`} className="bench-config">
           <div className="bench-config__head">
             <span className="bench-config__name">
-              {r.model} <span className="bench-config__eff">[{r.thinking}]</span>
+              {r.model}{" "}
+              <span className="bench-config__eff">[{r.thinking === "n/a" ? "effort n/a" : r.thinking}]</span>
             </span>
             <span className="bench-config__score">{r.score}%</span>
           </div>
