@@ -103,11 +103,8 @@ function WebBenchCurves({ rows, metric }: { rows: WebBenchRow[]; metric: "time" 
           // DeepSWE labeling: ONE two-line label per family (name + that endpoint's effort tag),
           // anchored at whichever curve endpoint is most isolated from other families' points,
           // offset outward into whitespace. All other dots stay unlabeled; hover has the details.
-          const others = rows.filter((r) => r.model !== f.model);
-          const isolation = (r: WebBenchRow) =>
-            Math.min(...others.map((o) => Math.hypot(sx(r[metric]) - sx(o[metric]), sy(r.score) - sy(o.score))));
-          const ends = [pts[0], pts[pts.length - 1]];
-          const anchor = isolation(ends[0]) >= isolation(ends[1]) ? ends[0] : ends[1];
+          // Anchor at the highest thinking endpoint so the label reads the same on both charts.
+          const anchor = pts[pts.length - 1];
           const ax = sx(anchor[metric]);
           const ay = sy(anchor.score);
           const midX = (Math.max(...pts.map((r) => sx(r[metric]))) + Math.min(...pts.map((r) => sx(r[metric])))) / 2;
