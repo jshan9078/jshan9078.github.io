@@ -100,7 +100,7 @@ function WebBenchCurves({ rows, metric }: { rows: WebBenchRow[]; metric: "time" 
           </text>
         ))}
         <text x={ml + plotW / 2} y={H - 6} textAnchor="middle" className="bench-curves__axis-title">
-          {metric === "time" ? "Avg time per task" : "Avg cost per task"}
+          {metric === "time" ? "Median time per task" : "Median cost per task"}
         </text>
         <text x={ml + plotW - 8} y={mt + 4} textAnchor="end" className="bench-curves__ideal-label">
           most efficient
@@ -214,7 +214,7 @@ function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
             />
           </div>
           <div className="bench-config__meta">
-            <span>Avg cost <b>${r.cost.toFixed(2)}</b></span>
+            <span>Median cost <b>${r.cost.toFixed(2)}</b></span>
             <span>Out tok <b>{(r.outTok / 1000).toFixed(1)}k</b></span>
             <span>Steps <b>{Math.round(r.steps)}</b></span>
             <span>Time <b>{Math.round(r.time)}s</b></span>

@@ -139,8 +139,8 @@ export default function WebBench3D({ rows }: { rows: WebBenchRow[] }) {
         label(`${Math.round(t)}s`, new THREE.Vector3(SX + 0.55, -0.32, z(t)));
       for (let s = 60; s <= 100.001; s += 10)
         label(`${s}%`, new THREE.Vector3(-0.55, y(s), SZ + 0.4));
-      label("AVG COST / TASK", new THREE.Vector3(SX / 2, -1.15, SZ + 1.15), "b3d-lbl b3d-lbl--axis");
-      label("AVG TIME / TASK", new THREE.Vector3(SX + 1.7, -1.15, SZ / 2), "b3d-lbl b3d-lbl--axis");
+      label("MEDIAN COST / TASK", new THREE.Vector3(SX / 2, -1.15, SZ + 1.15), "b3d-lbl b3d-lbl--axis");
+      label("MEDIAN TIME / TASK", new THREE.Vector3(SX + 1.7, -1.15, SZ / 2), "b3d-lbl b3d-lbl--axis");
       label("ACCURACY", new THREE.Vector3(0.5, SY + 0.75, SZ + 0.4), "b3d-lbl b3d-lbl--axis");
 
       // optimal region: >=95% accuracy, <=$0.35 and <=60 s per task
@@ -247,7 +247,7 @@ export default function WebBench3D({ rows }: { rows: WebBenchRow[] }) {
           const think = r.thinking === "n/a" ? "" : ` <span>${r.thinking} thinking</span>`;
           tip.innerHTML =
             `<b>${r.model}</b>${think}<br/><span>${r.harness}</span><br/>` +
-            `score <b>${r.score.toFixed(1)}%</b> <span>&middot; $${r.cost.toFixed(3)} &middot; ${r.time.toFixed(0)}s per task</span>`;
+            `score <b>${r.score.toFixed(1)}%</b> <span>&middot; $${r.cost.toFixed(3)} &middot; ${r.time.toFixed(0)}s per task (median)</span>`;
           tip.style.display = "block";
         }
         if (hovered) {
