@@ -2062,7 +2062,7 @@ img {
 .bench-config__name { font-size: 0.95rem; font-weight: 600; }
 .bench-config__eff { color: var(--ink-secondary); font-weight: 400; }
 .bench-config__score { font-size: 1.05rem; font-weight: 700; font-variant-numeric: tabular-nums; }
-.bench-config__bar { height: 10px; background: rgba(255, 255, 255, 0.08); border-radius: 5px; overflow: hidden; margin: 0.45rem 0 0.4rem; }
-.bench-config__fill { display: block; height: 100%; border-radius: 5px; }
+.bench-config__bar { height: 5px; background: rgba(255, 255, 255, 0.08); border-radius: 3px; overflow: hidden; margin: 0.45rem 0 0.4rem; }
+.bench-config__fill { display: block; height: 100%; border-radius: 3px; }
 .bench-config__meta { display: flex; flex-wrap: wrap; gap: 0.35rem 1.4rem; color: var(--ink-secondary); font-size: 0.85rem; }
 .bench-config__meta b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }

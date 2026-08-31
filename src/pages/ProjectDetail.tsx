@@ -102,32 +102,74 @@ function WebBenchCurves({ rows, metric }: { rows: WebBenchRow[]; metric: "time" 
           if (!pts.length) return null;
           const path = pts.map((r, i) => `${i ? "L" : "M"}${sx(r[metric])},${sy(r.score)}`).join(" ");
           const anchor = pts[pts.length - 1];
+          // Dense-cluster handling: when a family's points bunch together (coincident configs),
+          // per-point labels pile up illegibly. Fan the effort labels into a stacked column
+          // beside the cluster with thin leader lines to their dots.
+          const pxs = pts.map((r) => sx(r[metric]));
+          const pys = pts.map((r) => sy(r.score));
+          // dense when points crowd: median nearest-neighbor distance under 16px
+          const nn = pts.map((_, i) => Math.min(...pts.map((_, j) => i === j ? Infinity : Math.hypot(pxs[i] - pxs[j], pys[i] - pys[j]))));
+          const nnSorted = [...nn].sort((a, b) => a - b);
+          const dense = pts.length > 2 && nnSorted[Math.floor(nn.length / 2)] < 24;
+          const cx0 = (Math.max(...pxs) + Math.min(...pxs)) / 2;
+          const cy0 = (Math.max(...pys) + Math.min(...pys)) / 2;
+          const side = cx0 < ml + plotW / 2 ? 1 : -1; // fan toward the emptier half
+          const colX = side > 0 ? Math.max(...pxs) + 34 : Math.min(...pxs) - 34;
+          const fan = [...pts].sort((a, b) => sy(a.score) - sy(b.score));
           return (
             <g key={f.model}>
-              <path d={path} fill="none" stroke={f.color} strokeWidth={1.75} strokeOpacity={0.75} />
+              <path d={path} fill="none" stroke={f.color} strokeWidth={1.1} strokeOpacity={0.7} />
+              {dense &&
+                fan.map((r, i) => {
+                  const ly = cy0 + (i - (fan.length - 1) / 2) * 13;
+                  return (
+                    <g key={`fan-${r.thinking}`}>
+                      <line
+                        x1={sx(r[metric]) + side * 6}
+                        y1={sy(r.score)}
+                        x2={colX - side * 4}
+                        y2={ly}
+                        stroke={f.color}
+                        strokeOpacity={0.35}
+                        strokeWidth={0.75}
+                      />
+                      <text
+                        x={colX}
+                        y={ly + 3}
+                        textAnchor={side > 0 ? "start" : "end"}
+                        className="bench-curves__eff"
+                        fill={f.color}
+                      >
+                        {r.thinking.toUpperCase()}
+                      </text>
+                    </g>
+                  );
+                })}
               {pts.map((r) => (
                 <g key={r.thinking}>
                   <circle
                     cx={sx(r[metric])}
                     cy={sy(r.score)}
-                    r={5}
+                    r={3.5}
                     fill={f.color}
                     stroke="var(--bg)"
-                    strokeWidth={1.5}
+                    strokeWidth={1}
                     style={{ cursor: "pointer" }}
                     onMouseEnter={at(r)}
                     onMouseMove={at(r)}
                     onMouseLeave={() => setHover(null)}
                   />
-                  <text
-                    x={sx(r[metric])}
-                    y={sy(r.score) + effDy}
-                    textAnchor="middle"
-                    className="bench-curves__eff"
-                    fill={f.color}
-                  >
-                    {r.thinking.toUpperCase()}
-                  </text>
+                  {!dense && (
+                    <text
+                      x={sx(r[metric])}
+                      y={sy(r.score) + effDy}
+                      textAnchor="middle"
+                      className="bench-curves__eff"
+                      fill={f.color}
+                    >
+                      {r.thinking.toUpperCase()}
+                    </text>
+                  )}
                 </g>
               ))}
               <text
