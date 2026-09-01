@@ -83,7 +83,8 @@ export default function WebBench3D({ rows }: { rows: WebBenchRow[] }) {
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(42, W / H, 0.1, 200);
-      const fit = Math.min(1.7, Math.max(1, 1.25 / (W / H)));
+      // Frame with headroom so axis/tick labels stay inside the canvas while orbiting.
+      const fit = Math.min(1.9, Math.max(1.18, 1.45 / (W / H)));
       camera.position.set(SX * 1.85 * fit, SY * 1.55 * fit, SZ * 1.95 * fit);
 
       const controls = new OrbitControls(camera, renderer.domElement);
