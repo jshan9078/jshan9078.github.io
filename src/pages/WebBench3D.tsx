@@ -87,7 +87,7 @@ export default function WebBench3D({ rows }: { rows: WebBenchRow[] }) {
       // and start the orbit facing the OPTIMAL corner (low cost, low time), matching the
       // 2D charts' good-is-near-you reading.
       const fit = Math.min(1.9, Math.max(1.18, 1.45 / (W / H)));
-      camera.position.set(SX / 2 - SX * 1.6 * fit, SY * 0.8 * fit, SZ / 2 - SZ * 0.55 * fit);
+      camera.position.set(SX / 2 + 3 * (fit / 1.44), 17 * (fit / 1.44), SZ / 2 + 22 * (fit / 1.44));
 
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.target.set(SX / 2, SY / 2, SZ / 2);
