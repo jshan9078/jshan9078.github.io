@@ -172,11 +172,11 @@ const projects: Project[] = [
     skills: getSkills("python", "pytorch", "vertex", "llm", "opencv"),
     type: "AI/ML & Robotics",
     screenshots: [
-      { label: "Hack the North Winner", src: url("ross_win.png") },
-      { label: "Robot Hardware", src: url("ross_robot.png") },
-      { label: "ML Segmentation", src: url("ross_segmented.png") },
-      { label: "CAD Model", src: url("ross_cad.png") },
-      { label: "Wiring", src: url("ross_wiring.png") },
+      { label: "Hack the North Winner", src: url("ross_win.webp") },
+      { label: "Robot Hardware", src: url("ross_robot.webp") },
+      { label: "ML Segmentation", src: url("ross_segmented.webp") },
+      { label: "CAD Model", src: url("ross_cad.webp") },
+      { label: "Wiring", src: url("ross_wiring.webp") },
     ],
   },
   {
@@ -231,12 +231,12 @@ const projects: Project[] = [
     skills: getSkills("llm", "vertex", "ts", "firebase"),
     type: "Full-Stack & AI",
     screenshots: [
-      { label: "Landing Page", src: url("soundtrack2.png") },
-      { label: "Biometrics", src: url("soundtrack1.png") },
-      { label: "Calibration", src: url("soundtrack3.png") },
-      { label: "Video Editor", src: url("soundtrack4.png") },
-      { label: "Music Playlists", src: url("soundtrack5.png") },
-      { label: "Timeline", src: url("soundtrack6.png") },
+      { label: "Landing Page", src: url("soundtrack2.webp") },
+      { label: "Biometrics", src: url("soundtrack1.webp") },
+      { label: "Calibration", src: url("soundtrack3.webp") },
+      { label: "Video Editor", src: url("soundtrack4.webp") },
+      { label: "Music Playlists", src: url("soundtrack5.webp") },
+      { label: "Timeline", src: url("soundtrack6.webp") },
     ],
   },
   {
@@ -285,9 +285,9 @@ const projects: Project[] = [
     type: "AI/ML & Robotics",
     screenshots: [
       { label: "Hardware", src: url("rex.png") },
-      { label: "Usage", src: url("usage.png") },
+      { label: "Usage", src: url("usage.webp") },
       { label: "CAD", src: url("cad.jpg") },
-      { label: "Winners at Hack the North 2024", src: url("htn.jpg") },
+      { label: "Winners at Hack the North 2024", src: url("htn.webp") },
     ],
   },
   {
@@ -325,7 +325,7 @@ const projects: Project[] = [
     skills: getSkills("ts", "langchain", "PostgreSQL", "next", "llm"),
     type: "Full-Stack and AI",
     screenshots: [
-      { label: "Call Interface", src: url("omniverse1.png") },
+      { label: "Call Interface", src: url("omniverse1.webp") },
       { label: "Create Tutors", src: url("omniverse2.jpg") },
       { label: "Pipeline", src: url("omniverse3.jpg") },
     ],
@@ -446,7 +446,7 @@ const projects: Project[] = [
     skills: getSkills("ts", "supabase", "PostgreSQL", "next", "llm", "reactjs"),
     type: "Full-Stack and AI",
     screenshots: [
-      { label: "Pipeline", src: url("friended1.png") },
+      { label: "Pipeline", src: url("friended1.webp") },
       { label: "Recommendations", src: url("friended2.jpg") },
       { label: "Profile", src: url("friended3.jpg") },
     ],
