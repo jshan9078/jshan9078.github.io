@@ -219,10 +219,8 @@ export default function WebBench3D({ rows }: { rows: WebBenchRow[] }) {
 
         const last = frows[frows.length - 1];
         const lp = pts[pts.length - 1].clone().add(new THREE.Vector3(0, 0.42, 0));
-        const tag = last.thinking === "n/a"
-          ? last.harness.toUpperCase()
-          : `${last.thinking.toUpperCase()} &middot; ${last.harness.toUpperCase()}`;
-        const el = label(`${fam.model}<small>${tag}</small>`, lp, "b3d-lbl b3d-lbl--fam");
+        const tag = last.thinking === "n/a" ? "" : `<small>${last.thinking.toUpperCase()}</small>`;
+        const el = label(`${fam.model}${tag}`, lp, "b3d-lbl b3d-lbl--fam");
         el.element.style.color = "#" + color.getHexString();
       }
 
