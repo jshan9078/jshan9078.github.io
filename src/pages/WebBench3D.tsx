@@ -93,6 +93,7 @@ export default function WebBench3D({ rows }: { rows: WebBenchRow[] }) {
       controls.dampingFactor = 0.06;
       controls.minDistance = 8;
       controls.maxDistance = 42;
+      controls.zoomSpeed = 2.2;
       controls.autoRotate = true;
       controls.autoRotateSpeed = 0.6;
       controls.enablePan = false;
