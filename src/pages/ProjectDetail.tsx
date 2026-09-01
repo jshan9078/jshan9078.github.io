@@ -31,6 +31,7 @@ const WB_FAMILIES: { model: string; color: string }[] = [
   { model: "Sonnet 5", color: "#8ab4e8" },
   { model: "Haiku 4.5", color: "#c9a0e8" },
   { model: "Gemini 3.7 Flash", color: "#7ec9a3" },
+  { model: "GPT-5.6 Luna", color: "#e88ab0" },
 ];
 const THINK_ORDER = ["low", "medium", "high", "xhigh", "max"];
 const famColor = (m: string) => WB_FAMILIES.find((f) => f.model === m)?.color ?? "#ffffff";

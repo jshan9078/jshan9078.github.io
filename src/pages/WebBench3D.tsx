@@ -12,6 +12,7 @@ const FAMS = [
   { model: "Sonnet 5", color: 0x8ab4e8 },
   { model: "Haiku 4.5", color: 0xc9a0e8 },
   { model: "Gemini 3.7 Flash", color: 0x7ec9a3 },
+  { model: "GPT-5.6 Luna", color: 0xe88ab0 },
 ];
 const THINK = ["low", "medium", "high", "xhigh", "max", "n/a"];
 // Higher thinking level = stronger glow around the point (0 for low and n/a).
