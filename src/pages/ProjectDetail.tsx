@@ -201,9 +201,9 @@ function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
       ? [...rows]
       : WB_FAMILIES.map((f) => {
           const fam = rows.filter((r) => r.model === f.model);
-          return fam.sort((a, b) => b.score - a.score || a.cost - b.cost)[0];
+          return fam.sort((a, b) => b.score - a.score || a.time - b.time || a.cost - b.cost)[0];
         }).filter(Boolean);
-  const sorted = shown.sort((a, b) => b.score - a.score || a.cost - b.cost);
+  const sorted = shown.sort((a, b) => b.score - a.score || a.time - b.time || a.cost - b.cost);
   return (
     <div className="bench-table">
       <div className="bench-view__toggle" role="tablist" aria-label="Configuration filter">
