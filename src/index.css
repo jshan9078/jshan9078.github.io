@@ -2209,3 +2209,21 @@ img {
 .bench-table__num { text-align: right; color: #cfcfcf; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .bench-table__num b { color: #eaeaea; }
 .bench-table__num small { color: #7d7d7d; font-size: 0.64rem; }
+
+/* Sortable leaderboard headers: inherit the head's quiet look, no button chrome. */
+.bench-table__sort {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.bench-table__sort.bench-table__num { text-align: right; color: inherit; }
+.bench-table__sort em { font-style: normal; display: inline-block; width: 0.9em; color: #b8b8b8; }
+.bench-table__sort--on { color: #cfcfcf; }
+.bench-table__sort:hover { color: #eaeaea; }

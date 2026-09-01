@@ -194,16 +194,46 @@ function WebBenchCurves({ rows, metric }: { rows: WebBenchRow[]; metric: "time" 
 }
 
 // DeepSWE-style compact leaderboard table with Best / All effort levels toggle.
+type WBSortKey = "model" | "score" | "cost" | "outTok" | "steps" | "time";
+// Direction a column starts in when first clicked: best value on top.
+const WB_SORT_DEFAULT_DIR: Record<WBSortKey, 1 | -1> = {
+  model: 1, score: -1, cost: 1, outTok: 1, steps: 1, time: 1,
+};
+
 function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
   const [mode, setMode] = useState<"best" | "all">("best");
+  const [sort, setSort] = useState<{ key: WBSortKey; dir: 1 | -1 }>({ key: "score", dir: -1 });
+  // Base ranking (score, then time, then cost) doubles as the tie-breaker for every column.
+  const base = (a: WebBenchRow, b: WebBenchRow) =>
+    b.score - a.score || a.time - b.time || a.cost - b.cost;
   const shown =
     mode === "all"
       ? [...rows]
-      : WB_FAMILIES.map((f) => {
-          const fam = rows.filter((r) => r.model === f.model);
-          return fam.sort((a, b) => b.score - a.score || a.time - b.time || a.cost - b.cost)[0];
-        }).filter(Boolean);
-  const sorted = shown.sort((a, b) => b.score - a.score || a.time - b.time || a.cost - b.cost);
+      : WB_FAMILIES.map((f) => rows.filter((r) => r.model === f.model).sort(base)[0]).filter(Boolean);
+  const cmp = (a: WebBenchRow, b: WebBenchRow) => {
+    const primary =
+      sort.key === "model"
+        ? a.model.localeCompare(b.model) || THINK_ORDER.indexOf(a.thinking) - THINK_ORDER.indexOf(b.thinking)
+        : a[sort.key] - b[sort.key];
+    return primary * sort.dir || base(a, b);
+  };
+  const sorted = shown.sort(cmp);
+  const clickSort = (key: WBSortKey) =>
+    setSort((s) => ({ key, dir: s.key === key ? ((-s.dir) as 1 | -1) : WB_SORT_DEFAULT_DIR[key] }));
+  const Head = ({ k, children, num }: { k: WBSortKey; children: React.ReactNode; num?: boolean }) => (
+    <button
+      type="button"
+      className={
+        (num ? "bench-table__num " : "") +
+        "bench-table__sort" +
+        (sort.key === k ? " bench-table__sort--on" : "")
+      }
+      onClick={() => clickSort(k)}
+    >
+      {children}
+      <em>{sort.key === k ? (sort.dir === 1 ? "▴" : "▾") : ""}</em>
+    </button>
+  );
   return (
     <div className="bench-table">
       <div className="bench-view__toggle" role="tablist" aria-label="Configuration filter">
@@ -224,13 +254,13 @@ function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
       </div>
       <div className="bench-table__scroll">
         <div className="bench-table__head">
-          <span>Model</span>
+          <Head k="model">Model</Head>
           <span />
-          <span className="bench-table__num">Pass@1</span>
-          <span className="bench-table__num">Med cost</span>
-          <span className="bench-table__num">Out tok</span>
-          <span className="bench-table__num">Steps</span>
-          <span className="bench-table__num">Time</span>
+          <Head k="score" num>Pass@1</Head>
+          <Head k="cost" num>Med cost</Head>
+          <Head k="outTok" num>Out tok</Head>
+          <Head k="steps" num>Steps</Head>
+          <Head k="time" num>Time</Head>
         </div>
         {sorted.map((r) => {
           return (
