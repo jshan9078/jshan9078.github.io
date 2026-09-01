@@ -32,8 +32,9 @@ const WB_FAMILIES: { model: string; color: string }[] = [
   { model: "Haiku 4.5", color: "#c9a0e8" },
   { model: "Gemini 3.7 Flash", color: "#7ec9a3" },
   { model: "GPT-5.6 Luna", color: "#e88ab0" },
+  { model: "Muse Spark 1.2", color: "#e8d47a" },
 ];
-const THINK_ORDER = ["low", "medium", "high", "xhigh", "max"];
+const THINK_ORDER = ["low", "medium", "high", "xhigh", "max", "ultra"];
 const famColor = (m: string) => WB_FAMILIES.find((f) => f.model === m)?.color ?? "#ffffff";
 // Higher thinking level = stronger glow around the point (0 for low and n/a).
 const glowT = (thinking: string) => {

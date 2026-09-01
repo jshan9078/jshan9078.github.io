@@ -13,12 +13,13 @@ const FAMS = [
   { model: "Haiku 4.5", color: 0xc9a0e8 },
   { model: "Gemini 3.7 Flash", color: 0x7ec9a3 },
   { model: "GPT-5.6 Luna", color: 0xe88ab0 },
+  { model: "Muse Spark 1.2", color: 0xe8d47a },
 ];
-const THINK = ["low", "medium", "high", "xhigh", "max", "n/a"];
+const THINK = ["low", "medium", "high", "xhigh", "max", "ultra", "n/a"];
 // Higher thinking level = stronger glow around the point (0 for low and n/a).
 const glowT = (thinking: string) => {
-  const i = ["low", "medium", "high", "xhigh", "max"].indexOf(thinking);
-  return i <= 0 ? 0 : i / 4;
+  const i = ["low", "medium", "high", "xhigh", "max", "ultra"].indexOf(thinking);
+  return i <= 0 ? 0 : i / 5;
 };
 
 let glowTex: unknown = null;
