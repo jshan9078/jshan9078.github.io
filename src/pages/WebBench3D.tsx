@@ -83,9 +83,11 @@ export default function WebBench3D({ rows }: { rows: WebBenchRow[] }) {
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(42, W / H, 0.1, 200);
-      // Frame with headroom so axis/tick labels stay inside the canvas while orbiting.
+      // Frame with headroom so axis/tick labels stay inside the canvas while orbiting,
+      // and start the orbit facing the OPTIMAL corner (low cost, low time), matching the
+      // 2D charts' good-is-near-you reading.
       const fit = Math.min(1.9, Math.max(1.18, 1.45 / (W / H)));
-      camera.position.set(SX * 1.85 * fit, SY * 1.55 * fit, SZ * 1.95 * fit);
+      camera.position.set(SX / 2 - SX * 1.6 * fit, SY * 0.8 * fit, SZ / 2 - SZ * 0.55 * fit);
 
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.target.set(SX / 2, SY / 2, SZ / 2);
@@ -137,14 +139,14 @@ export default function WebBench3D({ rows }: { rows: WebBenchRow[] }) {
       scene.add(thinLine(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, SZ), EDGE, 1));
 
       for (let c = 0; c <= 1.2001; c += 0.3)
-        label(`$${c.toFixed(2)}`, new THREE.Vector3(x(c), -0.32, SZ + 0.45));
+        label(`$${c.toFixed(2)}`, new THREE.Vector3(x(c), -0.32, -0.45));
       for (let t = 0; t <= 130.001; t += 26)
-        label(`${Math.round(t)}s`, new THREE.Vector3(SX + 0.55, -0.32, z(t)));
+        label(`${Math.round(t)}s`, new THREE.Vector3(-0.55, -0.32, z(t)));
       for (let s = 60; s <= 100.001; s += 10)
-        label(`${s}%`, new THREE.Vector3(-0.55, y(s), SZ + 0.4));
-      label("MEDIAN COST / TASK", new THREE.Vector3(SX / 2, -1.15, SZ + 1.15), "b3d-lbl b3d-lbl--axis");
-      label("MEDIAN TIME / TASK", new THREE.Vector3(SX + 1.7, -1.15, SZ / 2), "b3d-lbl b3d-lbl--axis");
-      label("ACCURACY", new THREE.Vector3(0.5, SY + 0.75, SZ + 0.4), "b3d-lbl b3d-lbl--axis");
+        label(`${s}%`, new THREE.Vector3(-0.4, y(s), -0.55));
+      label("MEDIAN COST / TASK", new THREE.Vector3(SX / 2, -1.15, -1.15), "b3d-lbl b3d-lbl--axis");
+      label("MEDIAN TIME / TASK", new THREE.Vector3(-1.7, -1.15, SZ / 2), "b3d-lbl b3d-lbl--axis");
+      label("ACCURACY", new THREE.Vector3(0.5, SY + 0.75, -0.4), "b3d-lbl b3d-lbl--axis");
 
       // optimal region: >=95% accuracy, <=$0.35 and <=60 s per task
       {
