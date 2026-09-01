@@ -192,36 +192,78 @@ function WebBenchCurves({ rows, metric }: { rows: WebBenchRow[]; metric: "time" 
   );
 }
 
-// DeepSWE-style per-configuration cards: score bar plus average cost, output tokens, steps, time.
+// DeepSWE-style compact leaderboard table with Best / All effort levels toggle.
 function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
-  const sorted = [...rows].sort((a, b) => b.score - a.score || a.cost - b.cost);
+  const [mode, setMode] = useState<"best" | "all">("best");
+  const shown =
+    mode === "all"
+      ? [...rows]
+      : WB_FAMILIES.map((f) => {
+          const fam = rows.filter((r) => r.model === f.model);
+          return fam.sort((a, b) => b.score - a.score || a.cost - b.cost)[0];
+        }).filter(Boolean);
+  const sorted = shown.sort((a, b) => b.score - a.score || a.cost - b.cost);
+  const ci = (p: number) => 1.96 * Math.sqrt(((p / 100) * (1 - p / 100)) / 45) * 100;
   return (
-    <div className="bench-configs">
-      {sorted.map((r) => (
-        <div key={`${r.model}-${r.thinking}`} className="bench-config">
-          <div className="bench-config__head">
-            <span className="bench-config__name">
-              {r.model}{" "}
-              <span className="bench-config__eff">
-                {r.thinking === "n/a" ? <>&middot; {r.harness}</> : <>[{r.thinking}] &middot; {r.harness}</>}
-              </span>
-            </span>
-            <span className="bench-config__score">{r.score}%</span>
-          </div>
-          <div className="bench-config__bar">
-            <span
-              className="bench-config__fill"
-              style={{ width: `${r.score}%`, background: famColor(r.model) }}
-            />
-          </div>
-          <div className="bench-config__meta">
-            <span>Median cost <b>${r.cost.toFixed(2)}</b></span>
-            <span>Out tok <b>{(r.outTok / 1000).toFixed(1)}k</b></span>
-            <span>Steps <b>{Math.round(r.steps)}</b></span>
-            <span>Time <b>{Math.round(r.time)}s</b></span>
-          </div>
+    <div className="bench-table">
+      <div className="bench-view__toggle" role="tablist" aria-label="Configuration filter">
+        <button
+          type="button"
+          className={mode === "best" ? "bench-view__btn bench-view__btn--on" : "bench-view__btn"}
+          onClick={() => setMode("best")}
+        >
+          Best
+        </button>
+        <button
+          type="button"
+          className={mode === "all" ? "bench-view__btn bench-view__btn--on" : "bench-view__btn"}
+          onClick={() => setMode("all")}
+        >
+          All effort levels
+        </button>
+      </div>
+      <div className="bench-table__scroll">
+        <div className="bench-table__head">
+          <span>Model</span>
+          <span />
+          <span className="bench-table__num">Pass@1</span>
+          <span className="bench-table__num">Med cost</span>
+          <span className="bench-table__num">Out tok</span>
+          <span className="bench-table__num">Steps</span>
+          <span className="bench-table__num">Time</span>
         </div>
-      ))}
+        {sorted.map((r) => {
+          const e = ci(r.score);
+          return (
+            <div key={`${r.model}-${r.thinking}`} className="bench-table__row" title={r.harness}>
+              <span className="bench-table__model">
+                <i style={{ background: famColor(r.model) }} />
+                {r.model}
+                {r.thinking !== "n/a" && <em>[{r.thinking}]</em>}
+              </span>
+              <span className="bench-table__barcell">
+                <span className="bench-table__bar">
+                  <span
+                    className="bench-table__fill"
+                    style={{ width: `${r.score}%`, background: famColor(r.model) }}
+                  />
+                  <span
+                    className="bench-table__ci"
+                    style={{ left: `${Math.max(0, r.score - e)}%`, width: `${Math.min(100, r.score + e) - Math.max(0, r.score - e)}%` }}
+                  />
+                </span>
+              </span>
+              <span className="bench-table__num">
+                <b>{r.score.toFixed(1)}%</b> <small>&plusmn;{e.toFixed(0)}%</small>
+              </span>
+              <span className="bench-table__num">${r.cost.toFixed(2)}</span>
+              <span className="bench-table__num">{(r.outTok / 1000).toFixed(1)}k</span>
+              <span className="bench-table__num">{Math.round(r.steps)}</span>
+              <span className="bench-table__num">{Math.round(r.time)}s</span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
