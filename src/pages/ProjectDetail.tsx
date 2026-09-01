@@ -500,9 +500,6 @@ function ProjectDetail() {
                 2D
               </button>
             </div>
-            <span className="bench-view__note">
-              Each point is a model + harness configuration: Claude models run in Claude Code, Gemini 3.7 Flash in Antigravity. A stronger glow marks a higher thinking level.
-            </span>
           </div>
           {benchView === "3d" ? (
             <WebBench3D rows={project.benchmarks.webRows} />
