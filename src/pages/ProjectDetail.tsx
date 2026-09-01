@@ -203,7 +203,6 @@ function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
           return fam.sort((a, b) => b.score - a.score || a.cost - b.cost)[0];
         }).filter(Boolean);
   const sorted = shown.sort((a, b) => b.score - a.score || a.cost - b.cost);
-  const ci = (p: number) => 1.96 * Math.sqrt(((p / 100) * (1 - p / 100)) / 45) * 100;
   return (
     <div className="bench-table">
       <div className="bench-view__toggle" role="tablist" aria-label="Configuration filter">
@@ -233,7 +232,6 @@ function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
           <span className="bench-table__num">Time</span>
         </div>
         {sorted.map((r) => {
-          const e = ci(r.score);
           return (
             <div key={`${r.model}-${r.thinking}`} className="bench-table__row" title={r.harness}>
               <span className="bench-table__model">
@@ -247,14 +245,10 @@ function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
                     className="bench-table__fill"
                     style={{ width: `${r.score}%`, background: famColor(r.model) }}
                   />
-                  <span
-                    className="bench-table__ci"
-                    style={{ left: `${Math.max(0, r.score - e)}%`, width: `${Math.min(100, r.score + e) - Math.max(0, r.score - e)}%` }}
-                  />
                 </span>
               </span>
               <span className="bench-table__num">
-                <b>{r.score.toFixed(1)}%</b> <small>&plusmn;{e.toFixed(0)}%</small>
+                <b>{r.score.toFixed(1)}%</b>
               </span>
               <span className="bench-table__num">${r.cost.toFixed(2)}</span>
               <span className="bench-table__num">{(r.outTok / 1000).toFixed(1)}k</span>

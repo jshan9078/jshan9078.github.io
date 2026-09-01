@@ -38,7 +38,7 @@ const WEBBENCH = {
     "Claude models run via Claude Code; Gemini 3.7 Flash via the Antigravity harness. Claude costs are the CLI's reported cost per run; Gemini costs come from measured token usage at introductory pricing (rates double 2027-01-01).",
     "Bot walls are never scored as failures: verified walls are excluded and retried.",
     "Agents run uncapped: no turn or wall-clock budget is imposed by the harness.",
-    "GPT-5.6 Luna runs via the Codex CLI; its costs are computed from measured token usage at current API pricing. One task (an Amazon filter hunt) is excluded from Luna's medium and higher levels: its page context exceeds the account's per-request token ceiling for Luna, an API limitation rather than a model failure.",
+    "GPT-5.6 Luna runs via the Codex CLI; its costs are computed from measured token usage at current API pricing. One task (an Amazon filter hunt) is excluded from Luna's medium and higher levels: single requests there need 204-220k tokens, over the account's 200k tokens-per-minute rate tier for Luna, an account rate-limit ceiling rather than a model or context-window limitation.",
     "Haiku 4.5 is shown as a single configuration: the effort parameter is not supported on Haiku 4.5 (Claude Code silently ignores the flag), so its five sweeps were replicate runs of the same setup. The point shown averages all five (per-sweep scores ranged 62.2% to 71.1%, consistent with run-to-run variance).",
   ],
 };
