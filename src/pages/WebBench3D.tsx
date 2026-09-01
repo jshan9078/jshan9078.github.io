@@ -160,7 +160,7 @@ export default function WebBench3D({ rows }: { rows: WebBenchRow[] }) {
         edges.position.copy(box.position);
         scene.add(edges);
         const opt = label(
-          'OPTIMAL<small>&ge;95% &middot; &le;$0.35 &middot; &le;60s</small>',
+          'OPTIMAL',
           new THREE.Vector3(w / 2, SY + 0.55, d / 2),
           "b3d-lbl b3d-lbl--fam"
         );
@@ -292,6 +292,10 @@ export default function WebBench3D({ rows }: { rows: WebBenchRow[] }) {
       <div className="bench-3d__stage" ref={wrapRef} />
       <div className="bench-3d__tip" ref={tipRef} />
       <div className="bench-3d__legend">
+        <span className="bench-3d__leg">
+          <i style={{ background: "transparent", border: "1px solid #f0c948", borderRadius: 2 }} />
+          Optimal region <em>&middot; &ge;95% &middot; &le;$0.35 &middot; &le;60s per task</em>
+        </span>
         {FAMS.map((f) => {
           const row = rows.find((r) => r.model === f.model);
           if (!row) return null;
