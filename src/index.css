@@ -2228,34 +2228,62 @@ img {
 .bench-table__sort--on { color: #cfcfcf; }
 .bench-table__sort:hover { color: #eaeaea; }
 
-/* WebBench family filter */
-.bench-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; margin: 1.6rem 0 0.9rem; }
-.bench-filter__label { font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: #7d7d7d; margin-right: 0.3rem; }
-.bench-filter__chip {
-  display: inline-flex; align-items: center; gap: 7px;
-  background: transparent; color: #7d7d7d;
-  border: 1px solid var(--border, #2c2c2c); border-radius: 999px;
-  font: inherit; font-size: 0.72rem; padding: 0.28rem 0.7rem; cursor: pointer;
-  transition: color 0.15s, border-color 0.15s, background 0.15s;
+/* WebBench configuration picker (dropdown) */
+.bench-picker__bar { display: flex; justify-content: flex-end; margin: 1.6rem 0 0.9rem; }
+.bench-picker { position: relative; }
+.bench-picker__btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent; color: #eaeaea; border: 1px solid var(--border, #2c2c2c); border-radius: 6px;
+  font: inherit; font-size: 0.8rem; font-weight: 600; padding: 0.45rem 0.85rem; cursor: pointer;
 }
-.bench-filter__chip i { width: 8px; height: 8px; border-radius: 50%; opacity: 0.35; }
-.bench-filter__chip:hover { color: #cfcfcf; border-color: #444; }
-.bench-filter__chip--on { color: #eaeaea; border-color: #3a3a3a; background: #161616; }
-.bench-filter__chip--on i { opacity: 1; }
-.bench-filter__chip:focus-visible { outline: 1px solid #eaeaea; outline-offset: 2px; }
+.bench-picker__btn span { color: #9a9a9a; font-weight: 400; }
+.bench-picker__btn em { font-style: normal; color: #9a9a9a; font-size: 0.9rem; line-height: 1; }
+.bench-picker__btn:hover { border-color: #444; }
+.bench-picker__panel {
+  position: absolute; right: 0; top: calc(100% + 6px); z-index: 20; width: 360px; max-width: calc(100vw - 2rem);
+  background: #131313; border: 1px solid #2c2c2c; border-radius: 8px; box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+}
+.bench-picker__list { max-height: 420px; overflow-y: auto; padding: 0.6rem 0.9rem 0.3rem; }
+.bench-picker__fam { padding: 0.45rem 0; }
+.bench-picker__row { display: flex; align-items: center; gap: 10px; }
+.bench-picker__check {
+  width: 18px; height: 18px; flex: 0 0 auto; border-radius: 4px; border: 1px solid #4a4a4a; background: transparent;
+  cursor: pointer; padding: 0; position: relative;
+}
+.bench-picker__check--on, .bench-picker__check--partial { background: #eaeaea; border-color: #eaeaea; }
+.bench-picker__check--on::after {
+  content: ""; position: absolute; left: 5px; top: 1px; width: 5px; height: 10px;
+  border: solid #0a0a0a; border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
+.bench-picker__check--partial::after { content: ""; position: absolute; left: 4px; right: 4px; top: 7px; height: 2px; background: #0a0a0a; }
+.bench-picker__name { display: inline-flex; align-items: center; gap: 8px; background: transparent; border: 0; padding: 0; font: inherit; font-size: 0.86rem; color: #eaeaea; cursor: pointer; flex: 1 1 auto; text-align: left; }
+.bench-picker__name i { width: 8px; height: 8px; border-radius: 50%; }
+.bench-picker__count { font-size: 0.78rem; color: #7d7d7d; font-variant-numeric: tabular-nums; }
+.bench-picker__chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 7px 0 0 28px; }
+.bench-picker__chip {
+  background: #1c1c1c; color: #cfcfcf; border: 1px solid #3a3a3a; border-radius: 3px;
+  font: inherit; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 3px 8px; cursor: pointer;
+}
+.bench-picker__chip--off { color: #5a5a5a; border-color: #262626; background: transparent; text-decoration: line-through; }
+.bench-picker__chip:hover { border-color: #666; }
+.bench-picker__foot { display: flex; gap: 8px; padding: 0.7rem 0.9rem; border-top: 1px solid #2c2c2c; }
+.bench-picker__action { background: transparent; color: #eaeaea; border: 1px solid #3a3a3a; border-radius: 6px; font: inherit; font-size: 0.78rem; padding: 0.4rem 0.9rem; cursor: pointer; }
+.bench-picker__action:hover { border-color: #666; }
+.bench-picker__check:focus-visible, .bench-picker__chip:focus-visible, .bench-picker__btn:focus-visible, .bench-picker__action:focus-visible { outline: 1px solid #eaeaea; outline-offset: 2px; }
 
 /* WebBench configuration bar charts: one full-width ranked chart per row */
 .bench-bars { position: relative; margin-bottom: 1rem; }
 .bench-bars .bench-view__toggle { margin: 0 0 1.2rem; }
-.bench-bars__grid { display: flex; flex-direction: column; gap: 2.6rem; }
+.bench-bars__grid { display: flex; flex-direction: column; gap: 2rem; }
 .bench-bars__chart { min-width: 0; }
 .bench-bars__head { margin-bottom: 1rem; }
-.bench-bars__title { display: flex; align-items: center; gap: 10px; font-size: 1.05rem; font-weight: 600; color: #eaeaea; }
+.bench-bars__title { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; font-weight: 600; color: #eaeaea; }
 .bench-bars__title i { width: 11px; height: 11px; border-radius: 2px; flex: 0 0 auto; }
 .bench-bars__sub { font-size: 0.72rem; color: #7d7d7d; margin-top: 4px; }
-.bench-bars__plot { display: flex; align-items: stretch; gap: 10px; height: 330px; padding-bottom: 118px; border-bottom: 0; box-sizing: border-box; overflow: visible; }
-.bench-bars__plot--dense { gap: 4px; padding-left: 46px; }
-.bench-bar { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: default; position: relative; transition: opacity 0.15s; }
+.bench-bars__plot { display: flex; align-items: stretch; justify-content: flex-start; gap: 8px; height: 215px; padding: 0 0 92px 64px; border-bottom: 0; box-sizing: border-box; overflow: visible; }
+.bench-bars__plot--dense { gap: 4px; }
+.bench-bar { flex: 1 1 0; min-width: 0; max-width: 52px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: default; position: relative; transition: opacity 0.15s; }
 .bench-bar--dim { opacity: 0.4; }
 .bench-bar__val { font-size: 0.66rem; color: #cfcfcf; font-variant-numeric: tabular-nums; white-space: nowrap; margin-bottom: 4px; }
 .bench-bars__plot--dense .bench-bar__val { font-size: 0.56rem; }
@@ -2267,7 +2295,7 @@ img {
 .bench-bar__logo { width: 16px; height: 16px; object-fit: contain; opacity: 0.85; }
 .bench-bars__plot--dense .bench-bar__logo { width: 12px; height: 12px; }
 .bench-bar__lab {
-  position: absolute; top: 31px; right: 50%;
+  position: absolute; top: 29px; right: 50%;
   transform: rotate(-45deg); transform-origin: top right;
   font-size: 0.66rem; line-height: 1.15; color: #b8b8b8; white-space: nowrap; text-align: right;
 }
@@ -2289,7 +2317,7 @@ img {
 .bench-bars__tipgrid b { font-weight: 600; text-align: right; }
 .bench-bars__tipgrid small { color: #7d7d7d; font-weight: 400; }
 @media (max-width: 768px) {
-  .bench-bars__plot { height: 260px; padding-bottom: 96px; gap: 4px; }
+  .bench-bars__plot { height: 190px; padding: 0 0 84px 44px; gap: 4px; }
   .bench-bar__val { font-size: 0.54rem; }
   .bench-bar__logo { width: 11px; height: 11px; }
   .bench-bar__lab { font-size: 0.52rem; top: 24px; }

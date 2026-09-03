@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import ProjectsData from "@/data/projects";
@@ -37,27 +37,90 @@ const WB_FAMILIES: { model: string; color: string }[] = [
 ];
 const famColor = (m: string) => WB_FAMILIES.find((f) => f.model === m)?.color ?? "#ffffff";
 
-// Family include / exclude menu shared by the 3D chart and the configuration charts.
-function WebBenchFilter({ rows, hidden, onToggle }: { rows: WebBenchRow[]; hidden: Set<string>; onToggle: (m: string) => void }) {
-  const fams = WB_FAMILIES.filter((f) => rows.some((r) => r.model === f.model));
+// Configuration picker (dropdown) shared by the 3D chart and the configuration charts:
+// one row per model family with a tri-state checkbox, an effort chip per configuration, and counts.
+const WB_EFFORTS = ["low", "medium", "high", "xhigh", "max", "ultra", "n/a"];
+const cfgKey = (r: WebBenchRow) => `${r.model}|${r.thinking}`;
+const WB_DEFAULT_OFF = ["Gemini 3.7 Flash", "Muse Spark 1.2"];
+function WebBenchPicker({ rows, hidden, setHidden }: { rows: WebBenchRow[]; hidden: Set<string>; setHidden: (s: Set<string>) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => { document.removeEventListener("mousedown", onDoc); document.removeEventListener("keydown", onKey); };
+  }, [open]);
+  const fams = WB_FAMILIES
+    .map((f) => ({ ...f, cfgs: rows.filter((r) => r.model === f.model).sort((x, y) => WB_EFFORTS.indexOf(x.thinking) - WB_EFFORTS.indexOf(y.thinking)) }))
+    .filter((f) => f.cfgs.length);
+  const onCount = rows.filter((r) => !hidden.has(cfgKey(r))).length;
+  const toggleCfg = (k: string) => { const n = new Set(hidden); if (n.has(k)) n.delete(k); else n.add(k); setHidden(n); };
+  const toggleFam = (keys: string[]) => {
+    const anyOn = keys.some((k) => !hidden.has(k));
+    const n = new Set(hidden);
+    keys.forEach((k) => { if (anyOn) n.add(k); else n.delete(k); });
+    setHidden(n);
+  };
   return (
-    <div className="bench-filter" role="group" aria-label="Models shown">
-      <span className="bench-filter__label">Models</span>
-      {fams.map((f) => {
-        const on = !hidden.has(f.model);
-        return (
-          <button
-            key={f.model}
-            type="button"
-            className={on ? "bench-filter__chip bench-filter__chip--on" : "bench-filter__chip"}
-            aria-pressed={on}
-            onClick={() => onToggle(f.model)}
-          >
-            <i style={{ background: f.color }} />
-            {f.model}
-          </button>
-        );
-      })}
+    <div className="bench-picker" ref={ref}>
+      <button type="button" className="bench-picker__btn" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        Configs <span>({onCount}/{rows.length})</span> <em>{open ? "⌃" : "⌄"}</em>
+      </button>
+      {open && (
+        <div className="bench-picker__panel" role="group" aria-label="Configurations shown">
+          <div className="bench-picker__list">
+            {fams.map((f) => {
+              const keys = f.cfgs.map(cfgKey);
+              const n = keys.filter((k) => !hidden.has(k)).length;
+              const state = n === 0 ? "off" : n === keys.length ? "on" : "partial";
+              return (
+                <div key={f.model} className="bench-picker__fam">
+                  <div className="bench-picker__row">
+                    <button
+                      type="button"
+                      className={`bench-picker__check bench-picker__check--${state}`}
+                      aria-pressed={state !== "off"}
+                      aria-label={`Toggle ${f.model}`}
+                      onClick={() => toggleFam(keys)}
+                    />
+                    <button type="button" className="bench-picker__name" onClick={() => toggleFam(keys)}>
+                      <i style={{ background: f.color }} />
+                      {f.model}
+                    </button>
+                    <span className="bench-picker__count">{n}/{keys.length}</span>
+                  </div>
+                  {f.cfgs.some((c) => c.thinking !== "n/a") && (
+                    <div className="bench-picker__chips">
+                      {f.cfgs.map((c) => {
+                        const k = cfgKey(c);
+                        const off = hidden.has(k);
+                        return (
+                          <button
+                            key={k}
+                            type="button"
+                            className={off ? "bench-picker__chip bench-picker__chip--off" : "bench-picker__chip"}
+                            aria-pressed={!off}
+                            onClick={() => toggleCfg(k)}
+                          >
+                            {c.thinking}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <div className="bench-picker__foot">
+            <button type="button" className="bench-picker__action" onClick={() => setHidden(new Set())}>Select all</button>
+            <button type="button" className="bench-picker__action" onClick={() => setHidden(new Set(rows.map(cfgKey)))}>Clear</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -75,9 +138,9 @@ const PROVIDER_LOGO: Record<string, { src: string; name: string }> = {
 };
 type WBMetric = "cost" | "time" | "score";
 const WB_CHARTS: { key: WBMetric; title: string; sub: string; swatch: string; floor: number; fmt: (v: number) => string }[] = [
-  { key: "cost", title: "Cost per Task", sub: "Median USD per task · Lower is better", swatch: "#e0895a", floor: 0, fmt: (v) => `$${v < 0.1 ? v.toFixed(3) : v.toFixed(2)}` },
-  { key: "time", title: "Speed", sub: "Median browser-active seconds per task · Lower is better", swatch: "#e8d47a", floor: 0, fmt: (v) => `${Math.round(v)}s` },
   { key: "score", title: "Accuracy", sub: "Pass@1 over the 44 tasks · Higher is better", swatch: "#8ab4e8", floor: 60, fmt: (v) => `${v.toFixed(1)}%` },
+  { key: "time", title: "Speed", sub: "Median browser-active seconds per task · Lower is better", swatch: "#e8d47a", floor: 0, fmt: (v) => `${Math.round(v)}s` },
+  { key: "cost", title: "Cost per Task", sub: "Median USD per task · Lower is better", swatch: "#e0895a", floor: 0, fmt: (v) => `$${v < 0.1 ? v.toFixed(3) : v.toFixed(2)}` },
 ];
 
 function WebBenchBarChart({
@@ -215,11 +278,11 @@ function ProjectDetail() {
   const navigate = useNavigate();
   const project = ProjectsData.items.find((p) => p.slug === slug);
   const [copiedCmd, setCopiedCmd] = useState<string | null>(null);
-  const [wbHidden, setWbHidden] = useState<Set<string>>(() => new Set(["Gemini 3.7 Flash", "Muse Spark 1.2"]));
-  const toggleWbFamily = (m: string) =>
-    setWbHidden((h) => { const n = new Set(h); if (n.has(m)) n.delete(m); else n.add(m); return n; });
+  const [wbHidden, setWbHidden] = useState<Set<string>>(
+    () => new Set((project?.benchmarks?.webRows ?? []).filter((r) => WB_DEFAULT_OFF.includes(r.model)).map(cfgKey)),
+  );
   const wbRows = useMemo(
-    () => (project?.benchmarks?.webRows ?? []).filter((r) => !wbHidden.has(r.model)),
+    () => (project?.benchmarks?.webRows ?? []).filter((r) => !wbHidden.has(cfgKey(r))),
     [project, wbHidden],
   );
 
@@ -437,7 +500,7 @@ function ProjectDetail() {
               </ReactMarkdown>
             </div>
           )}
-          <WebBenchFilter rows={project.benchmarks.webRows} hidden={wbHidden} onToggle={toggleWbFamily} />
+          <div className="bench-picker__bar"><WebBenchPicker rows={project.benchmarks.webRows} hidden={wbHidden} setHidden={setWbHidden} /></div>
           <WebBench3D rows={wbRows} />
           <h3 className="project-detail__section-title bench-configs-title">Configurations</h3>
           <WebBenchConfigs rows={wbRows} />
