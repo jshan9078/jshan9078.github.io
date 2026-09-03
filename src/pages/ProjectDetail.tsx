@@ -166,7 +166,7 @@ function WebBenchBarChart({
         </div>
         <div className="bench-bars__sub">{chart.sub}</div>
       </div>
-      <div className={"bench-bars__plot" + (sorted.length > 14 ? " bench-bars__plot--dense" : "")}>
+      <div className="bench-bars__plot">
         {sorted.map((r) => {
           const key = `${r.model}-${r.thinking}`;
           const on = hover && hover.model === r.model && hover.thinking === r.thinking;
@@ -199,16 +199,10 @@ function WebBenchBarChart({
   );
 }
 
-// Three ranked bar charts (cost, speed, accuracy) with a shared hover drilldown.
+// Three ranked bar charts (accuracy, speed, cost) over every configuration, with a shared hover drilldown.
 function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
-  const [mode, setMode] = useState<"best" | "all">("best");
   const [hover, setHoverState] = useState<{ row: WebBenchRow; left: number; top: number } | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
-  const base = (a: WebBenchRow, b: WebBenchRow) => b.score - a.score || a.time - b.time || a.cost - b.cost;
-  const shown =
-    mode === "all"
-      ? [...rows]
-      : WB_FAMILIES.map((f) => rows.filter((r) => r.model === f.model).sort(base)[0]).filter(Boolean);
   const setHover = (r: WebBenchRow | null, e?: React.MouseEvent) => {
     if (!r || !e || !wrapRef.current) return setHoverState(null);
     const box = wrapRef.current.getBoundingClientRect();
@@ -218,31 +212,11 @@ function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
   const flipX = hover && wrapRef.current ? hover.left > wrapRef.current.clientWidth * 0.62 : false;
   return (
     <div className="bench-bars" ref={wrapRef}>
-      <div className="bench-view__toggle" role="tablist" aria-label="Configuration filter">
-        <button
-          type="button"
-          className={mode === "best" ? "bench-view__btn bench-view__btn--on" : "bench-view__btn"}
-          onClick={() => setMode("best")}
-        >
-          Best
-        </button>
-        <button
-          type="button"
-          className={mode === "all" ? "bench-view__btn bench-view__btn--on" : "bench-view__btn"}
-          onClick={() => setMode("all")}
-        >
-          All effort levels
-        </button>
+      <div className="bench-bars__grid">
+        {WB_CHARTS.map((c) => (
+          <WebBenchBarChart key={c.key} rows={rows} chart={c} hover={hr} setHover={setHover} />
+        ))}
       </div>
-      {shown.length === 0 ? (
-        <div className="bench-bars__empty">No models selected.</div>
-      ) : (
-        <div className="bench-bars__grid">
-          {WB_CHARTS.map((c) => (
-            <WebBenchBarChart key={c.key} rows={shown} chart={c} hover={hr} setHover={setHover} />
-          ))}
-        </div>
-      )}
       {hover && (
         <div
           className="bench-bars__tip"
@@ -503,7 +477,7 @@ function ProjectDetail() {
           <div className="bench-picker__bar"><WebBenchPicker rows={project.benchmarks.webRows} hidden={wbHidden} setHidden={setWbHidden} /></div>
           <WebBench3D rows={wbRows} />
           <h3 className="project-detail__section-title bench-configs-title">Configurations</h3>
-          <WebBenchConfigs rows={wbRows} />
+          <WebBenchConfigs rows={project.benchmarks.webRows} />
           <div className="bench-caption">
             {project.benchmarks.tableCaption?.map((line, i) => (
               <span key={i} className="bench-caption__line">{line}</span>

@@ -2261,9 +2261,9 @@ img {
 .bench-picker__count { font-size: 0.78rem; color: #7d7d7d; font-variant-numeric: tabular-nums; }
 .bench-picker__chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 7px 0 0 28px; }
 .bench-picker__chip {
-  background: #1c1c1c; color: #cfcfcf; border: 1px solid #3a3a3a; border-radius: 3px;
-  font: inherit; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase;
-  padding: 3px 8px; cursor: pointer;
+  background: #1c1c1c; color: #cfcfcf; border: 1px solid #3a3a3a; border-radius: 4px;
+  font: inherit; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.01em;
+  padding: 3px 9px; cursor: pointer;
 }
 .bench-picker__chip--off { color: #5a5a5a; border-color: #262626; background: transparent; text-decoration: line-through; }
 .bench-picker__chip:hover { border-color: #666; }
@@ -2274,32 +2274,31 @@ img {
 
 /* WebBench configuration bar charts: one full-width ranked chart per row */
 .bench-bars { position: relative; margin-bottom: 1rem; }
-.bench-bars .bench-view__toggle { margin: 0 0 1.2rem; }
 .bench-bars__grid { display: flex; flex-direction: column; gap: 2rem; }
 .bench-bars__chart { min-width: 0; }
 .bench-bars__head { margin-bottom: 1rem; }
 .bench-bars__title { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; font-weight: 600; color: #eaeaea; }
 .bench-bars__title i { width: 11px; height: 11px; border-radius: 2px; flex: 0 0 auto; }
 .bench-bars__sub { font-size: 0.72rem; color: #7d7d7d; margin-top: 4px; }
-.bench-bars__plot { display: flex; align-items: stretch; justify-content: flex-start; gap: 8px; height: 215px; padding: 0 0 92px 64px; border-bottom: 0; box-sizing: border-box; overflow: visible; }
-.bench-bars__plot--dense { gap: 4px; }
-.bench-bar { flex: 1 1 0; min-width: 0; max-width: 52px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: default; position: relative; transition: opacity 0.15s; }
+.bench-bars__plot { display: flex; align-items: stretch; justify-content: flex-start; gap: 4px; height: 250px; padding: 0 0 92px 64px; border-bottom: 0; box-sizing: border-box; overflow: visible; }
+.bench-bar { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: default; position: relative; transition: opacity 0.15s; }
 .bench-bar--dim { opacity: 0.4; }
-.bench-bar__val { font-size: 0.66rem; color: #cfcfcf; font-variant-numeric: tabular-nums; white-space: nowrap; margin-bottom: 4px; }
-.bench-bars__plot--dense .bench-bar__val { font-size: 0.56rem; }
+.bench-bar__val {
+  writing-mode: vertical-rl; transform: rotate(180deg);
+  font-size: 0.62rem; color: #cfcfcf; font-variant-numeric: tabular-nums; white-space: nowrap;
+  margin-bottom: 5px; line-height: 1;
+}
 .bench-bar--on .bench-bar__val { color: #ffffff; }
 .bench-bar__col { width: 100%; flex: 1 1 auto; display: flex; align-items: flex-end; border-bottom: 1px solid var(--border, #2c2c2c); }
 .bench-bar__fill { display: block; width: 100%; border-radius: 4px 4px 0 0; opacity: 0.9; transition: opacity 0.15s; }
 .bench-bar--on .bench-bar__fill { opacity: 1; box-shadow: 0 0 0 1px #eaeaea inset; }
 .bench-bar__foot { position: absolute; top: 100%; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 7px; padding-top: 8px; }
-.bench-bar__logo { width: 16px; height: 16px; object-fit: contain; opacity: 0.85; }
-.bench-bars__plot--dense .bench-bar__logo { width: 12px; height: 12px; }
+.bench-bar__logo { width: 13px; height: 13px; object-fit: contain; opacity: 0.85; }
 .bench-bar__lab {
-  position: absolute; top: 29px; right: 50%;
+  position: absolute; top: 26px; right: 50%;
   transform: rotate(-45deg); transform-origin: top right;
-  font-size: 0.66rem; line-height: 1.15; color: #b8b8b8; white-space: nowrap; text-align: right;
+  font-size: 0.6rem; line-height: 1.15; color: #b8b8b8; white-space: nowrap; text-align: right;
 }
-.bench-bars__plot--dense .bench-bar__lab { top: 26px; font-size: 0.58rem; }
 .bench-bar__lab em { font-style: normal; color: #7d7d7d; }
 .bench-bar--on .bench-bar__lab { color: #ffffff; }
 .bench-bars__empty { font-size: 0.78rem; color: #7d7d7d; padding: 1rem 0; }
