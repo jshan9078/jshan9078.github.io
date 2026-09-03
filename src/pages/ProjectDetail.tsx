@@ -35,13 +35,7 @@ const WB_FAMILIES: { model: string; color: string }[] = [
   { model: "Muse Spark 1.2", color: "#e8d47a" },
   { model: "Muse Spark 1.3", color: "#66d1e0" },
 ];
-const THINK_ORDER = ["low", "medium", "high", "xhigh", "max", "ultra"];
 const famColor = (m: string) => WB_FAMILIES.find((f) => f.model === m)?.color ?? "#ffffff";
-// Higher thinking level = stronger glow around the point (0 for low and n/a).
-const glowT = (thinking: string) => {
-  const i = THINK_ORDER.indexOf(thinking);
-  return i <= 0 ? 0 : i / (THINK_ORDER.length - 1);
-};
 
 // Family include / exclude menu shared by the 3D chart and the configuration charts.
 function WebBenchFilter({ rows, hidden, onToggle }: { rows: WebBenchRow[]; hidden: Set<string>; onToggle: (m: string) => void }) {
