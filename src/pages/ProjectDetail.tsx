@@ -63,11 +63,21 @@ function WebBenchFilter({ rows, hidden, onToggle }: { rows: WebBenchRow[]; hidde
 }
 
 const EFFORT_SHORT: Record<string, string> = { low: "low", medium: "med", high: "high", xhigh: "xhigh", max: "max", ultra: "ultra" };
+const PROVIDER_LOGO: Record<string, { src: string; name: string }> = {
+  "Opus 5": { src: "/logos/anthropic.svg", name: "Anthropic" },
+  "Sonnet 5": { src: "/logos/anthropic.svg", name: "Anthropic" },
+  "Haiku 4.5": { src: "/logos/anthropic.svg", name: "Anthropic" },
+  "Gemini 3.7 Flash": { src: "/logos/google.svg", name: "Google" },
+  "Gemini 3.8 Flash": { src: "/logos/google.svg", name: "Google" },
+  "GPT-5.6 Luna": { src: "/logos/openai.svg", name: "OpenAI" },
+  "Muse Spark 1.2": { src: "/logos/meta.svg", name: "Meta" },
+  "Muse Spark 1.3": { src: "/logos/meta.svg", name: "Meta" },
+};
 type WBMetric = "cost" | "time" | "score";
-const WB_CHARTS: { key: WBMetric; title: string; order: string; floor: number; fmt: (v: number) => string }[] = [
-  { key: "cost", title: "Cost per task", order: "lowest first", floor: 0, fmt: (v) => `$${v < 0.1 ? v.toFixed(3) : v.toFixed(2)}` },
-  { key: "time", title: "Browser-active time", order: "fastest first", floor: 0, fmt: (v) => `${Math.round(v)}s` },
-  { key: "score", title: "Accuracy", order: "highest first", floor: 60, fmt: (v) => `${v.toFixed(1)}%` },
+const WB_CHARTS: { key: WBMetric; title: string; sub: string; swatch: string; floor: number; fmt: (v: number) => string }[] = [
+  { key: "cost", title: "Cost per Task", sub: "Median USD per task · Lower is better", swatch: "#e0895a", floor: 0, fmt: (v) => `$${v < 0.1 ? v.toFixed(3) : v.toFixed(2)}` },
+  { key: "time", title: "Speed", sub: "Median browser-active seconds per task · Lower is better", swatch: "#e8d47a", floor: 0, fmt: (v) => `${Math.round(v)}s` },
+  { key: "score", title: "Accuracy", sub: "Pass@1 over the 44 tasks · Higher is better", swatch: "#8ab4e8", floor: 60, fmt: (v) => `${v.toFixed(1)}%` },
 ];
 
 function WebBenchBarChart({
@@ -86,13 +96,19 @@ function WebBenchBarChart({
   const h = (v: number) => Math.max(2, ((v - chart.floor) / (max - chart.floor)) * 100);
   return (
     <div className="bench-bars__chart">
-      <div className="bench-bars__title">
-        {chart.title} <em>&middot; {chart.order}</em>
+      <div className="bench-bars__head">
+        <div className="bench-bars__title">
+          <i style={{ background: chart.swatch }} />
+          {chart.title}
+        </div>
+        <div className="bench-bars__sub">{chart.sub}</div>
       </div>
       <div className={"bench-bars__plot" + (sorted.length > 14 ? " bench-bars__plot--dense" : "")}>
         {sorted.map((r) => {
           const key = `${r.model}-${r.thinking}`;
           const on = hover && hover.model === r.model && hover.thinking === r.thinking;
+          const logo = PROVIDER_LOGO[r.model];
+          const eff = EFFORT_SHORT[r.thinking];
           return (
             <div
               key={key}
@@ -105,7 +121,13 @@ function WebBenchBarChart({
               <span className="bench-bar__col">
                 <span className="bench-bar__fill" style={{ height: `${h(r[chart.key])}%`, background: famColor(r.model) }} />
               </span>
-              <span className="bench-bar__lab">{EFFORT_SHORT[r.thinking] ?? ""}</span>
+              <span className="bench-bar__foot">
+                {logo && <img className="bench-bar__logo" src={logo.src} alt={logo.name} />}
+                <span className="bench-bar__lab">
+                  {r.model}
+                  {eff && <em> ({eff})</em>}
+                </span>
+              </span>
             </div>
           );
         })}
