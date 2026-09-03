@@ -36,6 +36,10 @@ export interface WebBenchRow {
   cost: number; // average USD per task
   outTok: number; // average output tokens per task
   steps: number; // average browser CLI calls per task
+  passes?: number; // tasks passed (drilldown)
+  tasks?: number; // tasks attempted (drilldown)
+  wallTotal?: number; // median end-to-end seconds per task, including model latency (drilldown)
+  reasonTok?: number; // median reasoning tokens per task (drilldown)
 }
 
 export interface Benchmarks {

@@ -1,6 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useRef } from "react";
-import type { MouseEvent as ReactMouseEvent } from "react";
+import { useState, useRef, useMemo } from "react";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import ProjectsData from "@/data/projects";
@@ -44,200 +43,102 @@ const glowT = (thinking: string) => {
   return i <= 0 ? 0 : i / (THINK_ORDER.length - 1);
 };
 
-// DeepSWE-style efficiency curves: y = score, x = avg time or avg cost per task.
-// One connected line per model family across its thinking levels; most efficient is top-left.
-function WebBenchCurves({ rows, metric }: { rows: WebBenchRow[]; metric: "time" | "cost" }) {
-  const W = 680;
-  const H = 430;
-  const ml = 56;
-  const mr = 24;
-  const mt = 30;
-  const mb = 52;
-  const plotW = W - ml - mr;
-  const plotH = H - mt - mb;
-  const bottom = mt + plotH;
-  const xs = rows.map((r) => r[metric]);
-  const xMax = metric === "time" ? Math.ceil(Math.max(...xs) / 30) * 30 : Math.ceil(Math.max(...xs) / 0.3) * 0.3;
-  const yMin = 55;
-  // DeepSWE-style reversed x-axis: smaller (better) values on the right, so most efficient is top-right.
-  const sx = (v: number) => ml + (1 - v / xMax) * plotW;
-  const sy = (v: number) => mt + (1 - (v - yMin) / (100 - yMin)) * plotH;
-  const xTicks =
-    metric === "time"
-      ? Array.from({ length: xMax / 30 + 1 }, (_, i) => i * 30)
-      : Array.from({ length: Math.round(xMax / 0.3) + 1 }, (_, i) => +(i * 0.3).toFixed(2));
-  const yTicks = [60, 70, 80, 90, 100];
-  const fmtX = (v: number) => (metric === "time" ? `${v}s` : `$${v.toFixed(2)}`);
-
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const [hover, setHover] = useState<{ row: WebBenchRow; left: number; top: number } | null>(null);
-  const at = (row: WebBenchRow) => (e: ReactMouseEvent) => {
-    const rect = wrapRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    setHover({ row, left: e.clientX - rect.left, top: e.clientY - rect.top });
-  };
-
+// Family include / exclude menu shared by the 3D chart and the configuration charts.
+function WebBenchFilter({ rows, hidden, onToggle }: { rows: WebBenchRow[]; hidden: Set<string>; onToggle: (m: string) => void }) {
+  const fams = WB_FAMILIES.filter((f) => rows.some((r) => r.model === f.model));
   return (
-    <div className="bench-curves" ref={wrapRef}>
-      <svg
-        viewBox={`0 0 ${W} ${H}`}
-        role="img"
-        aria-label={`WebBench score versus average ${metric} per task`}
-      >
-        <defs>
-          <filter id={`dot-glow-${metric}`} x="-300%" y="-300%" width="700%" height="700%">
-            <feGaussianBlur stdDeviation="3" />
-          </filter>
-        </defs>
-        {yTicks.map((v) => (
-          <line key={`gy${v}`} x1={ml} y1={sy(v)} x2={ml + plotW} y2={sy(v)} className="bench-curves__grid" />
-        ))}
-        <line x1={ml} y1={bottom} x2={ml + plotW} y2={bottom} className="bench-curves__axis" />
-        {xTicks.map((v) => (
-          <text key={`x${v}`} x={sx(v)} y={bottom + 18} textAnchor="middle" className="bench-curves__tick">
-            {fmtX(v)}
-          </text>
-        ))}
-        {yTicks.map((v) => (
-          <text key={`y${v}`} x={ml - 10} y={sy(v) + 4} textAnchor="end" className="bench-curves__tick">
-            {v}%
-          </text>
-        ))}
-        <text x={ml + plotW / 2} y={H - 6} textAnchor="middle" className="bench-curves__axis-title">
-          {metric === "time" ? "Median time per task" : "Median cost per task"}
-        </text>
-        <text x={ml + plotW - 8} y={mt + 4} textAnchor="end" className="bench-curves__ideal-label">
-          most efficient
-        </text>
-        {WB_FAMILIES.map((f) => {
-          const pts = rows
-            .filter((r) => r.model === f.model)
-            .sort((a, b) => THINK_ORDER.indexOf(a.thinking) - THINK_ORDER.indexOf(b.thinking));
-          if (!pts.length) return null;
-          const path = pts.map((r, i) => `${i ? "L" : "M"}${sx(r[metric])},${sy(r.score)}`).join(" ");
-          // DeepSWE labeling: ONE two-line label per family (name + that endpoint's effort tag),
-          // anchored at whichever curve endpoint is most isolated from other families' points,
-          // offset outward into whitespace. All other dots stay unlabeled; hover has the details.
-          // Anchor at the highest thinking endpoint so the label reads the same on both charts.
-          const anchor = pts[pts.length - 1];
-          const ax = sx(anchor[metric]);
-          const ay = sy(anchor.score);
-          const midX = (Math.max(...pts.map((r) => sx(r[metric]))) + Math.min(...pts.map((r) => sx(r[metric])))) / 2;
-          const dir = ax <= midX ? -1 : 1; // push the label outward, away from the curve body
-          const lx = Math.max(ml + 4, Math.min(ax + dir * 14, ml + plotW - 4));
-          const ly = Math.max(mt + 12, ay - 14);
-          const anchorSide = dir > 0 ? "start" : "end";
-          return (
-            <g key={f.model}>
-              <path d={path} fill="none" stroke={f.color} strokeWidth={1.1} strokeOpacity={0.7} />
-              {pts.map((r) => {
-                const t = glowT(r.thinking);
-                return (
-                  <g key={r.thinking}>
-                    {t > 0 && (
-                      <circle
-                        cx={sx(r[metric])}
-                        cy={sy(r.score)}
-                        r={4 + 5 * t}
-                        fill={f.color}
-                        opacity={0.25 + 0.55 * t}
-                        filter={`url(#dot-glow-${metric})`}
-                        pointerEvents="none"
-                      />
-                    )}
-                    <circle
-                      cx={sx(r[metric])}
-                      cy={sy(r.score)}
-                      r={3.5}
-                      fill={f.color}
-                      stroke="var(--bg)"
-                      strokeWidth={1}
-                      style={{ cursor: "pointer" }}
-                      onMouseEnter={at(r)}
-                      onMouseMove={at(r)}
-                      onMouseLeave={() => setHover(null)}
-                    />
-                  </g>
-                );
-              })}
-              <text x={lx} y={ly} textAnchor={anchorSide} className="bench-curves__fam" fill={f.color}>
-                {f.model}
-              </text>
-              {anchor.thinking !== "n/a" && (
-                <text x={lx} y={ly + 12} textAnchor={anchorSide} className="bench-curves__eff" fill={f.color}>
-                  {anchor.thinking.toUpperCase()}
-                </text>
-              )}
-            </g>
-          );
-        })}
-      </svg>
-      {hover && (
-        <div
-          className="bench-scatter__tip"
-          style={{
-            left: hover.left,
-            top: hover.top,
-            transform: hover.top < 90 ? "translate(-50%, 16px)" : "translate(-50%, calc(-100% - 14px))",
-          }}
-        >
-          <span className="bench-scatter__tip-model">{hover.row.model}</span>
-          {hover.row.thinking !== "n/a" && (
-            <span className="bench-scatter__tip-row">{hover.row.thinking} thinking</span>
-          )}
-          <span className="bench-scatter__tip-row">{hover.row.harness}</span>
-          <span className="bench-scatter__tip-meta">
-            {hover.row.score}% · {hover.row.time}s · ${hover.row.cost.toFixed(2)}
-          </span>
-        </div>
-      )}
+    <div className="bench-filter" role="group" aria-label="Models shown">
+      <span className="bench-filter__label">Models</span>
+      {fams.map((f) => {
+        const on = !hidden.has(f.model);
+        return (
+          <button
+            key={f.model}
+            type="button"
+            className={on ? "bench-filter__chip bench-filter__chip--on" : "bench-filter__chip"}
+            aria-pressed={on}
+            onClick={() => onToggle(f.model)}
+          >
+            <i style={{ background: f.color }} />
+            {f.model}
+          </button>
+        );
+      })}
     </div>
   );
 }
 
-// DeepSWE-style compact leaderboard table with Best / All effort levels toggle.
-type WBSortKey = "model" | "score" | "cost" | "outTok" | "steps" | "time";
-// Direction a column starts in when first clicked: best value on top.
-const WB_SORT_DEFAULT_DIR: Record<WBSortKey, 1 | -1> = {
-  model: 1, score: -1, cost: 1, outTok: 1, steps: 1, time: 1,
-};
+const EFFORT_SHORT: Record<string, string> = { low: "low", medium: "med", high: "high", xhigh: "xhigh", max: "max", ultra: "ultra" };
+type WBMetric = "cost" | "time" | "score";
+const WB_CHARTS: { key: WBMetric; title: string; order: string; floor: number; fmt: (v: number) => string }[] = [
+  { key: "cost", title: "Cost per task", order: "lowest first", floor: 0, fmt: (v) => `$${v < 0.1 ? v.toFixed(3) : v.toFixed(2)}` },
+  { key: "time", title: "Browser-active time", order: "fastest first", floor: 0, fmt: (v) => `${Math.round(v)}s` },
+  { key: "score", title: "Accuracy", order: "highest first", floor: 60, fmt: (v) => `${v.toFixed(1)}%` },
+];
 
+function WebBenchBarChart({
+  rows, chart, hover, setHover,
+}: {
+  rows: WebBenchRow[];
+  chart: (typeof WB_CHARTS)[number];
+  hover: WebBenchRow | null;
+  setHover: (r: WebBenchRow | null, e?: React.MouseEvent) => void;
+}) {
+  const base = (a: WebBenchRow, b: WebBenchRow) => b.score - a.score || a.time - b.time || a.cost - b.cost;
+  const sorted = [...rows].sort((a, b) =>
+    chart.key === "score" ? b.score - a.score || base(a, b) : a[chart.key] - b[chart.key] || base(a, b),
+  );
+  const max = Math.max(...rows.map((r) => r[chart.key]), chart.floor + 1e-9);
+  const h = (v: number) => Math.max(2, ((v - chart.floor) / (max - chart.floor)) * 100);
+  return (
+    <div className="bench-bars__chart">
+      <div className="bench-bars__title">
+        {chart.title} <em>&middot; {chart.order}</em>
+      </div>
+      <div className={"bench-bars__plot" + (sorted.length > 14 ? " bench-bars__plot--dense" : "")}>
+        {sorted.map((r) => {
+          const key = `${r.model}-${r.thinking}`;
+          const on = hover && hover.model === r.model && hover.thinking === r.thinking;
+          return (
+            <div
+              key={key}
+              className={"bench-bar" + (on ? " bench-bar--on" : "") + (hover && !on ? " bench-bar--dim" : "")}
+              onMouseEnter={(e) => setHover(r, e)}
+              onMouseMove={(e) => setHover(r, e)}
+              onMouseLeave={() => setHover(null)}
+            >
+              <span className="bench-bar__val">{chart.fmt(r[chart.key])}</span>
+              <span className="bench-bar__col">
+                <span className="bench-bar__fill" style={{ height: `${h(r[chart.key])}%`, background: famColor(r.model) }} />
+              </span>
+              <span className="bench-bar__lab">{EFFORT_SHORT[r.thinking] ?? ""}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// Three ranked bar charts (cost, speed, accuracy) with a shared hover drilldown.
 function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
   const [mode, setMode] = useState<"best" | "all">("best");
-  const [sort, setSort] = useState<{ key: WBSortKey; dir: 1 | -1 }>({ key: "score", dir: -1 });
-  // Base ranking (score, then time, then cost) doubles as the tie-breaker for every column.
-  const base = (a: WebBenchRow, b: WebBenchRow) =>
-    b.score - a.score || a.time - b.time || a.cost - b.cost;
+  const [hover, setHoverState] = useState<{ row: WebBenchRow; left: number; top: number } | null>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const base = (a: WebBenchRow, b: WebBenchRow) => b.score - a.score || a.time - b.time || a.cost - b.cost;
   const shown =
     mode === "all"
       ? [...rows]
       : WB_FAMILIES.map((f) => rows.filter((r) => r.model === f.model).sort(base)[0]).filter(Boolean);
-  const cmp = (a: WebBenchRow, b: WebBenchRow) => {
-    const primary =
-      sort.key === "model"
-        ? a.model.localeCompare(b.model) || THINK_ORDER.indexOf(a.thinking) - THINK_ORDER.indexOf(b.thinking)
-        : a[sort.key] - b[sort.key];
-    return primary * sort.dir || base(a, b);
+  const setHover = (r: WebBenchRow | null, e?: React.MouseEvent) => {
+    if (!r || !e || !wrapRef.current) return setHoverState(null);
+    const box = wrapRef.current.getBoundingClientRect();
+    setHoverState({ row: r, left: e.clientX - box.left, top: e.clientY - box.top });
   };
-  const sorted = shown.sort(cmp);
-  const clickSort = (key: WBSortKey) =>
-    setSort((s) => ({ key, dir: s.key === key ? ((-s.dir) as 1 | -1) : WB_SORT_DEFAULT_DIR[key] }));
-  const Head = ({ k, children, num }: { k: WBSortKey; children: React.ReactNode; num?: boolean }) => (
-    <button
-      type="button"
-      className={
-        (num ? "bench-table__num " : "") +
-        "bench-table__sort" +
-        (sort.key === k ? " bench-table__sort--on" : "")
-      }
-      onClick={() => clickSort(k)}
-    >
-      {children}
-      <em>{sort.key === k ? (sort.dir === 1 ? "▴" : "▾") : ""}</em>
-    </button>
-  );
+  const hr = hover?.row ?? null;
+  const flipX = hover && wrapRef.current ? hover.left > wrapRef.current.clientWidth * 0.62 : false;
   return (
-    <div className="bench-table">
+    <div className="bench-bars" ref={wrapRef}>
       <div className="bench-view__toggle" role="tablist" aria-label="Configuration filter">
         <button
           type="button"
@@ -254,43 +155,41 @@ function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
           All effort levels
         </button>
       </div>
-      <div className="bench-table__scroll">
-        <div className="bench-table__head">
-          <Head k="model">Model</Head>
-          <span />
-          <Head k="score" num>Pass@1</Head>
-          <Head k="cost" num>Med cost</Head>
-          <Head k="outTok" num>Out tok</Head>
-          <Head k="steps" num>Steps</Head>
-          <Head k="time" num>Time</Head>
+      {shown.length === 0 ? (
+        <div className="bench-bars__empty">No models selected.</div>
+      ) : (
+        <div className="bench-bars__grid">
+          {WB_CHARTS.map((c) => (
+            <WebBenchBarChart key={c.key} rows={shown} chart={c} hover={hr} setHover={setHover} />
+          ))}
         </div>
-        {sorted.map((r) => {
-          return (
-            <div key={`${r.model}-${r.thinking}`} className="bench-table__row" title={r.harness}>
-              <span className="bench-table__model">
-                <i style={{ background: famColor(r.model) }} />
-                {r.model}
-                {r.thinking !== "n/a" && <em>[{r.thinking}]</em>}
-              </span>
-              <span className="bench-table__barcell">
-                <span className="bench-table__bar">
-                  <span
-                    className="bench-table__fill"
-                    style={{ width: `${r.score}%`, background: famColor(r.model) }}
-                  />
-                </span>
-              </span>
-              <span className="bench-table__num">
-                <b>{r.score.toFixed(1)}%</b>
-              </span>
-              <span className="bench-table__num">${r.cost.toFixed(2)}</span>
-              <span className="bench-table__num">{(r.outTok / 1000).toFixed(1)}k</span>
-              <span className="bench-table__num">{Math.round(r.steps)}</span>
-              <span className="bench-table__num">{Math.round(r.time)}s</span>
-            </div>
-          );
-        })}
-      </div>
+      )}
+      {hover && (
+        <div
+          className="bench-bars__tip"
+          style={{ left: hover.left + (flipX ? -14 : 14), top: hover.top + 14, transform: flipX ? "translateX(-100%)" : undefined }}
+        >
+          <b>
+            <i style={{ background: famColor(hover.row.model) }} />
+            {hover.row.model}
+            {hover.row.thinking !== "n/a" && <em> [{hover.row.thinking}]</em>}
+          </b>
+          <span>{hover.row.harness}</span>
+          <div className="bench-bars__tipgrid">
+            <span>Pass@1</span>
+            <b>
+              {hover.row.score.toFixed(1)}%
+              {hover.row.passes != null && <small> {hover.row.passes}/{hover.row.tasks}</small>}
+            </b>
+            <span>Median cost</span><b>${hover.row.cost.toFixed(3)}</b>
+            <span>Browser-active time</span><b>{hover.row.time.toFixed(1)}s</b>
+            {hover.row.wallTotal != null && (<><span>End-to-end time</span><b>{hover.row.wallTotal.toFixed(1)}s</b></>)}
+            <span>Output tokens</span><b>{Math.round(hover.row.outTok).toLocaleString()}</b>
+            {hover.row.reasonTok != null && (<><span>Reasoning tokens</span><b>{Math.round(hover.row.reasonTok).toLocaleString()}</b></>)}
+            <span>Browser steps</span><b>{Math.round(hover.row.steps)}</b>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -300,7 +199,13 @@ function ProjectDetail() {
   const navigate = useNavigate();
   const project = ProjectsData.items.find((p) => p.slug === slug);
   const [copiedCmd, setCopiedCmd] = useState<string | null>(null);
-  const [benchView, setBenchView] = useState<"3d" | "2d">("3d");
+  const [wbHidden, setWbHidden] = useState<Set<string>>(() => new Set(["Gemini 3.7 Flash", "Muse Spark 1.2"]));
+  const toggleWbFamily = (m: string) =>
+    setWbHidden((h) => { const n = new Set(h); if (n.has(m)) n.delete(m); else n.add(m); return n; });
+  const wbRows = useMemo(
+    () => (project?.benchmarks?.webRows ?? []).filter((r) => !wbHidden.has(r.model)),
+    [project, wbHidden],
+  );
 
   const renderInstall = (cmd: string) => (
     <div className="project-detail__install" key={cmd}>
@@ -516,34 +421,10 @@ function ProjectDetail() {
               </ReactMarkdown>
             </div>
           )}
-          <div className="bench-view">
-            <div className="bench-view__toggle" role="tablist" aria-label="Chart view">
-              <button
-                type="button"
-                className={benchView === "3d" ? "bench-view__btn bench-view__btn--on" : "bench-view__btn"}
-                onClick={() => setBenchView("3d")}
-              >
-                3D
-              </button>
-              <button
-                type="button"
-                className={benchView === "2d" ? "bench-view__btn bench-view__btn--on" : "bench-view__btn"}
-                onClick={() => setBenchView("2d")}
-              >
-                2D
-              </button>
-            </div>
-          </div>
-          {benchView === "3d" ? (
-            <WebBench3D rows={project.benchmarks.webRows} />
-          ) : (
-            <>
-              <WebBenchCurves rows={project.benchmarks.webRows} metric="time" />
-              <WebBenchCurves rows={project.benchmarks.webRows} metric="cost" />
-            </>
-          )}
+          <WebBenchFilter rows={project.benchmarks.webRows} hidden={wbHidden} onToggle={toggleWbFamily} />
+          <WebBench3D rows={wbRows} />
           <h3 className="project-detail__section-title bench-configs-title">Configurations</h3>
-          <WebBenchConfigs rows={project.benchmarks.webRows} />
+          <WebBenchConfigs rows={wbRows} />
           <div className="bench-caption">
             {project.benchmarks.tableCaption?.map((line, i) => (
               <span key={i} className="bench-caption__line">{line}</span>
