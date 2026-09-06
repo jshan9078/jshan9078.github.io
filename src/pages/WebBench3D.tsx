@@ -43,12 +43,11 @@ function glowTexture(THREE: any) {
 
 export type WebBenchOptimal = { score: number; cost: number; time: number };
 const DEFAULT_OPTIMAL: WebBenchOptimal = { score: 95, cost: 0.35, time: 60 };
-// Round an axis maximum up to a clean tick multiple (5 ticks) so every point sits inside the grid.
-const niceMax = (v: number, minMax: number) => {
-  const m = Math.max(v, minMax);
-  const raw = m / 5; const pow = Math.pow(10, Math.floor(Math.log10(raw)));
-  const step = [1, 2, 2.5, 5, 10].map((k) => k * pow).find((k) => k >= raw) ?? 10 * pow;
-  return { max: step * 5, step };
+// Round an axis maximum up to the next tick so every point sits inside the grid: time in 50 s ticks
+// (100 s once past 300 s), cost in $0.25 ticks ($0.50 once past $1.50).
+const axisTo = (v: number, minMax: number, small: number, big: number, switchAt: number) => {
+  const m = Math.max(v, minMax); const step = m > switchAt ? big : small;
+  return { max: Math.ceil(m / step - 1e-9) * step, step };
 };
 
 export default function WebBench3D({ rows, optimal = DEFAULT_OPTIMAL }: { rows: WebBenchRow[]; optimal?: WebBenchOptimal }) {
@@ -71,8 +70,8 @@ export default function WebBench3D({ rows, optimal = DEFAULT_OPTIMAL }: { rows: 
       if (disposed || !wrapRef.current) return;
 
       const SX = 10, SY = 6.5, SZ = 10;
-      const costAx = niceMax(Math.max(...rows.map((r) => r.cost), optimal.cost), 1.0);
-      const timeAx = niceMax(Math.max(...rows.map((r) => r.time), optimal.time), 100);
+      const costAx = axisTo(Math.max(...rows.map((r) => r.cost), optimal.cost), 1.0, 0.25, 0.5, 1.5);
+      const timeAx = axisTo(Math.max(...rows.map((r) => r.time), optimal.time), 100, 50, 100, 300);
       const scoreMin = Math.min(60, Math.floor((Math.min(...rows.map((r) => r.score), optimal.score) - 1) / 10) * 10);
       const COST = { min: 0, max: costAx.max };
       const SCORE = { min: scoreMin, max: 100 };
