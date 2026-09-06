@@ -8,6 +8,7 @@ const ORBIT_URL = "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitCo
 const CSS2D_URL = "https://unpkg.com/three@0.160.0/examples/jsm/renderers/CSS2DRenderer.js";
 
 const FAMS = [
+  { model: "GPT-6 Astra", color: 0xe0b341 },
   { model: "Opus 5", color: 0xe0895a },
   { model: "Sonnet 5", color: 0x8ab4e8 },
   { model: "Haiku 4.5", color: 0xc9a0e8 },
@@ -40,7 +41,17 @@ function glowTexture(THREE: any) {
   return glowTex;
 }
 
-export default function WebBench3D({ rows }: { rows: WebBenchRow[] }) {
+export type WebBenchOptimal = { score: number; cost: number; time: number };
+const DEFAULT_OPTIMAL: WebBenchOptimal = { score: 95, cost: 0.35, time: 60 };
+// Round an axis maximum up to a clean tick multiple (5 ticks) so every point sits inside the grid.
+const niceMax = (v: number, minMax: number) => {
+  const m = Math.max(v, minMax);
+  const raw = m / 5; const pow = Math.pow(10, Math.floor(Math.log10(raw)));
+  const step = [1, 2, 2.5, 5, 10].map((k) => k * pow).find((k) => k >= raw) ?? 10 * pow;
+  return { max: step * 5, step };
+};
+
+export default function WebBench3D({ rows, optimal = DEFAULT_OPTIMAL }: { rows: WebBenchRow[]; optimal?: WebBenchOptimal }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const tipRef = useRef<HTMLDivElement>(null);
 
@@ -60,9 +71,12 @@ export default function WebBench3D({ rows }: { rows: WebBenchRow[] }) {
       if (disposed || !wrapRef.current) return;
 
       const SX = 10, SY = 6.5, SZ = 10;
-      const COST = { min: 0, max: 1.2 };
-      const SCORE = { min: 60, max: 100 };
-      const TIME = { min: 0, max: 130 };
+      const costAx = niceMax(Math.max(...rows.map((r) => r.cost), optimal.cost), 1.0);
+      const timeAx = niceMax(Math.max(...rows.map((r) => r.time), optimal.time), 100);
+      const scoreMin = Math.min(60, Math.floor((Math.min(...rows.map((r) => r.score), optimal.score) - 1) / 10) * 10);
+      const COST = { min: 0, max: costAx.max };
+      const SCORE = { min: scoreMin, max: 100 };
+      const TIME = { min: 0, max: timeAx.max };
       const x = (c: number) => ((c - COST.min) / (COST.max - COST.min)) * SX;
       const y = (s: number) => ((s - SCORE.min) / (SCORE.max - SCORE.min)) * SY;
       const z = (t: number) => ((t - TIME.min) / (TIME.max - TIME.min)) * SZ;
@@ -125,15 +139,15 @@ export default function WebBench3D({ rows }: { rows: WebBenchRow[] }) {
       };
 
       const GRID = 0x1f1f1f, EDGE = 0x3a3a3a;
-      for (let c = 0; c <= 1.2001; c += 0.3) {
+      for (let c = 0; c <= COST.max + 1e-6; c += costAx.step) {
         scene.add(thinLine(new THREE.Vector3(x(c), 0, 0), new THREE.Vector3(x(c), 0, SZ), GRID, 0.8));
         scene.add(thinLine(new THREE.Vector3(x(c), 0, 0), new THREE.Vector3(x(c), SY, 0), GRID, 0.5));
       }
-      for (let t = 0; t <= 130.001; t += 26) {
+      for (let t = 0; t <= TIME.max + 1e-6; t += timeAx.step) {
         scene.add(thinLine(new THREE.Vector3(0, 0, z(t)), new THREE.Vector3(SX, 0, z(t)), GRID, 0.8));
         scene.add(thinLine(new THREE.Vector3(0, 0, z(t)), new THREE.Vector3(0, SY, z(t)), GRID, 0.5));
       }
-      for (let s = 60; s <= 100.001; s += 10) {
+      for (let s = SCORE.min; s <= 100.001; s += 10) {
         scene.add(thinLine(new THREE.Vector3(0, y(s), 0), new THREE.Vector3(SX, y(s), 0), GRID, 0.5));
         scene.add(thinLine(new THREE.Vector3(0, y(s), 0), new THREE.Vector3(0, y(s), SZ), GRID, 0.5));
       }
@@ -141,25 +155,25 @@ export default function WebBench3D({ rows }: { rows: WebBenchRow[] }) {
       scene.add(thinLine(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, SY, 0), EDGE, 1));
       scene.add(thinLine(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, SZ), EDGE, 1));
 
-      for (let c = 0; c <= 1.2001; c += 0.3)
+      for (let c = 0; c <= COST.max + 1e-6; c += costAx.step)
         label(`$${c.toFixed(2)}`, new THREE.Vector3(x(c), -0.32, -0.45));
-      for (let t = 0; t <= 130.001; t += 26)
+      for (let t = 0; t <= TIME.max + 1e-6; t += timeAx.step)
         label(`${Math.round(t)}s`, new THREE.Vector3(-0.55, -0.32, z(t)));
-      for (let s = 60; s <= 100.001; s += 10)
+      for (let s = SCORE.min; s <= 100.001; s += 10)
         label(`${s}%`, new THREE.Vector3(-0.4, y(s), -0.55));
       label("MEDIAN COST / TASK", new THREE.Vector3(SX / 2, -1.15, -1.15), "b3d-lbl b3d-lbl--axis");
       label("MEDIAN TIME / TASK", new THREE.Vector3(-1.7, -1.15, SZ / 2), "b3d-lbl b3d-lbl--axis");
       label("ACCURACY", new THREE.Vector3(0.5, SY + 0.75, -0.4), "b3d-lbl b3d-lbl--axis");
 
-      // optimal region: >=95% accuracy, <=$0.35 and <=60 s per task
+      // optimal region: thresholds come from the version (v1: >=95%, <=$0.35, <=60 s)
       {
-        const w = x(0.35), h = SY - y(95), d = z(60);
+        const w = x(optimal.cost), h = SY - y(optimal.score), d = z(optimal.time);
         const geo = new THREE.BoxGeometry(w, h, d);
         const box = new THREE.Mesh(
           geo,
           new THREE.MeshBasicMaterial({ color: 0xf0c948, transparent: true, opacity: 0.05, depthWrite: false, side: THREE.DoubleSide })
         );
-        box.position.set(w / 2, y(95) + h / 2, d / 2);
+        box.position.set(w / 2, y(optimal.score) + h / 2, d / 2);
         scene.add(box);
         const edges = new THREE.LineSegments(
           new THREE.EdgesGeometry(geo),
@@ -293,7 +307,7 @@ export default function WebBench3D({ rows }: { rows: WebBenchRow[] }) {
       disposed = true;
       cleanup?.();
     };
-  }, [rows]);
+  }, [rows, optimal]);
 
   return (
     <div className="bench-3d">
@@ -302,7 +316,7 @@ export default function WebBench3D({ rows }: { rows: WebBenchRow[] }) {
       <div className="bench-3d__legend">
         <span className="bench-3d__leg">
           <i style={{ background: "transparent", border: "1px solid #f0c948", borderRadius: 2 }} />
-          Optimal region <em>&middot; &ge;95% &middot; &le;$0.35 &middot; &le;60s per task</em>
+          Optimal region <em>&middot; &ge;{optimal.score}% &middot; &le;${optimal.cost.toFixed(2)} &middot; &le;{optimal.time}s per task</em>
         </span>
         {FAMS.map((f) => {
           const row = rows.find((r) => r.model === f.model);

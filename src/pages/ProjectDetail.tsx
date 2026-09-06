@@ -157,8 +157,9 @@ function WebBenchBarChart({
   const sorted = [...rows].sort((a, b) =>
     chart.key === "score" ? b.score - a.score || base(a, b) : a[chart.key] - b[chart.key] || base(a, b),
   );
-  const max = Math.max(...rows.map((r) => r[chart.key]), chart.floor + 1e-9);
-  const h = (v: number) => Math.max(2, ((v - chart.floor) / (max - chart.floor)) * 100);
+  const floor = chart.key === "score" ? Math.min(chart.floor, Math.floor((Math.min(...rows.map((r) => r.score)) - 1) / 10) * 10) : chart.floor;
+  const max = Math.max(...rows.map((r) => r[chart.key]), floor + 1e-9);
+  const h = (v: number) => Math.max(2, ((v - floor) / (max - floor)) * 100);
   return (
     <div className="bench-bars__chart">
       <div className="bench-bars__head">
@@ -505,7 +506,7 @@ function ProjectDetail() {
             </div>
           )}
           <div className="bench-picker__bar"><WebBenchPicker rows={wbAllRows} hidden={wbHidden} setHidden={setWbHidden} /></div>
-          <WebBench3D key={wbVersion?.id ?? "v1"} rows={wbRows} />
+          <WebBench3D key={wbVersion?.id ?? "v1"} rows={wbRows} optimal={wbVersion?.optimal} />
           <h3 className="project-detail__section-title bench-configs-title">Configurations</h3>
           <WebBenchConfigs rows={wbAllRows} />
           <div className="bench-caption">

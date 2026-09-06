@@ -50,6 +50,7 @@ export interface WebBenchVersion {
   webRows: WebBenchRow[];
   tableCaption: string[];
   defaultOff?: string[]; // model names hidden by default in the picker
+  optimal?: { score: number; cost: number; time: number }; // optimal-region thresholds for the 3D chart
 }
 
 export interface Benchmarks {

@@ -64,6 +64,7 @@ const WEBBENCH_V2: WebBenchVersion = {
   webRows: webbenchV2.webRows,
   tableCaption: webbenchV2.tableCaption,
   defaultOff: webbenchV2.defaultOff,
+  optimal: { score: 85, cost: 0.75, time: 100 },
 };
 
 // Shared WebBench data, rendered on both the browser-automation-cli page and the WebBench project.
