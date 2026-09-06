@@ -509,11 +509,13 @@ function ProjectDetail() {
           <WebBench3D key={wbVersion?.id ?? "v1"} rows={wbRows} optimal={wbVersion?.optimal} />
           <h3 className="project-detail__section-title bench-configs-title">Configurations</h3>
           <WebBenchConfigs rows={wbAllRows} />
-          <div className="bench-caption">
+          <ul className="bench-caption bench-caption--list">
             {wbCaption?.map((line, i) => (
-              <span key={i} className="bench-caption__line">{line}</span>
+              <li key={i} className="bench-caption__line">
+                <ReactMarkdown components={{ a: ({ href, children }) => (<a className="bench-desc__link" href={href} target="_blank" rel="noopener noreferrer">{children}</a>), p: ({ children }) => <>{children}</> }}>{line}</ReactMarkdown>
+              </li>
             ))}
-          </div>
+          </ul>
           </>
           )}
         </div>

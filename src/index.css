@@ -1913,6 +1913,8 @@ img {
   margin: var(--space-md) 0 0;
 }
 .bench-caption__line { font-size: var(--text-xs); line-height: 1.5; color: var(--ink-tertiary); }
+.bench-caption--list { list-style: disc; padding-left: 1.2em; margin-top: var(--space-lg); }
+.bench-caption--list li::marker { color: var(--ink-tertiary); }
 .bench-table-title { margin-top: var(--space-2xl); }
 .bench-desc {
   margin: var(--space-sm) 0 var(--space-lg);
