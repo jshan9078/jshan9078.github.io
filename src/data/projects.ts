@@ -134,7 +134,7 @@ const projects: Project[] = [
   {
     slug: "web-bench",
     color: "#a78bfa",
-    description: `WebBench is a benchmark for how efficiently an LLM drives a browser. Every configuration is given the same browser tool ([browser-automation-cli](https://github.com/jshan9078/browser-automation-cli)) and the same tasks, then measured on accuracy and the cost of success: time, tokens, tool calls, and dollars per task. Two versions: **V1**, 44 live-site tasks that frontier models now score 90 to 100% on, and **V2**, 70 tasks built to separate them. Select a version below.`,
+    description: `WebBench is a benchmark for how efficiently an LLM drives a browser. Every configuration is given the same browser tool ([browser-automation-cli](https://github.com/jshan9078/browser-automation-cli)) and the same tasks, then measured on accuracy and the cost of success: time, tokens, tool calls, and dollars per task. Two versions: **V1**, 44 live-site tasks that frontier models now score 90 to 100% on, and **V2**, 70 tasks built to separate them.`,
     shortDescription:
       "A benchmark measuring how efficiently different LLMs drive a browser on real websites with respect to completion time, tokens used, and cost.",
     links: [

@@ -466,9 +466,11 @@ function ProjectDetail() {
 
           {(project.benchmarks.webRows || wbVersions) && (
           <>
+          {!(wbVersions && wbVersions.length > 1) && (
           <h3 className="project-detail__section-title bench-table-title">
             {project.benchmarks.tableTitle}
           </h3>
+          )}
           {wbVersions && wbVersions.length > 1 && (
             <div className="bench-version" role="tablist" aria-label="WebBench version">
               {wbVersions.map((v) => (
