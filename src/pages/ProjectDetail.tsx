@@ -26,7 +26,7 @@ const GitHubIcon = () => (
 );
 
 const WB_FAMILIES: { model: string; color: string }[] = [
-  { model: "GPT-6 Astra", color: "#e0b341" },
+  { model: "GPT-6 Astra", color: "#e05252" },
   { model: "Opus 5", color: "#e0895a" },
   { model: "Sonnet 5", color: "#8ab4e8" },
   { model: "Haiku 4.5", color: "#c9a0e8" },

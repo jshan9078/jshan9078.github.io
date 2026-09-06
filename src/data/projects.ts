@@ -71,7 +71,7 @@ const WEBBENCH_V2: WebBenchVersion = {
   webRows: webbenchV2.webRows,
   tableCaption: webbenchV2.tableCaption,
   defaultOff: webbenchV2.defaultOff,
-  optimal: { score: 85, cost: 0.75, time: 100 },
+  optimal: { score: 90, cost: 0.5, time: 100 },
   details: `**Matrix**: 19 complete configurations over the same 70 tasks at pass@1 (1,330 scored runs): Muse Spark 1.3, Claude Sonnet 5 and Claude Opus 5 at five thinking levels each, Gemini 3.8 Flash at three, and GPT-6 Astra at low.
 
 **Scoring**: 62 tasks run on deterministic local web apps whose private endpoints are gated behind a per-page key, so an agent that calls the API instead of using the page gets a 403; the verdict is the server's state after the run. The 8 live-site tasks are judged by a Claude Sonnet judge that first takes the truth from the site's API.
