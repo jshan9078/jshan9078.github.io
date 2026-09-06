@@ -15,13 +15,6 @@ const WEBBENCH_V1: WebBenchVersion = {
   id: "v1",
   label: "V1: 44 tasks",
   tableDesc: WEBBENCH_V1_DESC,
-  details: `**Matrix**: 36 configurations over the same 44 tasks at pass@1 (1,580+ runs): Claude Opus 5, Sonnet 5 and Haiku 4.5 via Claude Code, GPT-5.6 Luna via the Codex CLI, Muse Spark 1.2 and 1.3 via Muse Code, each at five thinking levels, plus Gemini 3.7 and 3.8 Flash via Antigravity at three. Haiku 4.5 ignores the effort parameter, so its five sweeps are reported as one averaged configuration.
-
-**Tasks**: live sites (Amazon, eBay, Google Flights, OpenStreetMap, YouTube, Gmail, Spotify and more): multi-hop reads of current data that cannot be in a training set, action tasks verified from harness-captured ground truth (cart contents, end-state text), and signed-in tasks that create private, reversible account state. Every verifier requires grounding: a correct answer with no supporting navigation in the trace fails.
-
-**Judging**: a Claude Sonnet judge issues every verdict from the captured evidence, contested failures are re-audited, and verified bot walls are excluded and retried. Each run writes a raw bundle (trace, end state, screenshots, token usage, video) before judging, so verdicts can be re-derived without rerunning models.
-
-**Cost**: Claude's CLI-reported cost per run; for the others, each provider's public prices applied to the captured per-call token usage.`,
   webRows: [
     { model: "Haiku 4.5", thinking: "n/a", harness: "Claude Code", score: 69.5, time: 51.0, cost: 0.198, outTok: 3896, steps: 14 },
     { model: "Gemini 3.7 Flash", thinking: "low", harness: "Antigravity", score: 97.7, time: 26.0, cost: 0.117, outTok: 1810, steps: 15, passes: 43, tasks: 44, wallTotal: 39.8, reasonTok: 0 },
@@ -58,6 +51,8 @@ const WEBBENCH_V1: WebBenchVersion = {
   ],
   tableCaption: [
     "44 live-site tasks per configuration; time (browser-active seconds), cost, tokens, and steps are per-task medians.",
+    "36 configurations: Claude Opus 5, Sonnet 5 and Haiku 4.5 (Claude Code), GPT-5.6 Luna (Codex CLI), Muse Spark 1.2 and 1.3 (Muse Code) at five thinking levels each, Gemini 3.7 and 3.8 Flash (Antigravity) at three; Haiku ignores the effort setting, so its sweeps are averaged into one row.",
+    "Cost is the CLI's reported cost for Claude and each provider's public prices applied to captured token usage for the others.",
     "Score is pass@1, judged by a Claude Sonnet judge from captured evidence at capture time.",
     "Bot walls are never scored as failures: verified walls are excluded and retried.",
     "Agents run uncapped: no turn or wall-clock budget is imposed by the harness.",
@@ -72,13 +67,6 @@ const WEBBENCH_V2: WebBenchVersion = {
   tableCaption: webbenchV2.tableCaption,
   defaultOff: webbenchV2.defaultOff,
   optimal: { score: 90, cost: 0.5, time: 100 },
-  details: `**Matrix**: 19 complete configurations over the same 70 tasks at pass@1 (1,330 scored runs): Muse Spark 1.3, Claude Sonnet 5 and Claude Opus 5 at five thinking levels each, Gemini 3.8 Flash at three, and GPT-6 Astra at low.
-
-**Scoring**: 62 tasks run on deterministic local web apps whose private endpoints are gated behind a per-page key, so an agent that calls the API instead of using the page gets a 403; the verdict is the server's state after the run. The 8 live-site tasks are judged by a Claude Sonnet judge that first takes the truth from the site's API.
-
-**Infrastructure**: one run per AWS instance, an S3 work queue with leased items so the sweep is resumable and idempotent, a judge instance that verifies live-site runs as they land, and a rule that a run in which the model hit a provider rate or usage limit is voided and rerun.
-
-**Cost**: Claude's CLI-reported cost per run; for the others, list prices applied to the captured token usage.`,
 };
 
 // Shared WebBench data, rendered on both the browser-automation-cli page and the WebBench project.
