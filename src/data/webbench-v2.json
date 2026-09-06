@@ -1,5 +1,5 @@
 {
- "tableDesc": "70 tasks in two tiers, run at pass@1 over the same browser tool. The **core tier** (27 tasks) is deterministic browser-control work every configuration should pass: forms and multi-page flows, table editing and validation, triage and scheduling, keyboard-only and hover-only UIs, precision clicks, iframes and nested scrolling, and read-only GitHub and Wikipedia navigation. The **discriminating tier** (43 tasks) holds tasks that at least one frontier configuration failed on both of two attempts during construction: 29 are counting and tracking over rendered video clips, the rest are exact visual counting, tracing and real-site judgement. 62 tasks run on deterministic local sites scored from server state; 8 run on live GitHub, Wikipedia and JS Paint and are judged by a Claude Sonnet judge against API ground truth. Runs that hit a provider rate or usage limit were voided and rerun, never scored. Configurations still in progress and not shown: GPT-6 Astra high (13/70), GPT-6 Astra max (17/70), GPT-6 Astra medium (12/70), GPT-6 Astra xhigh (9/70), GPT-5.6 Luna high (2/70), GPT-5.6 Luna low (10/70), GPT-5.6 Luna max (3/70), GPT-5.6 Luna medium (8/70), GPT-5.6 Luna xhigh (8/70), Opus 5 xhigh (69/70). [Task set](https://github.com/jshan9078/web-bench/blob/main/results/core_set.json), [discriminating set](https://github.com/jshan9078/web-bench/blob/main/results/validated_set.json), [per-run results](https://github.com/jshan9078/web-bench/tree/main/results).",
+ "tableDesc": "70 tasks in two tiers, run at pass@1 over the same browser tool. The **core tier** (27 tasks) is deterministic browser-control work every configuration should pass: forms and multi-page flows, table editing and validation, triage and scheduling, keyboard-only and hover-only UIs, precision clicks, iframes and nested scrolling, and read-only GitHub and Wikipedia navigation. The **discriminating tier** (43 tasks) holds tasks that at least one frontier configuration failed on both of two attempts during construction: 29 are counting and tracking over rendered video clips, the rest are exact visual counting, tracing and real-site judgement. 62 tasks run on deterministic local sites scored from server state; 8 run on live GitHub, Wikipedia and JS Paint and are judged by a Claude Sonnet judge against API ground truth. Runs that hit a provider rate or usage limit were voided and rerun, never scored. Configurations still in progress and not shown: GPT-6 Astra high (13/70), GPT-6 Astra max (17/70), GPT-6 Astra medium (12/70), GPT-6 Astra xhigh (9/70), GPT-5.6 Luna high (2/70), GPT-5.6 Luna low (10/70), GPT-5.6 Luna max (3/70), GPT-5.6 Luna medium (8/70), GPT-5.6 Luna xhigh (8/70). [Task set](https://github.com/jshan9078/web-bench/blob/main/results/core_set.json), [discriminating set](https://github.com/jshan9078/web-bench/blob/main/results/validated_set.json), [per-run results](https://github.com/jshan9078/web-bench/tree/main/results).",
  "webRows": [
   {
    "model": "GPT-6 Astra",
@@ -71,6 +71,24 @@
    "corePasses": 27,
    "coreTasks": 27,
    "discPasses": 33,
+   "discTasks": 43
+  },
+  {
+   "model": "Opus 5",
+   "thinking": "xhigh",
+   "harness": "Claude Code",
+   "score": 91.4,
+   "time": 104.7,
+   "cost": 0.744,
+   "outTok": 6586,
+   "steps": 12.0,
+   "passes": 64,
+   "tasks": 70,
+   "wallTotal": 130.1,
+   "reasonTok": 3828,
+   "corePasses": 27,
+   "coreTasks": 27,
+   "discPasses": 37,
    "discTasks": 43
   },
   {
