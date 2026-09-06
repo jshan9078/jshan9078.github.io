@@ -242,8 +242,6 @@ function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
             <span>Output tokens</span><b>{Math.round(hover.row.outTok).toLocaleString()}</b>
             {hover.row.reasonTok != null && (<><span>Reasoning tokens</span><b>{Math.round(hover.row.reasonTok).toLocaleString()}</b></>)}
             <span>Browser steps</span><b>{Math.round(hover.row.steps)}</b>
-            {hover.row.coreTasks != null && (<><span>Core tier</span><b>{hover.row.corePasses}/{hover.row.coreTasks}</b></>)}
-            {hover.row.discTasks != null && (<><span>Discriminating tier</span><b>{hover.row.discPasses}/{hover.row.discTasks}</b></>)}
           </div>
         </div>
       )}

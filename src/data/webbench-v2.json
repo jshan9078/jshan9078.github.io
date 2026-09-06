@@ -1,5 +1,5 @@
 {
- "tableDesc": "70 tasks in two tiers, run at pass@1 over the same browser tool. The **core tier** (27 tasks) is deterministic browser-control work every configuration should pass: forms and multi-page flows, table editing and validation, triage and scheduling, keyboard-only and hover-only UIs, precision clicks, iframes and nested scrolling, and read-only GitHub and Wikipedia navigation. The **discriminating tier** (43 tasks) holds tasks that at least one frontier configuration failed on both of two attempts during construction: 29 are counting and tracking over rendered video clips, the rest are exact visual counting, tracing and real-site judgement. 62 tasks run on deterministic local sites scored from server state; 8 run on live GitHub, Wikipedia and JS Paint and are judged by a Claude Sonnet judge against API ground truth. Runs that hit a provider rate or usage limit were voided and rerun, never scored. Configurations still in progress and not shown: GPT-6 Astra high (13/70), GPT-6 Astra max (17/70), GPT-6 Astra medium (12/70), GPT-6 Astra xhigh (9/70), GPT-5.6 Luna high (2/70), GPT-5.6 Luna low (10/70), GPT-5.6 Luna max (3/70), GPT-5.6 Luna medium (8/70), GPT-5.6 Luna xhigh (8/70). [Task set](https://github.com/jshan9078/web-bench/blob/main/results/core_set.json), [discriminating set](https://github.com/jshan9078/web-bench/blob/main/results/validated_set.json), [per-run results](https://github.com/jshan9078/web-bench/tree/main/results).",
+ "tableDesc": "70 tasks, run at pass@1 with the same browser tool and a 10-minute budget. v1 stopped separating frontier models, so v2's tasks were written in batches and run on Claude Sonnet 5, Claude Opus 5 and Muse Spark 1.2 at low thinking; a task was kept when a configuration failed it on two independent attempts (pass@2), or when it covered browser-control work the set would otherwise lack, and every kept failure was checked by hand. 29 tasks count or track something in a rendered video clip (occupancy peaks, events attributed to actors, direction-filtered crossings, defects on a belt); the rest are exact visual work on generated images (counting rotated or occluded shapes, tracing a line through crossings, reading an angle, a gauge or an unnumbered clock), browser workflows on local web apps (multi-page checkout, password reset through an in-app inbox, keyboard-only and hover-only UIs, a form inside a shadow root inside an iframe, table editing with conflicts), and 8 read-only tasks on live GitHub, Wikipedia and JS Paint. 62 tasks run on deterministic local apps and are scored from the server's state after the run; the live-site tasks are judged by a Claude Sonnet judge against API ground truth. Runs that hit a provider rate or usage limit were voided and rerun, never scored. Because Sonnet 5 low was the pilot for most of the selection, its score measures the selection rather than the model. Not shown (partial): GPT-6 Astra high (13/70), GPT-6 Astra max (17/70), GPT-6 Astra medium (12/70), GPT-6 Astra xhigh (9/70), GPT-5.6 Luna high (2/70), GPT-5.6 Luna low (10/70), GPT-5.6 Luna max (3/70), GPT-5.6 Luna medium (8/70), GPT-5.6 Luna xhigh (8/70). [Tasks](https://github.com/jshan9078/web-bench/tree/main/tasks), [design log](https://github.com/jshan9078/web-bench/blob/main/tasks/V2-DESIGN.md), [per-run results](https://github.com/jshan9078/web-bench/tree/main/results).",
  "webRows": [
   {
    "model": "GPT-6 Astra",
@@ -13,11 +13,7 @@
    "passes": 66,
    "tasks": 70,
    "wallTotal": 55.2,
-   "reasonTok": 102.0,
-   "corePasses": 26,
-   "coreTasks": 27,
-   "discPasses": 40,
-   "discTasks": 43
+   "reasonTok": 102.0
   },
   {
    "model": "Opus 5",
@@ -31,11 +27,7 @@
    "passes": 57,
    "tasks": 70,
    "wallTotal": 101.6,
-   "reasonTok": 1932.0,
-   "corePasses": 27,
-   "coreTasks": 27,
-   "discPasses": 30,
-   "discTasks": 43
+   "reasonTok": 1932.0
   },
   {
    "model": "Opus 5",
@@ -49,11 +41,7 @@
    "passes": 57,
    "tasks": 70,
    "wallTotal": 98.8,
-   "reasonTok": 2040.0,
-   "corePasses": 27,
-   "coreTasks": 27,
-   "discPasses": 30,
-   "discTasks": 43
+   "reasonTok": 2040.0
   },
   {
    "model": "Opus 5",
@@ -67,11 +55,7 @@
    "passes": 60,
    "tasks": 70,
    "wallTotal": 118.2,
-   "reasonTok": 3607.5,
-   "corePasses": 27,
-   "coreTasks": 27,
-   "discPasses": 33,
-   "discTasks": 43
+   "reasonTok": 3607.5
   },
   {
    "model": "Opus 5",
@@ -85,11 +69,7 @@
    "passes": 64,
    "tasks": 70,
    "wallTotal": 130.1,
-   "reasonTok": 3828,
-   "corePasses": 27,
-   "coreTasks": 27,
-   "discPasses": 37,
-   "discTasks": 43
+   "reasonTok": 3828
   },
   {
    "model": "Opus 5",
@@ -103,11 +83,7 @@
    "passes": 60,
    "tasks": 70,
    "wallTotal": 159.9,
-   "reasonTok": 4659.0,
-   "corePasses": 27,
-   "coreTasks": 27,
-   "discPasses": 33,
-   "discTasks": 43
+   "reasonTok": 4659.0
   },
   {
    "model": "Sonnet 5",
@@ -121,11 +97,7 @@
    "passes": 34,
    "tasks": 70,
    "wallTotal": 157.4,
-   "reasonTok": 3616.0,
-   "corePasses": 27,
-   "coreTasks": 27,
-   "discPasses": 7,
-   "discTasks": 43
+   "reasonTok": 3616.0
   },
   {
    "model": "Sonnet 5",
@@ -139,11 +111,7 @@
    "passes": 48,
    "tasks": 70,
    "wallTotal": 146.3,
-   "reasonTok": 4820,
-   "corePasses": 26,
-   "coreTasks": 27,
-   "discPasses": 22,
-   "discTasks": 43
+   "reasonTok": 4820
   },
   {
    "model": "Sonnet 5",
@@ -157,11 +125,7 @@
    "passes": 47,
    "tasks": 70,
    "wallTotal": 158.6,
-   "reasonTok": 4910,
-   "corePasses": 27,
-   "coreTasks": 27,
-   "discPasses": 20,
-   "discTasks": 43
+   "reasonTok": 4910
   },
   {
    "model": "Sonnet 5",
@@ -175,11 +139,7 @@
    "passes": 47,
    "tasks": 70,
    "wallTotal": 173.4,
-   "reasonTok": 3838,
-   "corePasses": 27,
-   "coreTasks": 27,
-   "discPasses": 20,
-   "discTasks": 43
+   "reasonTok": 3838
   },
   {
    "model": "Sonnet 5",
@@ -193,11 +153,7 @@
    "passes": 39,
    "tasks": 70,
    "wallTotal": 272.1,
-   "reasonTok": 6399.0,
-   "corePasses": 25,
-   "coreTasks": 27,
-   "discPasses": 14,
-   "discTasks": 43
+   "reasonTok": 6399.0
   },
   {
    "model": "Gemini 3.8 Flash",
@@ -211,11 +167,7 @@
    "passes": 49,
    "tasks": 70,
    "wallTotal": 84.0,
-   "reasonTok": 0.0,
-   "corePasses": 26,
-   "coreTasks": 27,
-   "discPasses": 23,
-   "discTasks": 43
+   "reasonTok": 0.0
   },
   {
    "model": "Gemini 3.8 Flash",
@@ -229,11 +181,7 @@
    "passes": 57,
    "tasks": 70,
    "wallTotal": 127.7,
-   "reasonTok": 8967.5,
-   "corePasses": 26,
-   "coreTasks": 27,
-   "discPasses": 31,
-   "discTasks": 43
+   "reasonTok": 8967.5
   },
   {
    "model": "Gemini 3.8 Flash",
@@ -247,11 +195,7 @@
    "passes": 56,
    "tasks": 70,
    "wallTotal": 172.1,
-   "reasonTok": 13261.5,
-   "corePasses": 27,
-   "coreTasks": 27,
-   "discPasses": 29,
-   "discTasks": 43
+   "reasonTok": 13261.5
   },
   {
    "model": "Muse Spark 1.3",
@@ -265,11 +209,7 @@
    "passes": 44,
    "tasks": 70,
    "wallTotal": 242.5,
-   "reasonTok": 2893.5,
-   "corePasses": 23,
-   "coreTasks": 27,
-   "discPasses": 21,
-   "discTasks": 43
+   "reasonTok": 2893.5
   },
   {
    "model": "Muse Spark 1.3",
@@ -283,11 +223,7 @@
    "passes": 45,
    "tasks": 70,
    "wallTotal": 279.8,
-   "reasonTok": 3602.0,
-   "corePasses": 26,
-   "coreTasks": 27,
-   "discPasses": 19,
-   "discTasks": 43
+   "reasonTok": 3602.0
   },
   {
    "model": "Muse Spark 1.3",
@@ -301,11 +237,7 @@
    "passes": 48,
    "tasks": 70,
    "wallTotal": 301.1,
-   "reasonTok": 4897.5,
-   "corePasses": 23,
-   "coreTasks": 27,
-   "discPasses": 25,
-   "discTasks": 43
+   "reasonTok": 4897.5
   },
   {
    "model": "Muse Spark 1.3",
@@ -319,11 +251,7 @@
    "passes": 53,
    "tasks": 70,
    "wallTotal": 273.9,
-   "reasonTok": 9161.0,
-   "corePasses": 26,
-   "coreTasks": 27,
-   "discPasses": 27,
-   "discTasks": 43
+   "reasonTok": 9161.0
   },
   {
    "model": "Muse Spark 1.3",
@@ -337,18 +265,14 @@
    "passes": 52,
    "tasks": 70,
    "wallTotal": 218.4,
-   "reasonTok": 7371.0,
-   "corePasses": 26,
-   "coreTasks": 27,
-   "discPasses": 26,
-   "discTasks": 43
+   "reasonTok": 7371.0
   }
  ],
  "tableCaption": [
-  "70 tasks per configuration (27 core, 43 discriminating); time (agent wall-clock seconds), cost, tokens and steps are per-task medians; hover a configuration for the per-tier split.",
-  "Score is pass@1: local tasks are scored from the site's server state, real-site tasks by a Claude Sonnet judge against API ground truth.",
-  "The discriminating tier was selected with Sonnet 5 low as the main pilot, so its Sonnet 5 low column reflects that selection rather than a neutral measurement.",
-  "Every run has a 10-minute budget; runs that hit a provider rate or usage limit were voided and rerun on AWS workers (one run per instance)."
+  "70 tasks per configuration; time (agent wall-clock seconds), cost, tokens and steps are per-task medians.",
+  "Score is pass@1: local tasks are scored from the site's server state, live-site tasks by a Claude Sonnet judge against API ground truth.",
+  "Sonnet 5 low was the pilot configuration for most of the task selection, so its column reflects that selection rather than a neutral measurement.",
+  "Every run has a 10-minute budget; runs that hit a provider rate or usage limit were voided and rerun on AWS workers, one run per instance."
  ],
  "defaultOff": []
 }
