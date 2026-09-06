@@ -485,6 +485,12 @@ function ProjectDetail() {
               ))}
             </div>
           )}
+          {wbVersion?.details && (
+            <div className="bench-desc bench-details">
+              <h4 className="bench-details__title">Technical details</h4>
+              <ReactMarkdown components={{ a: ({ href, children }) => (<a className="bench-desc__link" href={href} target="_blank" rel="noopener noreferrer">{children}</a>) }}>{wbVersion.details}</ReactMarkdown>
+            </div>
+          )}
           {wbDesc && (
             <div className="bench-desc">
               <ReactMarkdown
