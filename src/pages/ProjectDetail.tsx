@@ -26,6 +26,7 @@ const GitHubIcon = () => (
 );
 
 const WB_FAMILIES: { model: string; color: string }[] = [
+  { model: "GPT-6 Astra", color: "#e0b341" },
   { model: "Opus 5", color: "#e0895a" },
   { model: "Sonnet 5", color: "#8ab4e8" },
   { model: "Haiku 4.5", color: "#c9a0e8" },
@@ -133,13 +134,14 @@ const PROVIDER_LOGO: Record<string, { src: string; name: string }> = {
   "Gemini 3.7 Flash": { src: "/logos/google.svg", name: "Google" },
   "Gemini 3.8 Flash": { src: "/logos/google.svg", name: "Google" },
   "GPT-5.6 Luna": { src: "/logos/openai.svg", name: "OpenAI" },
+  "GPT-6 Astra": { src: "/logos/openai.svg", name: "OpenAI" },
   "Muse Spark 1.2": { src: "/logos/meta.svg", name: "Meta" },
   "Muse Spark 1.3": { src: "/logos/meta.svg", name: "Meta" },
 };
 type WBMetric = "cost" | "time" | "score";
 const WB_CHARTS: { key: WBMetric; title: string; sub: string; swatch: string; floor: number; fmt: (v: number) => string }[] = [
-  { key: "score", title: "Accuracy", sub: "Pass@1 over the 44 tasks · Higher is better", swatch: "#8ab4e8", floor: 60, fmt: (v) => `${v.toFixed(1)}%` },
-  { key: "time", title: "Speed", sub: "Median browser-active seconds per task · Lower is better", swatch: "#e8d47a", floor: 0, fmt: (v) => `${Math.round(v)}s` },
+  { key: "score", title: "Accuracy", sub: "Pass@1 across the task set · Higher is better", swatch: "#8ab4e8", floor: 60, fmt: (v) => `${v.toFixed(1)}%` },
+  { key: "time", title: "Speed", sub: "Median agent seconds per task · Lower is better", swatch: "#e8d47a", floor: 0, fmt: (v) => `${Math.round(v)}s` },
   { key: "cost", title: "Cost per Task", sub: "Median USD per task · Lower is better", swatch: "#e0895a", floor: 0, fmt: (v) => `$${v < 0.1 ? v.toFixed(3) : v.toFixed(2)}` },
 ];
 
@@ -240,6 +242,8 @@ function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
             <span>Output tokens</span><b>{Math.round(hover.row.outTok).toLocaleString()}</b>
             {hover.row.reasonTok != null && (<><span>Reasoning tokens</span><b>{Math.round(hover.row.reasonTok).toLocaleString()}</b></>)}
             <span>Browser steps</span><b>{Math.round(hover.row.steps)}</b>
+            {hover.row.coreTasks != null && (<><span>Core tier</span><b>{hover.row.corePasses}/{hover.row.coreTasks}</b></>)}
+            {hover.row.discTasks != null && (<><span>Discriminating tier</span><b>{hover.row.discPasses}/{hover.row.discTasks}</b></>)}
           </div>
         </div>
       )}
@@ -252,12 +256,24 @@ function ProjectDetail() {
   const navigate = useNavigate();
   const project = ProjectsData.items.find((p) => p.slug === slug);
   const [copiedCmd, setCopiedCmd] = useState<string | null>(null);
+  const wbVersions = project?.benchmarks?.webVersions;
+  const [wbVersionId, setWbVersionId] = useState<string>(() => wbVersions?.[0]?.id ?? "v1");
+  const wbVersion = wbVersions?.find((v) => v.id === wbVersionId) ?? wbVersions?.[0];
+  const wbAllRows: WebBenchRow[] = wbVersion?.webRows ?? project?.benchmarks?.webRows ?? [];
+  const wbDesc = wbVersion?.tableDesc ?? project?.benchmarks?.tableDesc;
+  const wbCaption = wbVersion?.tableCaption ?? project?.benchmarks?.tableCaption;
+  const wbDefaultOff = wbVersion?.defaultOff ?? WB_DEFAULT_OFF;
   const [wbHidden, setWbHidden] = useState<Set<string>>(
-    () => new Set((project?.benchmarks?.webRows ?? []).filter((r) => WB_DEFAULT_OFF.includes(r.model)).map(cfgKey)),
+    () => new Set(wbAllRows.filter((r) => wbDefaultOff.includes(r.model)).map(cfgKey)),
   );
+  const selectWbVersion = (id: string) => {
+    const v = wbVersions?.find((x) => x.id === id);
+    setWbVersionId(id);
+    setWbHidden(new Set((v?.webRows ?? []).filter((r) => (v?.defaultOff ?? WB_DEFAULT_OFF).includes(r.model)).map(cfgKey)));
+  };
   const wbRows = useMemo(
-    () => (project?.benchmarks?.webRows ?? []).filter((r) => !wbHidden.has(cfgKey(r))),
-    [project, wbHidden],
+    () => wbAllRows.filter((r) => !wbHidden.has(cfgKey(r))),
+    [wbAllRows, wbHidden],
   );
 
   const renderInstall = (cmd: string) => (
@@ -449,12 +465,28 @@ function ProjectDetail() {
           </>
           )}
 
-          {project.benchmarks.webRows && (
+          {(project.benchmarks.webRows || wbVersions) && (
           <>
           <h3 className="project-detail__section-title bench-table-title">
             {project.benchmarks.tableTitle}
           </h3>
-          {project.benchmarks.tableDesc && (
+          {wbVersions && wbVersions.length > 1 && (
+            <div className="bench-version" role="tablist" aria-label="WebBench version">
+              {wbVersions.map((v) => (
+                <button
+                  key={v.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={v.id === wbVersion?.id}
+                  className={"bench-version__tab" + (v.id === wbVersion?.id ? " bench-version__tab--on" : "")}
+                  onClick={() => selectWbVersion(v.id)}
+                >
+                  {v.label}
+                </button>
+              ))}
+            </div>
+          )}
+          {wbDesc && (
             <div className="bench-desc">
               <ReactMarkdown
                 components={{
@@ -470,16 +502,16 @@ function ProjectDetail() {
                   ),
                 }}
               >
-                {project.benchmarks.tableDesc}
+                {wbDesc}
               </ReactMarkdown>
             </div>
           )}
-          <div className="bench-picker__bar"><WebBenchPicker rows={project.benchmarks.webRows} hidden={wbHidden} setHidden={setWbHidden} /></div>
-          <WebBench3D rows={wbRows} />
+          <div className="bench-picker__bar"><WebBenchPicker rows={wbAllRows} hidden={wbHidden} setHidden={setWbHidden} /></div>
+          <WebBench3D key={wbVersion?.id ?? "v1"} rows={wbRows} />
           <h3 className="project-detail__section-title bench-configs-title">Configurations</h3>
-          <WebBenchConfigs rows={project.benchmarks.webRows} />
+          <WebBenchConfigs rows={wbAllRows} />
           <div className="bench-caption">
-            {project.benchmarks.tableCaption?.map((line, i) => (
+            {wbCaption?.map((line, i) => (
               <span key={i} className="bench-caption__line">{line}</span>
             ))}
           </div>

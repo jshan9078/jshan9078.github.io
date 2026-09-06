@@ -1,16 +1,20 @@
 import Assets from "./assets";
 import { getSkills } from "./skills";
-import type { Project } from "./types";
+import type { Project, WebBenchVersion } from "./types";
+import webbenchV2 from "./webbench-v2.json";
 
 export type { Project } from "./types";
 
 const url = (file: string) => `/logos/${file}`;
 
 // Shared WebBench data, rendered on both the browser-automation-cli page and the WebBench project.
-const WEBBENCH = {
-  tableTitle: "WebBench",
-  tableDesc:
-    "44 tasks built around real-world user interactions on live sites (Amazon, eBay, Google Flights, OpenStreetMap, YouTube, Gmail, Spotify, and more), from multi-hop reads to signed-in account actions and canvas work. Configurations span Claude (Claude Code), Gemini 3.7 and 3.8 Flash (Antigravity), GPT-5.6 (Codex CLI), and Muse Spark 1.2 and 1.3 (Muse Code). Each configuration gets only [browser-automation-cli](/projects/browser-cli) and a [skill](https://github.com/jshan9078/browser-automation-cli/blob/main/SKILL.md) explaining how to use it; every run is judged from captured evidence at pass@1. [See all tasks](https://github.com/jshan9078/web-bench/tree/main/tasks).",
+const WEBBENCH_V1_DESC =
+    "44 tasks built around real-world user interactions on live sites (Amazon, eBay, Google Flights, OpenStreetMap, YouTube, Gmail, Spotify, and more), from multi-hop reads to signed-in account actions and canvas work. Configurations span Claude (Claude Code), Gemini 3.7 and 3.8 Flash (Antigravity), GPT-5.6 (Codex CLI), and Muse Spark 1.2 and 1.3 (Muse Code). Each configuration gets only [browser-automation-cli](/projects/browser-cli) and a [skill](https://github.com/jshan9078/browser-automation-cli/blob/main/SKILL.md) explaining how to use it; every run is judged from captured evidence at pass@1. [See all tasks](https://github.com/jshan9078/web-bench/tree/main/tasks).";
+
+const WEBBENCH_V1: WebBenchVersion = {
+  id: "v1",
+  label: "v1: 44 live-site tasks",
+  tableDesc: WEBBENCH_V1_DESC,
   webRows: [
     { model: "Haiku 4.5", thinking: "n/a", harness: "Claude Code", score: 69.5, time: 51.0, cost: 0.198, outTok: 3896, steps: 14 },
     { model: "Gemini 3.7 Flash", thinking: "low", harness: "Antigravity", score: 97.7, time: 26.0, cost: 0.117, outTok: 1810, steps: 15, passes: 43, tasks: 44, wallTotal: 39.8, reasonTok: 0 },
@@ -51,6 +55,24 @@ const WEBBENCH = {
     "Bot walls are never scored as failures: verified walls are excluded and retried.",
     "Agents run uncapped: no turn or wall-clock budget is imposed by the harness.",
   ],
+};
+
+const WEBBENCH_V2: WebBenchVersion = {
+  id: "v2",
+  label: "v2: 70-task two-tier set",
+  tableDesc: webbenchV2.tableDesc,
+  webRows: webbenchV2.webRows,
+  tableCaption: webbenchV2.tableCaption,
+  defaultOff: webbenchV2.defaultOff,
+};
+
+// Shared WebBench data, rendered on both the browser-automation-cli page and the WebBench project.
+const WEBBENCH = {
+  tableTitle: "WebBench",
+  tableDesc: WEBBENCH_V2.tableDesc,
+  webRows: WEBBENCH_V2.webRows,
+  tableCaption: WEBBENCH_V2.tableCaption,
+  webVersions: [WEBBENCH_V2, WEBBENCH_V1],
 };
 
 const projects: Project[] = [
@@ -109,7 +131,7 @@ const projects: Project[] = [
   {
     slug: "web-bench",
     color: "#a78bfa",
-    description: `WebBench is a benchmark for how efficiently an LLM drives a browser on real websites. Every configuration is given the same browser tool ([browser-automation-cli](https://github.com/jshan9078/browser-automation-cli)) and the same 44 live-site tasks, spanning multi-hop reads, e-commerce flows, vision and canvas work, signed-in account actions, and interactive web tools, then measured on accuracy and the cost of success: time, tokens, tool calls, and dollars per task.\n\n### Technical Details\n\n**Matrix**: 36 configurations: Claude (Opus 5, Sonnet 5, Haiku 4.5) via Claude Code, GPT-5.6 Luna via the Codex CLI, and Muse Spark 1.2 and 1.3 via Muse Code across five thinking levels each, plus Gemini 3.7 Flash (three levels) and Gemini 3.8 Flash (three levels) via the Antigravity harness, every configuration run over the same 44 tasks at pass@1 (1,580+ runs). Haiku 4.5 does not support the effort parameter, so its five sweeps are treated as replicate runs and reported as a single averaged configuration.\n\n**Pretraining-proof tasks**: read tasks target current real-world data that cannot be in any training set (the agent must navigate and read), action tasks are verified from screenshots and harness-captured ground truth (cart contents, end-state text), and signed-in tasks create private, reversible account state that the run screenshots and then undoes. Every verifier enforces grounding: a correct-sounding answer with no supporting navigation in the trace fails.\n\n**Judging**: every LLM-judged verdict is issued by a Claude Sonnet judge from the captured evidence, with contested failures re-audited adversarially. Verified bot walls are excluded and retried rather than scored as failures.\n\n**Capture-first**: each run writes a durable raw bundle (full model trace, end-state evidence, screenshots, token usage, and a headless video) before any judging, so verdicts can be re-derived offline without ever re-running the models.\n\n**Cost accounting**: Claude costs are the CLI's own reported cost per run; Gemini, GPT-5.6, and Muse Spark costs are computed from captured per-call token usage (cached and uncached input, output including reasoning) at each provider's public pricing, held constant across the matrix so only the model and thinking level vary.`,
+    description: `WebBench is a benchmark for how efficiently an LLM drives a browser. Every configuration is given the same browser tool ([browser-automation-cli](https://github.com/jshan9078/browser-automation-cli)) and the same tasks, then measured on accuracy and the cost of success: time, tokens, tool calls, and dollars per task. It comes in two versions, selectable below: **v1** is 44 live-site tasks (multi-hop reads, e-commerce flows, vision and canvas work, signed-in account actions, interactive web tools) where frontier models score 90 to 100%; **v2** is a 70-task two-tier set built to separate them: a core tier of deterministic browser-control workflows every configuration should pass, and a discriminating tier of tasks that at least one frontier configuration failed twice during construction, dominated by counting and tracking over rendered video and exact visual perception. v2 runs on a fleet of single-run AWS workers coordinated by an S3 work queue, with rate-limited runs voided and rerun.\n\n\n\n### Technical Details\n\n**Matrix**: 36 configurations: Claude (Opus 5, Sonnet 5, Haiku 4.5) via Claude Code, GPT-5.6 Luna via the Codex CLI, and Muse Spark 1.2 and 1.3 via Muse Code across five thinking levels each, plus Gemini 3.7 Flash (three levels) and Gemini 3.8 Flash (three levels) via the Antigravity harness, every configuration run over the same 44 tasks at pass@1 (1,580+ runs). Haiku 4.5 does not support the effort parameter, so its five sweeps are treated as replicate runs and reported as a single averaged configuration.\n\n**Pretraining-proof tasks**: read tasks target current real-world data that cannot be in any training set (the agent must navigate and read), action tasks are verified from screenshots and harness-captured ground truth (cart contents, end-state text), and signed-in tasks create private, reversible account state that the run screenshots and then undoes. Every verifier enforces grounding: a correct-sounding answer with no supporting navigation in the trace fails.\n\n**Judging**: every LLM-judged verdict is issued by a Claude Sonnet judge from the captured evidence, with contested failures re-audited adversarially. Verified bot walls are excluded and retried rather than scored as failures.\n\n**Capture-first**: each run writes a durable raw bundle (full model trace, end-state evidence, screenshots, token usage, and a headless video) before any judging, so verdicts can be re-derived offline without ever re-running the models.\n\n**Cost accounting**: Claude costs are the CLI's own reported cost per run; Gemini, GPT-5.6, and Muse Spark costs are computed from captured per-call token usage (cached and uncached input, output including reasoning) at each provider's public pricing, held constant across the matrix so only the model and thinking level vary.\n\n**v2 (September 2026)**: 70 tasks in two tiers, 27 core browser-control workflows and 43 discriminating tasks selected by requiring that a frontier configuration fail them on both of two attempts. 62 tasks run on deterministic local sites (widget apps with gated private endpoints) and are scored from server state; 8 run on live GitHub, Wikipedia and JS Paint and are judged against API ground truth. The matrix ran on AWS: one run per c7i.xlarge instance, an S3 work queue with leased items for resumability and idempotency, a judge instance issuing verdicts as runs land, and a rule that any run in which the model hit a provider rate or usage limit is voided and rerun. Complete so far: Muse Spark 1.3 (5 levels), Sonnet 5 (5), Opus 5 (5), Gemini 3.8 Flash (3) and GPT-6 Astra at low; Astra's other levels and GPT-5.6 Luna are partial and not shown. The discriminating tier was selected mostly against Sonnet 5 low, so that column measures the selection, not the model.`,
     shortDescription:
       "A benchmark measuring how efficiently different LLMs drive a browser on real websites with respect to completion time, tokens used, and cost.",
     links: [

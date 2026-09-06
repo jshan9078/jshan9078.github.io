@@ -40,6 +40,20 @@ export interface WebBenchRow {
   tasks?: number; // tasks attempted (drilldown)
   wallTotal?: number; // median end-to-end seconds per task, including model latency (drilldown)
   reasonTok?: number; // median reasoning tokens per task (drilldown)
+  corePasses?: number; // v2: passes on the core tier (drilldown)
+  coreTasks?: number;
+  discPasses?: number; // v2: passes on the discriminating tier (drilldown)
+  discTasks?: number;
+}
+
+// One version of the WebBench task set with its own rows and copy; the page shows a version selector.
+export interface WebBenchVersion {
+  id: string; // "v1" | "v2"
+  label: string;
+  tableDesc: string;
+  webRows: WebBenchRow[];
+  tableCaption: string[];
+  defaultOff?: string[]; // model names hidden by default in the picker
 }
 
 export interface Benchmarks {
@@ -53,6 +67,7 @@ export interface Benchmarks {
   tableDesc?: string;
   webRows?: WebBenchRow[];
   tableCaption?: string[];
+  webVersions?: WebBenchVersion[]; // when present, the WebBench section renders a version selector (first entry is the default)
 }
 
 export interface Project {
