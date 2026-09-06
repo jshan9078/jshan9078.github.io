@@ -13,7 +13,7 @@ const WEBBENCH_V1_DESC =
 
 const WEBBENCH_V1: WebBenchVersion = {
   id: "v1",
-  label: "v1: 44 live-site tasks",
+  label: "V1: 44 tasks",
   tableDesc: WEBBENCH_V1_DESC,
   webRows: [
     { model: "Haiku 4.5", thinking: "n/a", harness: "Claude Code", score: 69.5, time: 51.0, cost: 0.198, outTok: 3896, steps: 14 },
@@ -59,7 +59,7 @@ const WEBBENCH_V1: WebBenchVersion = {
 
 const WEBBENCH_V2: WebBenchVersion = {
   id: "v2",
-  label: "v2: 70-task set",
+  label: "V2: 70 tasks",
   tableDesc: webbenchV2.tableDesc,
   webRows: webbenchV2.webRows,
   tableCaption: webbenchV2.tableCaption,
