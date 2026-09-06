@@ -8,13 +8,11 @@ export type { Project } from "./types";
 const url = (file: string) => `/logos/${file}`;
 
 // Shared WebBench data, rendered on both the browser-automation-cli page and the WebBench project.
-const WEBBENCH_V1_DESC =
-    "44 tasks built around real-world user interactions on live sites (Amazon, eBay, Google Flights, OpenStreetMap, YouTube, Gmail, Spotify, and more), from multi-hop reads to signed-in account actions and canvas work. Configurations span Claude (Claude Code), Gemini 3.7 and 3.8 Flash (Antigravity), GPT-5.6 (Codex CLI), and Muse Spark 1.2 and 1.3 (Muse Code). Each configuration gets only [browser-automation-cli](/projects/browser-cli) and a [skill](https://github.com/jshan9078/browser-automation-cli/blob/main/SKILL.md) explaining how to use it; every run is judged from captured evidence at pass@1. [See all tasks](https://github.com/jshan9078/web-bench/tree/main/tasks).";
 
 const WEBBENCH_V1: WebBenchVersion = {
   id: "v1",
   label: "V1: 44 tasks",
-  tableDesc: WEBBENCH_V1_DESC,
+  tableDesc: "",
   webRows: [
     { model: "Haiku 4.5", thinking: "n/a", harness: "Claude Code", score: 69.5, time: 51.0, cost: 0.198, outTok: 3896, steps: 14 },
     { model: "Gemini 3.7 Flash", thinking: "low", harness: "Antigravity", score: 97.7, time: 26.0, cost: 0.117, outTok: 1810, steps: 15, passes: 43, tasks: 44, wallTotal: 39.8, reasonTok: 0 },
@@ -50,12 +48,14 @@ const WEBBENCH_V1: WebBenchVersion = {
     { model: "Opus 5", thinking: "max", harness: "Claude Code", score: 97.7, time: 94.6, cost: 0.842, outTok: 5805, steps: 23, passes: 43, tasks: 44, wallTotal: 119.2, reasonTok: 0 },
   ],
   tableCaption: [
-    "44 live-site tasks per configuration; time (browser-active seconds), cost, tokens, and steps are per-task medians.",
+    "44 tasks built around real-world user interactions on live sites (Amazon, eBay, Google Flights, OpenStreetMap, YouTube, Gmail, Spotify, and more), from multi-hop reads to signed-in account actions and canvas work; time (browser-active seconds), cost, tokens, and steps are per-task medians.",
+    "Each configuration gets only [browser-automation-cli](/projects/browser-cli) and a [skill](https://github.com/jshan9078/browser-automation-cli/blob/main/SKILL.md) explaining how to use it.",
     "36 configurations: Claude Opus 5, Sonnet 5 and Haiku 4.5 (Claude Code), GPT-5.6 Luna (Codex CLI), Muse Spark 1.2 and 1.3 (Muse Code) at five thinking levels each, Gemini 3.7 and 3.8 Flash (Antigravity) at three; Haiku ignores the effort setting, so its sweeps are averaged into one row.",
     "Cost is the CLI's reported cost for Claude and each provider's public prices applied to captured token usage for the others.",
     "Score is pass@1, judged by a Claude Sonnet judge from captured evidence at capture time.",
     "Bot walls are never scored as failures: verified walls are excluded and retried.",
     "Agents run uncapped: no turn or wall-clock budget is imposed by the harness.",
+    "[All tasks](https://github.com/jshan9078/web-bench/tree/main/tasks)",
   ],
 };
 
