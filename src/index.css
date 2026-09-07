@@ -1916,6 +1916,37 @@ img {
 .bench-caption--list { list-style: disc; padding-left: 1.2em; margin-top: var(--space-lg); }
 .bench-caption--list li::marker { color: var(--ink-tertiary); }
 .bench-table-title { margin-top: var(--space-2xl); }
+.bench-astra { margin-top: var(--space-2xl); }
+.bench-astra__title {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0 0 var(--space-md);
+}
+.bench-astra__scroll { overflow-x: auto; }
+.bench-astra__table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.bench-astra__table th,
+.bench-astra__table td { text-align: right; padding: var(--space-sm) var(--space-md); white-space: nowrap; }
+.bench-astra__table thead th:first-child,
+.bench-astra__table tbody th { text-align: left; padding-left: 0; font-weight: 400; }
+.bench-astra__table th:last-child,
+.bench-astra__table td:last-child { padding-right: 0; }
+.bench-astra__table thead th {
+  font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-tertiary); padding-bottom: var(--space-sm);
+}
+.bench-astra__table tbody th,
+.bench-astra__table tbody td {
+  font-size: var(--text-sm);
+  color: var(--ink-secondary);
+  border-top: 1px solid var(--border, #2c2c2c);
+}
+.bench-astra__table tbody th { color: var(--ink); }
+.bench-astra__table tbody tr.bench-astra__row--hl th,
+.bench-astra__table tbody tr.bench-astra__row--hl td { color: var(--ink); font-weight: 600; }
 .bench-desc {
   margin: var(--space-sm) 0 var(--space-lg);
   font-size: var(--text-sm);

@@ -518,6 +518,38 @@ function ProjectDetail() {
               </li>
             ))}
           </ul>
+          {wbVersion?.analysis && (
+            <section className="bench-astra">
+              <h4 className="bench-astra__title">{wbVersion.analysis.title}</h4>
+              <div className="bench-astra__scroll">
+                <table className="bench-astra__table">
+                  <thead>
+                    <tr>
+                      <th scope="col" />
+                      {wbVersion.analysis.cols.map((c) => (
+                        <th key={c} scope="col">{c}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {wbVersion.analysis.rows.map((r) => (
+                      <tr key={r.label} className={r.hl ? "bench-astra__row--hl" : undefined}>
+                        <th scope="row">{r.label}</th>
+                        {r.values.map((v, i) => (
+                          <td key={i}>{v}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <ul className="bench-caption bench-caption--list">
+                {wbVersion.analysis.notes.map((n, i) => (
+                  <li key={i} className="bench-caption__line">{n}</li>
+                ))}
+              </ul>
+            </section>
+          )}
           </>
           )}
         </div>

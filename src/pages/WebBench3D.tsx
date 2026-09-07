@@ -70,9 +70,13 @@ export default function WebBench3D({ rows, optimal = DEFAULT_OPTIMAL }: { rows: 
       ]);
       if (disposed || !wrapRef.current) return;
 
-      const SX = 10, SY = 6.5, SZ = 10;
+      const SY = 6.5, SZ = 10;
       const costAx = axisTo(Math.max(...rows.map((r) => r.cost), optimal.cost), 1.0, 0.25, 0.5, 1.5);
       const timeAx = axisTo(Math.max(...rows.map((r) => r.time), optimal.time), 100, 50, 100, 300);
+      // A single very expensive configuration (Astra at ~$3.86) would otherwise press every other point
+      // against the origin, so the cost axis gets physical length in proportion to its range.
+      const SX = 10 * Math.min(1.8, Math.max(1, costAx.max / 1.5));
+      const spread = Math.pow(Math.max(1, SX / 10), 0.65);   // pull the camera back for a wider box
       const scoreMin = Math.min(60, Math.floor((Math.min(...rows.map((r) => r.score), optimal.score) - 1) / 10) * 10);
       const COST = { min: 0, max: costAx.max };
       const SCORE = { min: scoreMin, max: 100 };
@@ -104,14 +108,14 @@ export default function WebBench3D({ rows, optimal = DEFAULT_OPTIMAL }: { rows: 
       // and start the orbit facing the OPTIMAL corner (low cost, low time), matching the
       // 2D charts' good-is-near-you reading.
       const fit = Math.min(1.9, Math.max(1.18, 1.45 / (W / H)));
-      camera.position.set(SX / 2 + 3 * (fit / 1.44), 17 * (fit / 1.44), SZ / 2 + 22 * (fit / 1.44));
+      camera.position.set(SX / 2 + 3 * (fit / 1.44) * spread, 17 * (fit / 1.44) * spread, SZ / 2 + 22 * (fit / 1.44) * spread);
 
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.target.set(SX / 2, SY / 2, SZ / 2);
       controls.enableDamping = true;
       controls.dampingFactor = 0.06;
       controls.minDistance = 8;
-      controls.maxDistance = 42;
+      controls.maxDistance = 42 * spread;
       controls.zoomSpeed = 2.2;
       controls.autoRotate = true;
       controls.autoRotateSpeed = 0.6;

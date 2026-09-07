@@ -67,6 +67,24 @@ const WEBBENCH_V2: WebBenchVersion = {
   tableCaption: webbenchV2.tableCaption,
   defaultOff: webbenchV2.defaultOff,
   optimal: { score: 90, cost: 0.5, time: 100 },
+  analysis: {
+    title: "Analysis into Astra Cost",
+    cols: ["GPT-6 Astra low", "Fable 5.1 low"],
+    rows: [
+      { label: "Mean cost per task", values: ["$3.86", "$0.62"], hl: true },
+      { label: "Mean seconds per task", values: ["74", "79"] },
+      { label: "Cache-write tokens per browser call", values: ["3,704", "155"] },
+      { label: "Cache-read tokens per browser call", values: ["4,016", "1,875"] },
+      { label: "Tokens read per token written", values: ["1.1", "12.1"] },
+      { label: "Input billed as a cache write", values: ["48%", "8%"] },
+      { label: "Cache-write rate paid", values: ["$12.50 / M", "$20.00 / M"] },
+    ],
+    notes: [
+      "Both list at $10 per million input and $50 per million output, and Astra was the faster of the two, yet it cost six times more per task.",
+      "Cache writes are 90% of Astra's bill. It rebuilds its cached prefix on almost every request, so about half of each request is charged at the write rate. Fable reuses its prefix and reads back twelve tokens for every one it writes.",
+      "Both ran on stock settings and neither CLI exposes a cache control. At Fable's write ratio the same Astra tokens would cost $1.19 per task.",
+    ],
+  },
 };
 
 // Shared WebBench data, rendered on both the browser-automation-cli page and the WebBench project.

@@ -42,6 +42,14 @@ export interface WebBenchRow {
   reasonTok?: number; // mean reasoning tokens per task (drilldown)
 }
 
+// A short comparison panel rendered under a version's notes (v2: why Astra costs what it does).
+export interface WebBenchAnalysis {
+  title: string;
+  cols: string[]; // column headers, one per compared configuration
+  rows: { label: string; values: string[]; hl?: boolean }[];
+  notes: string[];
+}
+
 // One version of the WebBench task set with its own rows and copy; the page shows a version selector.
 export interface WebBenchVersion {
   id: string; // "v1" | "v2"
@@ -51,6 +59,7 @@ export interface WebBenchVersion {
   tableCaption: string[];
   defaultOff?: string[]; // model names hidden by default in the picker
   optimal?: { score: number; cost: number; time: number }; // optimal-region thresholds for the 3D chart
+  analysis?: WebBenchAnalysis;
 }
 
 export interface Benchmarks {
