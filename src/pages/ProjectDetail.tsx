@@ -27,6 +27,7 @@ const GitHubIcon = () => (
 
 const WB_FAMILIES: { model: string; color: string }[] = [
   { model: "GPT-6 Astra", color: "#e05252" },
+  { model: "Fable 5.1", color: "#f2f2f2" },
   { model: "Opus 5", color: "#e0895a" },
   { model: "Sonnet 5", color: "#8ab4e8" },
   { model: "Haiku 4.5", color: "#c9a0e8" },
@@ -129,6 +130,7 @@ function WebBenchPicker({ rows, hidden, setHidden }: { rows: WebBenchRow[]; hidd
 const EFFORT_SHORT: Record<string, string> = { low: "low", medium: "med", high: "high", xhigh: "xhigh", max: "max", ultra: "ultra" };
 const PROVIDER_LOGO: Record<string, { src: string; name: string }> = {
   "Opus 5": { src: "/logos/anthropic.svg", name: "Anthropic" },
+  "Fable 5.1": { src: "/logos/anthropic.svg", name: "Anthropic" },
   "Sonnet 5": { src: "/logos/anthropic.svg", name: "Anthropic" },
   "Haiku 4.5": { src: "/logos/anthropic.svg", name: "Anthropic" },
   "Gemini 3.7 Flash": { src: "/logos/google.svg", name: "Google" },

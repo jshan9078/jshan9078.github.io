@@ -9,6 +9,7 @@ const CSS2D_URL = "https://unpkg.com/three@0.160.0/examples/jsm/renderers/CSS2DR
 
 const FAMS = [
   { model: "GPT-6 Astra", color: 0xe05252 },
+  { model: "Fable 5.1", color: 0xf2f2f2 },
   { model: "Opus 5", color: 0xe0895a },
   { model: "Sonnet 5", color: 0x8ab4e8 },
   { model: "Haiku 4.5", color: 0xc9a0e8 },
