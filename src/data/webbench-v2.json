@@ -44,6 +44,20 @@
    "reasonTok": 1501
   },
   {
+   "model": "Fable 5.1",
+   "thinking": "high",
+   "harness": "Claude Code",
+   "score": 88.6,
+   "time": 105.6,
+   "cost": 0.861,
+   "outTok": 5755,
+   "steps": 58,
+   "passes": 62,
+   "tasks": 70,
+   "wallTotal": 124.9,
+   "reasonTok": 2876
+  },
+  {
    "model": "Opus 5",
    "thinking": "low",
    "harness": "Claude Code",
