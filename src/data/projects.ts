@@ -83,6 +83,7 @@ const WEBBENCH_V2: WebBenchVersion = {
       "Both list at $10 per million input and $50 per million output, and Astra was the faster of the two, yet it cost six times more per task.",
       "Cache writes are 90% of Astra's bill. It rebuilds its cached prefix on almost every request, so about half of each request is charged at the write rate. Fable reuses its prefix and reads back twelve tokens for every one it writes.",
       "Both ran on stock settings and neither CLI exposes a cache control. At Fable's write ratio the same Astra tokens would cost $1.19 per task.",
+      "On output tokens alone Astra is 2.3 times cheaper than Fable, which is why output-dominated benchmarks rank it cheaper than Fable. This benchmark is input-dominated, at 405 input tokens per output token, so cache behaviour becomes the main difference.",
     ],
   },
 };

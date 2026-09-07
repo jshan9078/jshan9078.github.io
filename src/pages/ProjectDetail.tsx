@@ -411,7 +411,9 @@ function ProjectDetail() {
       </div>
 
       {project.benchmarks && (
-        <div className="project-detail__bench">
+        // tex2jax_ignore: the page loads MathJax, which would otherwise typeset a pair of dollar
+        // amounts (e.g. "$10 ... $50") in the benchmark copy as inline math and eat the text.
+        <div className="project-detail__bench tex2jax_ignore">
           {project.benchmarks.buRows && (
           <>
           <h3 className="project-detail__section-title bench-bu-title">
