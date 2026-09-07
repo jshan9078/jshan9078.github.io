@@ -38,8 +38,8 @@ export interface WebBenchRow {
   steps: number; // average browser CLI calls per task
   passes?: number; // tasks passed (drilldown)
   tasks?: number; // tasks attempted (drilldown)
-  wallTotal?: number; // median end-to-end seconds per task, including model latency (drilldown)
-  reasonTok?: number; // median reasoning tokens per task (drilldown)
+  wallTotal?: number; // mean end-to-end seconds per task, including model latency (drilldown)
+  reasonTok?: number; // mean reasoning tokens per task (drilldown)
 }
 
 // One version of the WebBench task set with its own rows and copy; the page shows a version selector.

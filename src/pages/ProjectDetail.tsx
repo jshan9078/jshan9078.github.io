@@ -143,8 +143,8 @@ const PROVIDER_LOGO: Record<string, { src: string; name: string }> = {
 type WBMetric = "cost" | "time" | "score";
 const WB_CHARTS: { key: WBMetric; title: string; sub: string; swatch: string; floor: number; fmt: (v: number) => string }[] = [
   { key: "score", title: "Accuracy", sub: "Pass@1 across the task set · Higher is better", swatch: "#8ab4e8", floor: 60, fmt: (v) => `${v.toFixed(1)}%` },
-  { key: "time", title: "Speed", sub: "Median agent seconds per task · Lower is better", swatch: "#e8d47a", floor: 0, fmt: (v) => `${Math.round(v)}s` },
-  { key: "cost", title: "Cost per Task", sub: "Median USD per task · Lower is better", swatch: "#e0895a", floor: 0, fmt: (v) => `$${v < 0.1 ? v.toFixed(3) : v.toFixed(2)}` },
+  { key: "time", title: "Speed", sub: "Mean agent seconds per task · Lower is better", swatch: "#e8d47a", floor: 0, fmt: (v) => `${Math.round(v)}s` },
+  { key: "cost", title: "Cost per Task", sub: "Mean USD per task · Lower is better", swatch: "#e0895a", floor: 0, fmt: (v) => `$${v < 0.1 ? v.toFixed(3) : v.toFixed(2)}` },
 ];
 
 function WebBenchBarChart({
@@ -238,7 +238,7 @@ function WebBenchConfigs({ rows }: { rows: WebBenchRow[] }) {
               {hover.row.score.toFixed(1)}%
               {hover.row.passes != null && <small> {hover.row.passes}/{hover.row.tasks}</small>}
             </b>
-            <span>Median cost</span><b>${hover.row.cost.toFixed(3)}</b>
+            <span>Mean cost</span><b>${hover.row.cost.toFixed(3)}</b>
             <span>Browser-active time</span><b>{hover.row.time.toFixed(1)}s</b>
             {hover.row.wallTotal != null && (<><span>End-to-end time</span><b>{hover.row.wallTotal.toFixed(1)}s</b></>)}
             <span>Output tokens</span><b>{Math.round(hover.row.outTok).toLocaleString()}</b>
