@@ -166,7 +166,6 @@ function WebBenchBarChart({
     <div className="bench-bars__chart">
       <div className="bench-bars__head">
         <div className="bench-bars__title">
-          <i style={{ background: chart.swatch }} />
           {chart.title}
         </div>
         <div className="bench-bars__sub">{chart.sub}</div>
@@ -511,7 +510,6 @@ function ProjectDetail() {
           )}
           <div className="bench-picker__bar"><WebBenchPicker rows={wbAllRows} hidden={wbHidden} setHidden={setWbHidden} /></div>
           <WebBench3D key={wbVersion?.id ?? "v1"} rows={wbRows} optimal={wbVersion?.optimal} />
-          <h3 className="project-detail__section-title bench-configs-title">Configurations</h3>
           <WebBenchConfigs rows={wbAllRows} />
           <ul className="bench-caption bench-caption--list">
             {wbCaption?.map((line, i) => (
