@@ -114,6 +114,34 @@
    "reasonTok": 1479
   },
   {
+   "model": "Opus 5.5",
+   "thinking": "high",
+   "harness": "Claude Code",
+   "score": 91.4,
+   "time": 93.1,
+   "cost": 0.307,
+   "outTok": 3977,
+   "steps": 333,
+   "passes": 64,
+   "tasks": 70,
+   "wallTotal": 113.5,
+   "reasonTok": 1815
+  },
+  {
+   "model": "Opus 5.5",
+   "thinking": "xhigh",
+   "harness": "Claude Code",
+   "score": 95.7,
+   "time": 107.8,
+   "cost": 0.386,
+   "outTok": 5692,
+   "steps": 422,
+   "passes": 67,
+   "tasks": 70,
+   "wallTotal": 128.1,
+   "reasonTok": 2808
+  },
+  {
    "model": "Opus 5",
    "thinking": "low",
    "harness": "Claude Code",
