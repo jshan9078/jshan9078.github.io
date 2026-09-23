@@ -142,6 +142,20 @@
    "reasonTok": 2808
   },
   {
+   "model": "Opus 5.5",
+   "thinking": "max",
+   "harness": "Claude Code",
+   "score": 95.7,
+   "time": 149.8,
+   "cost": 0.616,
+   "outTok": 12360,
+   "steps": 166,
+   "passes": 67,
+   "tasks": 70,
+   "wallTotal": 169.9,
+   "reasonTok": 8393
+  },
+  {
    "model": "Opus 5",
    "thinking": "low",
    "harness": "Claude Code",
