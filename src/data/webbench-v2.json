@@ -86,6 +86,34 @@
    "reasonTok": 7665
   },
   {
+   "model": "Opus 5.5",
+   "thinking": "low",
+   "harness": "Claude Code",
+   "score": 80.0,
+   "time": 77.9,
+   "cost": 0.229,
+   "outTok": 2260,
+   "steps": 344,
+   "passes": 56,
+   "tasks": 70,
+   "wallTotal": 100.3,
+   "reasonTok": 786
+  },
+  {
+   "model": "Opus 5.5",
+   "thinking": "medium",
+   "harness": "Claude Code",
+   "score": 88.6,
+   "time": 80.5,
+   "cost": 0.276,
+   "outTok": 3205,
+   "steps": 318,
+   "passes": 62,
+   "tasks": 70,
+   "wallTotal": 101.1,
+   "reasonTok": 1479
+  },
+  {
    "model": "Opus 5",
    "thinking": "low",
    "harness": "Claude Code",
