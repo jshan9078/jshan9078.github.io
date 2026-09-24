@@ -16,6 +16,7 @@ const FAMS = [
   { model: "Haiku 4.5", color: 0xc9a0e8 },
   { model: "Gemini 3.7 Flash", color: 0x7ec9a3 },
   { model: "Gemini 3.8 Flash", color: 0x4fa889 },
+  { model: "GPT-6 Luna", color: 0xd45fc4 },
   { model: "GPT-5.6 Luna", color: 0xe88ab0 },
   { model: "Muse Spark 1.2", color: 0xe8d47a },
   { model: "Muse Spark 1.3", color: 0x66d1e0 },
