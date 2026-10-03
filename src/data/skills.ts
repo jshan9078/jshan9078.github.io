@@ -53,6 +53,7 @@ const skills: Skill[] = [
   defineSkill("stripe", "Stripe", Assets.Stripe, "blue"),
   defineSkill("multi-agent", "Multi-agent Systems", Assets.MultiAgent, "blue"),
   defineSkill("temporal", "Temporal", Assets.Temporal, "blue"),
+  defineSkill("microvms", "MicroVMs", Assets.Unknown, "black"),
   defineSkill("compilers", "Compilers", Assets.Compilers, "red"),
   defineSkill("maps", "Mapping", Assets.Map, "green"),
   defineSkill("mocha", "Mocha", Assets.Mocha, "brown"),
