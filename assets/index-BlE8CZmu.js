@@ -28,7 +28,39 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
 
 **Infrastructure**: all training and evaluation ran on AWS with a single NVIDIA L40S (48 GB) per job, at a total compute cost of $404.
 
-**Deployment**: a detect-then-name cascade with a reviewer in the loop, where a generalist screens the diff and a 2.6B real-code specialist names the CWE on whatever gets flagged.`,shortDescription:`Post-training on-device SLMs (reasoning-distillation SFT + DPO) for C/C++ CWE vulnerability detection, benchmarked against a frontier model on synthetic and real-world code.`,links:[{to:`https://github.com/jshan9078/cwe-model-training`,label:`GitHub`},{to:`/blog/slm-vulnerability-detection`,label:`Blog Post`}],logo:F.LLM,name:`On-Device SLMs for Vulnerability Detection`,period:{from:new Date(2026,7,12),to:new Date(2026,7,12)},skills:ir(`python`,`pytorch`,`llm`,`aws`,`cpp`,`compilers`),type:`SLM Post-Training & Security`,screenshots:[],pdf:`/cwe-slm-paper.pdf`},{slug:`opencord`,color:`#5e95e3`,description:`A serverless Discord-to-AI bridge enabling developers to run persistent, stateful AI coding agent sessions directly inside Discord threads. Built using Vercel Sandboxes and the OpenCode SDK, OpenCord allows chat-based execution, debugging, and environment control.
+**Deployment**: a detect-then-name cascade with a reviewer in the loop, where a generalist screens the diff and a 2.6B real-code specialist names the CWE on whatever gets flagged.`,shortDescription:`Post-training on-device SLMs (reasoning-distillation SFT + DPO) for C/C++ CWE vulnerability detection, benchmarked against a frontier model on synthetic and real-world code.`,links:[{to:`https://github.com/jshan9078/cwe-model-training`,label:`GitHub`},{to:`/blog/slm-vulnerability-detection`,label:`Blog Post`}],logo:F.LLM,name:`On-Device SLMs for Vulnerability Detection`,period:{from:new Date(2026,7,12),to:new Date(2026,7,12)},skills:ir(`python`,`pytorch`,`llm`,`aws`,`cpp`,`compilers`),type:`SLM Post-Training & Security`,screenshots:[],pdf:`/cwe-slm-paper.pdf`},{slug:`zera-bench`,color:`#5e95e3`,description:`ZeraBench is a live forecasting contest on [Zera](https://zera.cards), a Pokemon TCG market tracker. Every night five methods predict the price of every card and sealed product worth $10 or more (about 15,000 products) 7, 30 and 90 days ahead. Each forecast is a range (10th, 50th and 90th percentile), and when the date arrives it is scored against the real price. The leaderboard is public and updates every night.
+
+![Forecasts for Mew ex 053 from each model, with their 10th to 90th percentile ranges](/logos/zerabench_mew-ex.webp)
+
+### Models Evaluated
+
+**No change**: the price stays where it is, with a range from how far prices moved over the past year. Every other method is measured against it.
+
+**LightGBM**: gradient-boosted trees on 49 inputs (recent returns, volatility, mean reversion, set-level and market-level movement), retrained from scratch every night. 9 models: 3 horizons x 3 percentiles.
+
+**TimesFM 2.5, fine-tuned**: Google's 200M-parameter time-series foundation model with a LoRA adapter trained weekly on Zera prices.
+
+**TimesFM 2.5, as published**: the same model with no adapter, the control that shows what fine-tuning adds.
+
+**Chronos-2, fine-tuned**: Amazon's 120M-parameter model, fully fine-tuned weekly. It is the only method that reads several series at once: each product together with its set index and the market index.
+
+### Key Findings
+
+**Trees win**: in a 113-week replay LightGBM beats "no change" by 11%, 13% and 13% pinball loss at 7, 30 and 90 days.
+
+![Each model's 30-day pinball loss improvement over "no change", per weekly origin](/logos/zerabench_over-time.webp)
+
+**Fine-tuning is what makes foundation models usable**: TimesFM as published is 7% to 23% worse than "no change". Fine-tuned, it is close to even.
+
+**Training horizon matters more than expected**: training both foundation models on a 30-day loss (instead of 14 or 90 days) gave the best results at every horizon, including 90 days. A short loss teaches them to forecast flat, and a 30-day loss teaches the drift and the widening range.
+
+### Technical Details
+
+**Evaluation**: pinball loss and range coverage per horizon, with a replay of 109+ weekly origins on a fixed sample of 3,000 products so new methods have history before their live scores arrive. Model choices were made on development periods and checked once on held-out periods, with seed noise measured by repeating each run three times.
+
+**Experiments**: an overnight hill-climb over LightGBM inputs, XGBoost, CatBoost, statistical baselines, TimesFM history lengths and Chronos-2 covariates and loss horizons, run on AWS GPU and 64-core CPU machines.
+
+**Infrastructure**: the nightly job runs on an Oracle Cloud VM (about 2 hours on two CPU cores at the lowest priority, next to the live API). A weekly AWS g5 job retrains both foundation models from prices the VM uploads to S3, then shuts itself down. Forecasts and scores live in PostgreSQL on AWS RDS and are served by a Hono API to a Vue front end on Cloudflare Pages.`,shortDescription:`A live nightly contest forecasting Pokemon TCG prices 7, 30 and 90 days out, pitting LightGBM against fine-tuned TimesFM and Chronos-2 foundation models.`,links:[{to:`https://zera.cards/forecast`,label:`Live Leaderboard`}],logo:F.LLM,name:`ZeraBench`,period:{from:new Date(2026,9,1)},skills:ir(`python`,`pytorch`,`llm`,`aws`,`PostgreSQL`,`ts`),type:`ML Forecasting & Evaluation`,screenshots:[]},{slug:`opencord`,color:`#5e95e3`,description:`A serverless Discord-to-AI bridge enabling developers to run persistent, stateful AI coding agent sessions directly inside Discord threads. Built using Vercel Sandboxes and the OpenCode SDK, OpenCord allows chat-based execution, debugging, and environment control.
 
 ### Technical Details
 
