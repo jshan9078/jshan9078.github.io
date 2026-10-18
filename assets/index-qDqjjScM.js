@@ -48,7 +48,7 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
 
 **Trees win**: in a 113-week replay LightGBM beats "no change" by 11%, 13% and 13% pinball loss at 7, 30 and 90 days.
 
-![Each model's 30-day pinball loss improvement over "no change", per weekly origin](/logos/zerabench_over-time.webp)
+![Each model's 30-day pinball loss improvement over "no change", per weekly origin](/logos/zerabench_over-time-2026-10-18.webp)
 
 **Fine-tuning is what makes foundation models usable**: TimesFM as published is 7% to 23% worse than "no change". Fine-tuned, it is close to even.
 
