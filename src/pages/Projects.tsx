@@ -89,8 +89,6 @@ export default function Projects() {
             style={{
               fontFamily: 'var(--font-heading)',
               fontSize: '0.75rem',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
               padding: '0.5rem 1rem',
               border: '1px solid var(--border)',
               background: 'var(--bg)',
@@ -109,8 +107,6 @@ export default function Projects() {
                 fontFamily: 'var(--font-heading)',
                 fontSize: '0.7rem',
                 color: 'var(--ink-tertiary)',
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
               }}
             >
               Clear
@@ -148,8 +144,6 @@ export default function Projects() {
             color: 'var(--ink-tertiary)',
             fontFamily: 'var(--font-heading)',
             fontSize: '0.8rem',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
           }}
         >
           No projects match your filters.
