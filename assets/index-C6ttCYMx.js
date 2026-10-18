@@ -30,7 +30,7 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
 
 **Deployment**: a detect-then-name cascade with a reviewer in the loop, where a generalist screens the diff and a 2.6B real-code specialist names the CWE on whatever gets flagged.`,shortDescription:`Post-training on-device SLMs (reasoning-distillation SFT + DPO) for C/C++ CWE vulnerability detection, benchmarked against a frontier model on synthetic and real-world code.`,links:[{to:`https://github.com/jshan9078/cwe-model-training`,label:`GitHub`},{to:`/blog/slm-vulnerability-detection`,label:`Blog Post`}],logo:F.LLM,name:`On-Device SLMs for Vulnerability Detection`,period:{from:new Date(2026,7,12),to:new Date(2026,7,12)},skills:ir(`python`,`pytorch`,`llm`,`aws`,`cpp`,`compilers`),type:`SLM Post-Training & Security`,screenshots:[],pdf:`/cwe-slm-paper.pdf`},{slug:`zera-bench`,color:`#5e95e3`,description:`ZeraBench is a live forecasting contest on [Zera](https://zera.cards), a Pokemon TCG market tracker. Every night five methods predict the price of every card and sealed product worth $10 or more (about 15,000 products) 7, 30 and 90 days ahead. Each forecast is a range (10th, 50th and 90th percentile), and when the date arrives it is scored against the real price. The leaderboard is public and updates every night.
 
-![Forecasts for Mew ex 053 from each model, with their 10th to 90th percentile ranges](/logos/zerabench_mew-ex.webp)
+![Mew ex 053: its price (white), each model's forecasts made one month earlier (dashed), and today's forecasts with their ranges](/logos/zerabench_mew-ex-2026-10-18.webp)
 
 ### Models Evaluated
 
