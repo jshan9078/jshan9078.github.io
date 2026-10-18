@@ -46,17 +46,17 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
 
 ### Key Findings
 
-**Trees win**: in a 113-week replay LightGBM beats "no change" by 11%, 13% and 13% pinball loss at 7, 30 and 90 days.
+**Trees win**: over 101 weeks and every product, LightGBM beats "no change" by 11%, 13% and 15% pinball loss at 7, 30 and 90 days. Chronos-2 is second at 1 month (6% better than "no change"), just ahead of fine-tuned TimesFM (3%).
 
 ![Each model's 30-day pinball loss improvement over "no change", per weekly origin](/logos/zerabench_over-time-2026-10-18.webp)
 
-**Fine-tuning is what makes foundation models usable**: TimesFM as published is 7% to 23% worse than "no change". Fine-tuned, it is close to even.
+**Fine-tuning is what makes foundation models usable**: TimesFM as published is 10% to 31% worse than "no change". Fine-tuned, it beats "no change" at 1 week and 1 month.
 
 **Training horizon matters more than expected**: training both foundation models on a 30-day loss (instead of 14 or 90 days) gave the best results at every horizon, including 90 days. A short loss teaches them to forecast flat, and a 30-day loss teaches the drift and the widening range.
 
 ### Technical Details
 
-**Evaluation**: pinball loss and range coverage per horizon, with a replay of 109+ weekly origins on a fixed sample of 3,000 products so new methods have history before their live scores arrive. Model choices were made on development periods and checked once on held-out periods, with seed noise measured by repeating each run three times.
+**Evaluation**: pinball loss and range coverage per horizon. Before live scores arrive, the leaderboard uses a rebuilt history: at each of 101 weekly dates, every trained model was trained again on the prices up to that date, then forecast every product, so no model forecasts with a staler model than the others. Model choices were made on development periods and checked once on held-out periods, with seed noise measured by repeating each run three times.
 
 **Experiments**: an overnight hill-climb over LightGBM inputs, XGBoost, CatBoost, statistical baselines, TimesFM history lengths and Chronos-2 covariates and loss horizons, run on AWS GPU and 64-core CPU machines.
 
