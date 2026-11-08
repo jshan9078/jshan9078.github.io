@@ -26,7 +26,7 @@ export const pages = [
     route: "projects/slm-vulnerability-detection",
     title: "On-Device SLMs for Vulnerability Detection",
     description:
-      "Post-training on-device SLMs (reasoning-distillation SFT and DPO) for C/C++ CWE vulnerability detection, benchmarked against a frontier model.",
+      "Post-training on-device SLMs (rationale SFT and DPO) for C/C++ CWE vulnerability detection, benchmarked against a frontier model.",
     image: "/og/slm-vulnerability-detection.png",
   },
 ];
