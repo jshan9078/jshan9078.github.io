@@ -6,7 +6,7 @@ const experiences: Experience[] = [
   {
     slug: "tesla",
     company: "Tesla",
-    description: "Workloop",
+    description: "",
     highlights: [
       "1 of 4 devs on internal Next.js/Go application that enables teams to create and run cloud coding/assistant agents on Firecracker VMs.",
       "Implemented computer use and browser use for the cloud agent.",
@@ -24,7 +24,7 @@ const experiences: Experience[] = [
     links: [],
     logo: Assets.Unknown,
     shortDescription:
-      "Workloop — Internal webapp for creating and running cloud coding/assistant agents on VMs.",
+      "Internal webapp for creating and running cloud coding/assistant agents on VMs.",
   },
   {
     slug: "shopify",
