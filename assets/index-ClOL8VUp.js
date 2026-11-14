@@ -157,9 +157,9 @@ I've been very impressed with Liquid AI's models, so I decided to feature them i
 | Qwen-3.5-9B | Dense | 9.0B | 9.0B | 262k |
 | Gemma-4-12B-it | Dense | 12.0B | 12.0B | 262k |
 | Coder-7B | Dense | 7.0B | 7.0B | 128k |
-| gpt-5.6-luna | N/A | >1.0T | n/d | 1M |
+| gpt-5.6-luna | N/A | undisclosed | undisclosed | 1M |
 
-I'm choosing to compare against GPT 5.6 Luna since it's 80% off so I can run it without worrying about cost too much. It's not the best representation of "frontier" but given that it's likely over a trillion parameters, I think it serves well for the sake of this study.
+I'm choosing to compare against GPT 5.6 Luna since it's 80% off so I can run it without worrying about cost too much. It's not the best representation of "frontier", but as a hosted frontier model I think it serves well for the sake of this study.
 
 I needed some benchmarks / datasets to both evaluate and train on. I created two distinct benchmarks for testing purposes.
 
@@ -230,7 +230,7 @@ I trained a fairly wide set of configurations across the base models and data bl
 * **LLVM SFT (LFM2.5-2.6B)**, LoRA ranks r4 through r256 on the IR version of the mixture, over 1 to 4 epochs.
 (Note: r16 --> Rank 16, etc)
 
-Here's the headline. On the clean synthetic benchmark, the 9B (Qwen, trained on the rationale mix) very nearly matches the frontier. Balanced accuracy 0.626 against 0.629, at a third of the false positive rate (0.224 against 0.656), and better naming (0.821 against 0.765). So a 9B model you can run on a laptop reaches parity with a trillion-parameter API on synthetic code.
+Here's the headline. On the clean synthetic benchmark, the 9B (Qwen, trained on the rationale mix) very nearly matches the frontier. Balanced accuracy 0.626 against 0.629, at a third of the false positive rate (0.224 against 0.656), and better naming (0.821 against 0.765). So a 9B model you can run on a laptop reaches parity with a frontier API on synthetic code.
 
 And the rationales are what's doing the work, not just the output format. If I strip the rationales and train on terse verdict-only imitation, real-world pair-consistency only reaches 0.141. Add the rationales back and it jumps to 0.209, which actually beats the frontier's 0.156. Untuned it was 0.099. The rationales are the lever.
 
